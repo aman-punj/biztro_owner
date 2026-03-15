@@ -1,6 +1,7 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AppImage extends StatelessWidget {
   const AppImage({
@@ -31,47 +32,67 @@ class AppImage extends StatelessWidget {
     return uri.hasScheme && (uri.scheme == 'http' || uri.scheme == 'https');
   }
 
+  bool get _isSvg => path.toLowerCase().endsWith('.svg');
+
   @override
   Widget build(BuildContext context) {
-    final Widget image = _isNetworkImage
-        ? CachedNetworkImage(
-            imageUrl: path,
-            width: width,
-            height: height,
-            fit: fit,
-            alignment: alignment,
-            placeholder: showLoading
-                ? (context, url) => AppImageFallback.loading(
-                      width: width,
-                      height: height,
-                    )
-                : (context, url) => const SizedBox.shrink(),
-            errorWidget: (context, url, error) => AppImageFallback.error(
-              width: width,
-              height: height,
-            ),
-          )
-        : Image.asset(
-            path,
-            width: width,
-            height: height,
-            fit: fit,
-            alignment: alignment,
-            errorBuilder: (context, error, stackTrace) => AppImageFallback.error(
-              width: width,
-              height: height,
-            ),
-            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-              if (!showLoading || wasSynchronouslyLoaded || frame != null) {
-                return child;
-              }
+    Widget image;
 
-              return AppImageFallback.loading(
-                width: width,
-                height: height,
-              );
-            },
+    if (_isNetworkImage) {
+      image = CachedNetworkImage(
+        imageUrl: path,
+        width: width,
+        height: height,
+        fit: fit,
+        alignment: alignment,
+        placeholder: showLoading
+            ? (context, url) => AppImageFallback.loading(
+                  width: width,
+                  height: height,
+                )
+            : (context, url) => const SizedBox.shrink(),
+        errorWidget: (context, url, error) => AppImageFallback.error(
+          width: width,
+          height: height,
+        ),
+      );
+    } else if (_isSvg) {
+      image = SvgPicture.asset(
+        path,
+        width: width,
+        height: height,
+        fit: fit,
+        alignment: alignment,
+        placeholderBuilder: showLoading
+            ? (context) => AppImageFallback.loading(
+                  width: width,
+                  height: height,
+                )
+            : null,
+      );
+    } else {
+      image = Image.asset(
+        path,
+        width: width,
+        height: height,
+        fit: fit,
+        alignment: alignment,
+        errorBuilder: (context, error, stackTrace) => AppImageFallback.error(
+          width: width,
+          height: height,
+        ),
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (!showLoading || wasSynchronouslyLoaded || frame != null) {
+            return child;
+          }
+
+          return AppImageFallback.loading(
+            width: width,
+            height: height,
           );
+        },
+      );
+    }
 
     if (borderRadius == null) {
       return image;

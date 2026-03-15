@@ -18,17 +18,23 @@ class AppTextField extends StatelessWidget {
     this.maxLength,
     this.height,
     this.inputFormatters,
+    this.readOnly = false,
+    this.onSubmitted,
+    this.maxLines = 1,
   });
 
   final String hint;
   final String? initialValue;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
+  final bool readOnly;
   final TextInputType? keyboardType;
   final TextAlign textAlign;
   final int? maxLength;
+  final int? maxLines;
   final double? height;
   final List<TextInputFormatter>? inputFormatters;
 
@@ -44,6 +50,9 @@ class AppTextField extends StatelessWidget {
         textAlign: textAlign,
         maxLength: maxLength,
         inputFormatters: inputFormatters,
+        readOnly: readOnly,
+        onFieldSubmitted: onSubmitted,
+        maxLines: maxLines,
         decoration: InputDecoration(
           filled: true,
           fillColor: AppColors.textFieldBackground,

@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../../../routes/app_routes.dart' show AppRoutes;
+
 enum AuthStage { login, forgotPassword, register, otpVerification }
 
 class AuthController extends GetxController {
@@ -31,9 +33,9 @@ class AuthController extends GetxController {
   String get stageSubtitle {
     switch (currentStage.value) {
       case AuthStage.login:
-        return 'Enter your email/mobile and password to access\nyour business dashboard.';
+        return 'Enter your email/mobile and password to access your business dashboard';
       case AuthStage.forgotPassword:
-        return 'Enter your registered email/mobile no.\nfor retrieve password.';
+        return 'Enter your registered email/mobile no. for retrieve password.';
       case AuthStage.register:
         return 'Start your business journey Today';
       case AuthStage.otpVerification:
@@ -69,6 +71,6 @@ class AuthController extends GetxController {
   }
 
   void onSubmit() {
-    // UI only.
+    Get.offNamed(AppRoutes.onboarding);
   }
 }
