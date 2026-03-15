@@ -1,49 +1,23 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SectionTitle extends StatelessWidget {
-  const SectionTitle({
-    required this.title,
-    super.key,
-    this.subtitle,
-    this.center = false,
-  });
+  const SectionTitle({required this.title, this.subtitle, super.key});
 
   final String title;
   final String? subtitle;
-  final bool center;
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final CrossAxisAlignment alignment =
-        center ? CrossAxisAlignment.center : CrossAxisAlignment.start;
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
-      crossAxisAlignment: alignment,
-      children: <Widget>[
-        Text(
-          title,
-          textAlign: center ? TextAlign.center : TextAlign.start,
-          style: TextStyle(
-            fontSize: 26.sp,
-            fontWeight: FontWeight.w700,
-            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-          ),
-        ),
-        if (subtitle != null) ...<Widget>[
-          SizedBox(height: 8.h),
-          Text(
-            subtitle!,
-            textAlign: center ? TextAlign.center : TextAlign.start,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: isDark
-                  ? AppColors.textSecondaryDark
-                  : AppColors.textSecondaryLight,
-            ),
-          ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: textTheme.titleMedium),
+        if (subtitle != null) ...[
+          SizedBox(height: 6.h),
+          Text(subtitle!, style: textTheme.bodyMedium),
         ],
       ],
     );

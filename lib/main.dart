@@ -1,16 +1,16 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
-import 'package:bizrato_owner/routes/app_pages.dart';
+import 'package:bizrato_owner/routes/app_pages.dart' show AppPages;
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 void main() {
-  runApp(const BizratoApp());
+  runApp(const BiztroOwnerApp());
 }
 
-class BizratoApp extends StatelessWidget {
-  const BizratoApp({super.key});
+class BiztroOwnerApp extends StatelessWidget {
+  const BiztroOwnerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class BizratoApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.light,
-          initialRoute: AppRoutes.login,
+          initialRoute: AppRoutes.splash,
           getPages: AppPages.routes,
         );
       },

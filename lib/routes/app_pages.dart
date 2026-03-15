@@ -1,28 +1,39 @@
-import 'package:bizrato_owner/features/auth/controllers/login_binding.dart';
+import 'package:bizrato_owner/features/auth/bindings/auth_binding.dart';
 import 'package:bizrato_owner/features/auth/views/login_view.dart';
-import 'package:bizrato_owner/features/dashboard/controllers/dashboard_binding.dart';
+import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:bizrato_owner/features/dashboard/views/dashboard_view.dart';
-import 'package:bizrato_owner/features/onboarding/controllers/onboarding_binding.dart';
+import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:bizrato_owner/features/onboarding/views/onboarding_view.dart';
+import 'package:bizrato_owner/features/splash/views/splash_view.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class AppPages {
-  static final List<GetPage<dynamic>> routes = <GetPage<dynamic>>[
+  AppPages._();
+
+  static final routes = <GetPage<dynamic>>[
+    GetPage<SplashView>(
+      name: AppRoutes.splash,
+      page: SplashView.new,
+    ),
     GetPage<LoginView>(
       name: AppRoutes.login,
-      page: () => const LoginView(),
-      binding: LoginBinding(),
+      page: LoginView.new,
+      binding: AuthBinding(),
     ),
     GetPage<OnboardingView>(
       name: AppRoutes.onboarding,
-      page: () => const OnboardingView(),
-      binding: OnboardingBinding(),
+      page: OnboardingView.new,
+      binding: BindingsBuilder(
+        () => Get.lazyPut<OnboardingController>(OnboardingController.new),
+      ),
     ),
     GetPage<DashboardView>(
       name: AppRoutes.dashboard,
-      page: () => const DashboardView(),
-      binding: DashboardBinding(),
+      page: DashboardView.new,
+      binding: BindingsBuilder(
+        () => Get.lazyPut<DashboardController>(DashboardController.new),
+      ),
     ),
   ];
 }

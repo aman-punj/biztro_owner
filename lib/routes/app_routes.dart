@@ -1,5 +1,8 @@
-abstract class AppRoutes {
-  static const String login = '/login';
-  static const String onboarding = '/onboarding';
-  static const String dashboard = '/dashboard';
+class AppRoutes {
+  AppRoutes._();
+
+  static const splash = '/';
+  static const login = '/login';
+  static const onboarding = '/onboarding';
+  static const dashboard = '/dashboard';
 }
