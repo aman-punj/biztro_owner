@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/dimensions.dart';
 import 'package:bizrato_owner/features/auth/controllers/auth_controller.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_brand_logo.dart';
 import 'package:flutter/material.dart';
@@ -10,49 +11,58 @@ class AuthHeroSection extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTablet = MediaQuery.of(context).size.width >= 600;
+
     return Container(
       width: double.infinity,
-      height: Get.height  / 2.5,
-      padding: EdgeInsets.fromLTRB(20.w, 54.h, 20.w, 34.h),
+      constraints: BoxConstraints(
+        minHeight: 280.h,
+      ),
+      padding: EdgeInsets.fromLTRB(20.w, 48.h, 20.w, 30.h),
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20.r),
-          bottomRight: Radius.circular(20.r),
+          bottomLeft: Radius.circular(24.r),
+          bottomRight: Radius.circular(24.r),
         ),
       ),
       child: Obx(
-        () => Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-              color: AppColors.white,
-                borderRadius: BorderRadius.circular(7)
+        () => SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.cardRadius / 2),
+                ),
+                child: const AuthBrandLogo(),
               ),
-              child: const AuthBrandLogo(),
-            ),
-            SizedBox(height: 15.h),
-            Text(
-              controller.stageTitle,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.cardLight,
-                fontSize: 32.sp,
-                fontWeight: FontWeight.w700,
-                height: 1.15,
+              SizedBox(height: 20.h),
+              Text(
+                controller.stageTitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: AppColors.white,
+                      fontSize: isTablet ? 36.sp : 30.sp,
+                      fontWeight: FontWeight.w800,
+                      height: 1.2,
+                    ),
               ),
-            ),
-            SizedBox(height: 6.h),
-            Text(
-              controller.stageSubtitle,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.cardLight,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w500,
+              SizedBox(height: 8.h),
+              Text(
+                controller.stageSubtitle,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppColors.white.withOpacity(0.9),
+                      fontSize: isTablet ? 16.sp : 13.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

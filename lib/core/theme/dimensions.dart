@@ -9,4 +9,5 @@ class AppDimensions {
   static double get buttonRadius => 8.r;
   static double get sectionSpacing => 20.h;
   static double get inputHeight => 50.h;
+  static double get maxContentWidth => 480.w;
 }

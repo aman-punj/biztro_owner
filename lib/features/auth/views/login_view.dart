@@ -1,3 +1,4 @@
+import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/theme/dimensions.dart';
 import 'package:bizrato_owner/core/widgets/app_card.dart';
 import 'package:bizrato_owner/features/auth/controllers/auth_controller.dart';
@@ -14,19 +15,24 @@ class LoginView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       body: SafeArea(
         top: false,
-        child: Center(
-          child: SizedBox(
-            child: Column(
-              children: [
-                Expanded(
-                    child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const AuthHeroSection(),
-                      Transform.translate(
-                        offset: Offset(0, -70.h),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
+                children: [
+                  const AuthHeroSection(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 240.h), // Hero height - overlap
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: AppDimensions.maxContentWidth,
+                        ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: AppDimensions.screenHorizontalPadding,
@@ -64,15 +70,14 @@ class LoginView extends GetView<AuthController> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 16.h),
-                        child: const AuthFooterText(),
-                      ),
-                    ],
+                    ),
                   ),
-                )),
-              ],
-            ),
+                ],
+              ),
+              SizedBox(height: 24.h),
+              const AuthFooterText(),
+              SizedBox(height: 16.h),
+            ],
           ),
         ),
       ),
