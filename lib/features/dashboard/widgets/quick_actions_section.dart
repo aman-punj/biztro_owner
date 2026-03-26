@@ -66,8 +66,8 @@ class _QuickActionTile extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 52.w,
-          height: 52.w,
+          width: 70.w,
+          height: 70.h,
           decoration: BoxDecoration(
             color: AppColors.white,
             borderRadius: BorderRadius.circular(12.r),
@@ -82,8 +82,8 @@ class _QuickActionTile extends StatelessWidget {
           child: Center(
             child: AppImage(
               path: iconPath,
-              width: 24.w,
-              height: 24.w,
+              width: 45.w,
+              height: 45.w,
               fit: BoxFit.contain,
               showLoading: false,
             ),

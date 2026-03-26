@@ -29,7 +29,7 @@ class DashboardController extends GetxController {
   final hasError = false.obs;
   final errorMessage = ''.obs;
 
-  // Business info
+// Business info
   final businessName = 'Haldiram Restaurant'.obs;
   final businessType = 'Dine-In Delhi, 10:00'.obs;
   final businessRating = '4.5'.obs;
@@ -38,29 +38,35 @@ class DashboardController extends GetxController {
   final profileCompletionPercent = 0.60.obs;
   final profileCompletionLabel = '60%'.obs;
 
-  // Quick actions
-  final quickActions = <Map<String, String>>[
-    {'label': 'Business\nDetails', 'icon': AppAssets.quickActionBusinessDetails},
-    {'label': 'Timing &\nDetails', 'icon': AppAssets.quickActionTimingDetails},
-    {'label': 'Location\nInfo', 'icon': AppAssets.quickActionLocationInfo},
-    {'label': 'Social\nLinks', 'icon': AppAssets.quickActionSocialLinks},
-  ].obs;
-
-  // Business Insights
   final insightStats = <BusinessInsightStat>[].obs;
 
-  // Lead Analytics bar chart data
+// --- NEW: Added for the Chart UI in the image ---
   final barGroups = <BarChartGroupData>[].obs;
+  final lineSpots = <FlSpot>[].obs; // For the trend line overlay
+  final xLabels = <String>[].obs; // Labels like 'Books', 'Clothing'
+
   final legendCategories = <LeadAnalyticsCategory>[
-    LeadAnalyticsCategory(label: 'Books', color: const Color(0xFFFF6B35)),
-    LeadAnalyticsCategory(label: 'Clothing', color: const Color(0xFF4361EE)),
-    LeadAnalyticsCategory(label: 'Electronics', color: const Color(0xFF3AB795)),
-    LeadAnalyticsCategory(label: 'Garden', color: const Color(0xFFE63946)),
-    LeadAnalyticsCategory(label: 'Sorts', color: const Color(0xFFFBB13C)),
-    LeadAnalyticsCategory(label: 'Fashion', color: const Color(0xFF9B5DE5)),
+    const LeadAnalyticsCategory(label: 'Books', color: Color(0xFFFF6B35)),
+    const LeadAnalyticsCategory(label: 'Clothing', color: Color(0xFF2196F3)),
+    const LeadAnalyticsCategory(label: 'Electronics', color: Color(0xFF0D47A1)),
+    const LeadAnalyticsCategory(label: 'Garden', color: Color(0xFF90CAF9)),
+    const LeadAnalyticsCategory(label: 'Sorts', color: Color(0xFFC2185B)),
+    const LeadAnalyticsCategory(label: 'Fashion', color: Color(0xFF00BCD4)),
   ].obs;
 
-  final xLabels = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  final quickActions = <Map<String, String>>[
+
+    {'label': 'Business\nDetails', 'icon': AppAssets.quickActionBusinessDetails},
+
+    {'label': 'Timing &\nDetails', 'icon': AppAssets.quickActionTimingDetails},
+
+    {'label': 'Location\nInfo', 'icon': AppAssets.quickActionLocationInfo},
+
+    {'label': 'Social\nLinks', 'icon': AppAssets.quickActionSocialLinks},
+
+  ].obs;
+
+
 
   @override
   void onInit() {
@@ -72,9 +78,9 @@ class DashboardController extends GetxController {
     isLoading.value = true;
     hasError.value = false;
     try {
-      // Simulate API delay
       await Future<void>.delayed(const Duration(milliseconds: 1200));
 
+// 1. Load Insights
       insightStats.assignAll([
         const BusinessInsightStat(
           label: 'Business Leads',
@@ -102,45 +108,56 @@ class DashboardController extends GetxController {
         ),
       ]);
 
-      barGroups.assignAll(_buildBarGroups());
+// 2. Load Chart Data (Matching the Image)
+      _prepareChartData();
     } catch (e) {
       hasError.value = true;
-      errorMessage.value = 'Failed to load dashboard data. Please try again.';
+      errorMessage.value = 'Failed to load dashboard data.';
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> refresh() => _loadDashboard();
+  void _prepareChartData() {
+// Values matching the heights in your image roughly
+    final values = [42.0, 21.0, 35.0, 15.0, 37.0, 24.0];
+    final List<BarChartGroupData> groups = [];
+    final List<FlSpot> spots = [];
+    final List<String> labels = [];
 
-  List<BarChartGroupData> _buildBarGroups() {
-    // Data for each category per day [Books, Clothing, Electronics, Garden, Sorts, Fashion]
-    const data = [
-      [3.0, 5.0, 2.0, 4.0, 1.5, 3.5],
-      [4.0, 3.0, 5.0, 2.5, 3.0, 4.5],
-      [2.5, 4.5, 3.5, 5.0, 2.0, 3.0],
-      [5.0, 2.0, 4.0, 3.0, 4.5, 2.5],
-      [3.5, 5.0, 2.5, 4.0, 3.0, 5.0],
-      [4.5, 3.5, 5.0, 2.0, 4.0, 3.5],
-      [2.0, 4.0, 3.0, 5.0, 2.5, 4.0],
-    ];
+    for (int i = 0; i < legendCategories.length; i++) {
+      final category = legendCategories[i];
+      final val = values[i];
 
-    final colors = legendCategories.map((c) => c.color).toList();
-
-    return List.generate(7, (dayIndex) {
-      return BarChartGroupData(
-        x: dayIndex,
-        groupVertically: false,
-        barRods: List.generate(6, (catIndex) {
-          return BarChartRodData(
-            toY: data[dayIndex][catIndex],
-            color: colors[catIndex],
-            width: 6,
-            borderRadius: BorderRadius.circular(3),
-          );
-        }),
-        barsSpace: 2,
+// Add to Bar Groups
+      groups.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              toY: val,
+              color: category.color,
+              width: 22, // Thick bars like the image
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(4),
+                topRight: Radius.circular(4),
+              ),
+            ),
+          ],
+        ),
       );
-    });
+
+// Add to Line Spots (The line connects the top center of each bar)
+      spots.add(FlSpot(i.toDouble(), val));
+
+// Add to X Labels
+      labels.add(category.label);
+    }
+
+    lineSpots.assignAll(spots);
+    xLabels.assignAll(labels);
+    barGroups.assignAll(groups);
   }
+
+  Future<void> refresh() => _loadDashboard();
 }
