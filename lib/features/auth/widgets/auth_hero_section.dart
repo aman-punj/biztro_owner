@@ -16,7 +16,7 @@ class AuthHeroSection extends GetView<AuthController> {
     return Container(
       width: double.infinity,
       constraints: BoxConstraints(
-        minHeight: 280.h,
+        minHeight: 420.h,
       ),
       padding: EdgeInsets.fromLTRB(20.w, 48.h, 20.w, 30.h),
       decoration: BoxDecoration(
@@ -56,7 +56,7 @@ class AuthHeroSection extends GetView<AuthController> {
                 controller.stageSubtitle,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.white.withOpacity(0.9),
+                      color: AppColors.white,
                       fontSize: isTablet ? 16.sp : 13.sp,
                       fontWeight: FontWeight.w500,
                     ),

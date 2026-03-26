@@ -6,10 +6,14 @@ import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_hero_section.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_stage_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class LoginView extends GetView<AuthController> {
+  // @Preview(
+  //   name: "Login UI",
+  // )
   const LoginView({super.key});
 
   @override
@@ -27,7 +31,7 @@ class LoginView extends GetView<AuthController> {
                 children: [
                   const AuthHeroSection(),
                   Padding(
-                    padding: EdgeInsets.only(top: 240.h), // Hero height - overlap
+                    padding: EdgeInsets.only(top: 275.h),
                     child: Center(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
@@ -39,7 +43,7 @@ class LoginView extends GetView<AuthController> {
                           ),
                           child: AppCard(
                             padding:
-                                EdgeInsets.fromLTRB(14.w, 20.h, 14.w, 16.h),
+                                EdgeInsets.fromLTRB(30.w, 30.h, 30.w, 8.h),
                             child: Obx(
                               () => AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 300),

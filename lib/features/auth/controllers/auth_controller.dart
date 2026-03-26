@@ -71,6 +71,6 @@ class AuthController extends GetxController {
   }
 
   void onSubmit() {
-    Get.offNamed(AppRoutes.onboarding);
+    Get.offNamed(AppRoutes.dashboard);
   }
 }
