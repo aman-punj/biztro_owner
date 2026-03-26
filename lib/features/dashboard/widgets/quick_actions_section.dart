@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,7 +42,7 @@ class QuickActionsSection extends GetView<DashboardController> {
             children: controller.quickActions.map((action) {
               return _QuickActionTile(
                 label: action['label'] as String,
-                icon: action['icon'] as IconData,
+                iconPath: action['icon'] as String,
               );
             }).toList(),
           ),
@@ -52,10 +53,13 @@ class QuickActionsSection extends GetView<DashboardController> {
 }
 
 class _QuickActionTile extends StatelessWidget {
-  const _QuickActionTile({required this.label, required this.icon});
+  const _QuickActionTile({
+    required this.label,
+    required this.iconPath,
+  });
 
   final String label;
-  final IconData icon;
+  final String iconPath;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +79,15 @@ class _QuickActionTile extends StatelessWidget {
               ),
             ],
           ),
-          child: Icon(icon, size: 22.sp, color: AppColors.primary),
+          child: Center(
+            child: AppImage(
+              path: iconPath,
+              width: 24.w,
+              height: 24.w,
+              fit: BoxFit.contain,
+              showLoading: false,
+            ),
+          ),
         ),
         SizedBox(height: 6.h),
         Text(

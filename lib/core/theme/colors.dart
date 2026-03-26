@@ -8,6 +8,9 @@ class AppColors {
 
   static const Color backgroundLight = Color(0xFFF3F5F9);
   static const Color backgroundDark = Color(0xFF0F172A);
+  static const Color profileCardBackground = Color(0xFFFFF5EE);
+  static const Color profileCardBorder = Color(0xFFEBC6AB);
+  static const Color profileIndicator = Color(0xFFFF6C00);
 
   static const Color surfaceLight = Color(0xFFF1F4F8);
   static const Color textFieldBackground = Color(0xFFF0F4FA);

@@ -11,12 +11,16 @@ class UpgradeBannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF0B47AE), Color(0xFF1E6FFF)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
+        color: AppColors.profileCardBackground,
         borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: AppColors.profileCardBorder, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       padding: EdgeInsets.all(14.r),
       child: Row(
@@ -28,7 +32,7 @@ class UpgradeBannerCard extends StatelessWidget {
                 Text(
                   'Start selling on\nBizrato today',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: AppColors.textPrimaryLight,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w800,
                     height: 1.3,
@@ -38,31 +42,13 @@ class UpgradeBannerCard extends StatelessWidget {
                 Text(
                   'List Your Business for free!',
                   style: TextStyle(
-                    color: AppColors.white.withOpacity(0.8),
+                    color: AppColors.textSecondaryLight,
                     fontSize: 10.sp,
                   ),
                 ),
                 SizedBox(height: 10.h),
-                GestureDetector(
+                _UpgradeNowButton(
                   onTap: () => Get.toNamed(AppRoutes.trustedShield),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFBB13C),
-                      borderRadius: BorderRadius.circular(6.r),
-                    ),
-                    child: Text(
-                      'Upgrade now',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -71,9 +57,40 @@ class UpgradeBannerCard extends StatelessWidget {
           Icon(
             Icons.rocket_launch_outlined,
             size: 60.sp,
-            color: AppColors.white.withOpacity(0.35),
+            color: AppColors.profileIndicator.withOpacity(0.35),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _UpgradeNowButton extends StatelessWidget {
+  const _UpgradeNowButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 12.w,
+          vertical: 6.h,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.profileIndicator,
+          borderRadius: BorderRadius.circular(6.r),
+        ),
+        child: Text(
+          'Upgrade now',
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }

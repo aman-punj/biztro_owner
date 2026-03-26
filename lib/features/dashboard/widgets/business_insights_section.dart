@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +35,7 @@ class BusinessInsightsSection extends GetView<DashboardController> {
             ),
           ],
         ),
-        SizedBox(height: 10.h),
+        // SizedBox(height: .h),
         Obx(() {
           if (controller.insightStats.isEmpty) return const SizedBox.shrink();
           return GridView.builder(
@@ -60,6 +61,7 @@ class BusinessInsightsSection extends GetView<DashboardController> {
 
 class _InsightStatCard extends StatelessWidget {
   const _InsightStatCard({required this.stat});
+
   final BusinessInsightStat stat;
 
   @override
@@ -78,29 +80,41 @@ class _InsightStatCard extends StatelessWidget {
                 color: stat.iconBg,
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(stat.icon, size: 16.sp, color: AppColors.primary),
+              child: Center(
+                child: AppImage(
+                  path: stat.iconPath,
+                  width: 38.sp,
+                  height: 38.sp,
+                  fit: BoxFit.contain,
+                  showLoading: false,
+                ),
+              ),
             ),
             SizedBox(width: 10.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  stat.value,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryLight,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    stat.value,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimaryLight,
+                    ),
                   ),
-                ),
-                Text(
-                  stat.label,
-                  style: TextStyle(
-                    fontSize: 9.sp,
-                    color: AppColors.textSecondaryLight,
+                  FittedBox(
+                    child: Text(
+                      stat.label,
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        color: AppColors.textSecondaryLight,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

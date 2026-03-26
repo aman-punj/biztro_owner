@@ -1,3 +1,4 @@
+import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,13 +6,13 @@ import 'package:get/get.dart';
 class BusinessInsightStat {
   final String label;
   final String value;
-  final IconData icon;
+  final String iconPath;
   final Color iconBg;
 
   const BusinessInsightStat({
     required this.label,
     required this.value,
-    required this.icon,
+    required this.iconPath,
     required this.iconBg,
   });
 }
@@ -38,11 +39,11 @@ class DashboardController extends GetxController {
   final profileCompletionLabel = '60%'.obs;
 
   // Quick actions
-  final quickActions = <Map<String, dynamic>>[
-    {'label': 'Business\nDetails', 'icon': Icons.store_outlined},
-    {'label': 'Timing &\nDetails', 'icon': Icons.access_time_outlined},
-    {'label': 'Location\nInfo', 'icon': Icons.location_on_outlined},
-    {'label': 'Social\nLinks', 'icon': Icons.share_outlined},
+  final quickActions = <Map<String, String>>[
+    {'label': 'Business\nDetails', 'icon': AppAssets.quickActionBusinessDetails},
+    {'label': 'Timing &\nDetails', 'icon': AppAssets.quickActionTimingDetails},
+    {'label': 'Location\nInfo', 'icon': AppAssets.quickActionLocationInfo},
+    {'label': 'Social\nLinks', 'icon': AppAssets.quickActionSocialLinks},
   ].obs;
 
   // Business Insights
@@ -76,28 +77,28 @@ class DashboardController extends GetxController {
 
       insightStats.assignAll([
         const BusinessInsightStat(
-          label: 'Total Leads',
+          label: 'Business Leads',
           value: '31K',
-          icon: Icons.person_outline,
+          iconPath: AppAssets.statHotLeads,
           iconBg: Color(0xFFEAF0FF),
         ),
         const BusinessInsightStat(
-          label: 'Hot Leads',
+          label: 'Total Clicks',
           value: '59K',
-          icon: Icons.local_fire_department_outlined,
+          iconPath: AppAssets.statTotalLeads,
           iconBg: Color(0xFFFFF3E0),
         ),
         const BusinessInsightStat(
-          label: 'Add Code',
+          label: 'Add Calls',
           value: '24K',
-          icon: Icons.phone_outlined,
-          iconBg: Color(0xFFE8F5E9),
+          iconPath: AppAssets.statAddCode,
+          iconBg: Color(0xFFF3E5F5),
         ),
         const BusinessInsightStat(
           label: 'Total Views',
           value: '258K',
-          icon: Icons.visibility_outlined,
-          iconBg: Color(0xFFF3E5F5),
+          iconPath: AppAssets.statTotalViews,
+          iconBg: Color(0xFFE8F5E9),
         ),
       ]);
 

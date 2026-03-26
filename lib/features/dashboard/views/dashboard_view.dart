@@ -75,7 +75,13 @@ class DashboardView extends GetView<DashboardController> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
-        child: Icon(Icons.qr_code_scanner_outlined, color: AppColors.white, size: 24.sp),
+        child: AppImage(
+          path: AppAssets.navBarCenterTile,
+          width: 28.sp,
+          height: 28.sp,
+          fit: BoxFit.contain,
+          showLoading: false,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -115,20 +121,20 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _NavItem(
-                icon: Icons.home_outlined,
+                iconPath: AppAssets.navBarHomePage,
                 label: 'Home',
                 selected: _selected == 0,
                 onTap: () => setState(() => _selected = 0),
               ),
               _NavItem(
-                icon: Icons.bar_chart_outlined,
+                iconPath: AppAssets.navBarMessages,
                 label: 'Analytics',
                 selected: _selected == 1,
                 onTap: () => setState(() => _selected = 1),
               ),
               SizedBox(width: 48.w), // FAB space
               _NavItem(
-                icon: Icons.message_outlined,
+                iconPath: AppAssets.navBarAnalytics,
                 label: 'Messages',
                 selected: _selected == 3,
                 onTap: () {
@@ -137,7 +143,7 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
                 },
               ),
               _NavItem(
-                icon: Icons.person_outline,
+                iconPath: AppAssets.navBarProfile,
                 label: 'Profile',
                 selected: _selected == 4,
                 onTap: () => setState(() => _selected = 4),
@@ -152,13 +158,13 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
-    required this.icon,
+    required this.iconPath,
     required this.label,
     required this.selected,
     required this.onTap,
   });
 
-  final IconData icon;
+  final String iconPath;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -175,10 +181,14 @@ class _NavItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 20.sp, // Slightly reduced to prevent overflow
-                color: selected ? AppColors.primary : AppColors.textSecondaryLight,
+              AppImage(
+                path: iconPath,
+                width: 20.sp,
+                height: 20.sp,
+                fit: BoxFit.contain,
+                showLoading: false,
+                color:
+                    selected ? AppColors.primary : AppColors.textSecondaryLight,
               ),
               SizedBox(height: 2.h),
               Flexible(
@@ -189,7 +199,9 @@ class _NavItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 8.5.sp, // Slightly reduced for safety
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: selected ? AppColors.primary : AppColors.textSecondaryLight,
+                    color: selected
+                        ? AppColors.primary
+                        : AppColors.textSecondaryLight,
                   ),
                 ),
               ),
@@ -269,7 +281,6 @@ class _DashboardErrorState extends StatelessWidget {
   }
 }
 
-
 class _DashboardSliverAppBar extends GetView<DashboardController> {
   const _DashboardSliverAppBar();
 
@@ -278,7 +289,8 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
     final topPadding = MediaQuery.of(context).padding.top;
 
     return SliverAppBar(
-      backgroundColor: AppColors.white,        // ✅ Title bar (pinned) = WHITE
+      backgroundColor: AppColors.white,
+      // ✅ Title bar (pinned) = WHITE
       expandedHeight: 200.h,
       pinned: true,
       elevation: 0,
@@ -367,7 +379,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                         ],
                       ),
                       child: Obx(
-                            () => Row(
+                        () => Row(
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8.r),
@@ -375,10 +387,14 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                 width: 56.w,
                                 height: 56.w,
                                 color: AppColors.backgroundLight,
-                                child: Icon(
-                                  Icons.storefront_outlined,
-                                  color: AppColors.primary,
-                                  size: 28.sp,
+                                child: Center(
+                                  child: AppImage(
+                                    path: AppAssets.businessCardIcon,
+                                    width: 28.sp,
+                                    height: 28.sp,
+                                    fit: BoxFit.contain,
+                                    showLoading: false,
+                                  ),
                                 ),
                               ),
                             ),
@@ -433,8 +449,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                       ),
                                       SizedBox(width: 8.w),
                                       Icon(Icons.favorite_rounded,
-                                          size: 13.sp,
-                                          color: Colors.redAccent),
+                                          size: 13.sp, color: Colors.redAccent),
                                       SizedBox(width: 2.w),
                                       Text(
                                         controller.businessFollowers.value,
@@ -463,8 +478,10 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
     );
   }
 }
+
 class _AppBarIconButton extends StatelessWidget {
   const _AppBarIconButton({required this.icon});
+
   final IconData icon;
 
   @override
@@ -472,10 +489,11 @@ class _AppBarIconButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: AppColors.backgroundLight,         // ✅ Light grey on white
+        color: AppColors.backgroundLight, // ✅ Light grey on white
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: Icon(icon, color: AppColors.textPrimaryLight, size: 18.sp), // ✅ Dark
+      child:
+          Icon(icon, color: AppColors.textPrimaryLight, size: 18.sp), // ✅ Dark
     );
   }
 }

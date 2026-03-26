@@ -13,7 +13,11 @@ class ProfileCompletenessCard extends GetView<DashboardController> {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      color: AppColors.profileCardBackground,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.r),
+        side: BorderSide(color: AppColors.profileCardBorder, width: 1),
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         child: Obx(
@@ -51,11 +55,11 @@ class ProfileCompletenessCard extends GetView<DashboardController> {
                   style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.primary,
+                    color: AppColors.profileIndicator,
                   ),
                 ),
-                progressColor: AppColors.primary,
-                backgroundColor: AppColors.backgroundLight,
+                progressColor: AppColors.profileIndicator,
+                backgroundColor: AppColors.profileCardBackground,
                 circularStrokeCap: CircularStrokeCap.round,
               ),
             ],

@@ -13,6 +13,8 @@ class AppImage extends StatelessWidget {
     this.alignment = Alignment.center,
     this.borderRadius,
     this.showLoading = true,
+    this.color,
+    this.colorBlendMode,
   });
 
   final String path;
@@ -22,6 +24,8 @@ class AppImage extends StatelessWidget {
   final Alignment alignment;
   final BorderRadius? borderRadius;
   final bool showLoading;
+  final Color? color;
+  final BlendMode? colorBlendMode;
 
   bool get _isNetworkImage {
     final Uri? uri = Uri.tryParse(path);
@@ -57,6 +61,7 @@ class AppImage extends StatelessWidget {
         ),
       );
     } else if (_isSvg) {
+      final BlendMode? svgColorMode = color != null ? (colorBlendMode ?? BlendMode.srcIn) : null;
       image = SvgPicture.asset(
         path,
         width: width,
@@ -69,14 +74,19 @@ class AppImage extends StatelessWidget {
                   height: height,
                 )
             : null,
+        color: color,
+        colorBlendMode: svgColorMode ?? BlendMode.srcIn ,
       );
     } else {
+      final BlendMode? imageColorMode = color != null ? (colorBlendMode ?? BlendMode.srcIn) : null;
       image = Image.asset(
         path,
         width: width,
         height: height,
         fit: fit,
         alignment: alignment,
+        color: color,
+        colorBlendMode: imageColorMode,
         errorBuilder: (context, error, stackTrace) => AppImageFallback.error(
           width: width,
           height: height,
