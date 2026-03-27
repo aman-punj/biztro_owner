@@ -95,10 +95,25 @@ class RegisterStageView extends GetView<AuthController> {
           ),
         ),
         SizedBox(height: AppDimensions.sectionSpacing),
-        PrimaryButton(
-          label: 'Send OTP',
-          showArrow: true,
-          onPressed: () => controller.setStage(AuthStage.otpVerification),
+        Obx(
+          () => PrimaryButton(
+            label: 'Send OTP',
+            showArrow: true,
+            isLoading: controller.isSubmitting.value,
+            onPressed: controller.onSubmit,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Obx(
+          () => controller.formError.value.isEmpty
+              ? const SizedBox.shrink()
+              : Text(
+                  controller.formError.value,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: Colors.redAccent,
+                  ),
+                ),
         ),
         SizedBox(height: 10.h),
         AuthBottomPrompt(

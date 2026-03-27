@@ -82,10 +82,25 @@ class LoginStageView extends GetView<AuthController> {
 
         SizedBox(height: 20.h),
         // SizedBox(height: AppDimensions.sectionSpacing),
-        PrimaryButton(
-          label: 'Secure Login',
-          showArrow: true,
-          onPressed: controller.onSubmit,
+        Obx(
+          () => PrimaryButton(
+            label: 'Secure Login',
+            showArrow: true,
+            isLoading: controller.isSubmitting.value,
+            onPressed: controller.onSubmit,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Obx(
+          () => controller.formError.value.isEmpty
+              ? const SizedBox.shrink()
+              : Text(
+                  controller.formError.value,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: Colors.redAccent,
+                  ),
+                ),
         ),
         SizedBox(height: 12.h),
         AuthBottomPrompt(

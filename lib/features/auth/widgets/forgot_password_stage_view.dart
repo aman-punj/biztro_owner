@@ -22,10 +22,25 @@ class ForgotPasswordStageView extends GetView<AuthController> {
           onChanged: controller.onEmailChanged,
         ),
         SizedBox(height: AppDimensions.sectionSpacing),
-        PrimaryButton(
-          label: 'Get Password',
-          showArrow: true,
-          onPressed: controller.onSubmit,
+        Obx(
+          () => PrimaryButton(
+            label: 'Get Password',
+            showArrow: true,
+            isLoading: controller.isSubmitting.value,
+            onPressed: controller.onSubmit,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Obx(
+          () => controller.formError.value.isEmpty
+              ? const SizedBox.shrink()
+              : Text(
+                  controller.formError.value,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: Colors.redAccent,
+                  ),
+                ),
         ),
         SizedBox(height: AppDimensions.sectionSpacing),
         AuthBottomPrompt(

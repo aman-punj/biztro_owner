@@ -1,21 +1,35 @@
+import 'package:bizrato_owner/core/network/network_exception.dart';
+import 'package:bizrato_owner/features/auth/data/auth_repository.dart';
+import 'package:bizrato_owner/features/auth/data/models/login_request.dart';
+import 'package:bizrato_owner/features/auth/data/models/otp_verification_request.dart';
+import 'package:bizrato_owner/features/auth/data/models/signup_request.dart';
+import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
-
-import '../../../routes/app_routes.dart' show AppRoutes;
 
 enum AuthStage { login, forgotPassword, register, otpVerification }
 
 class AuthController extends GetxController {
+  AuthController({required this.authRepository});
+
+  final AuthRepository authRepository;
+
   final currentStage = AuthStage.login.obs;
   final isPasswordHidden = true.obs;
   final isConfirmPasswordHidden = true.obs;
   final rememberMe = false.obs;
 
-  final email = ''.obs;
-  final password = ''.obs;
-  final confirmPassword = ''.obs;
-  final businessName = ''.obs;
-  final mobile = ''.obs;
+  final email = 'apsingh.amanpreet@gmail.com'.obs;
+  final password = 'Asdf@1234'.obs;
+  final businessName = 'Aman Business'.obs;
+  final confirmPassword = 'Asdf@1234'.obs;
+  final mobile = '9309325375'.obs;
   final otp = List<String>.filled(4, '').obs;
+
+  final isSubmitting = false.obs;
+  final formError = ''.obs;
+  final infoMessage = ''.obs;
+  final otpMobileNumber = ''.obs;
+  final pendingSignupRequest = Rxn<SignupRequest>();
 
   String get stageTitle {
     switch (currentStage.value) {
@@ -39,19 +53,26 @@ class AuthController extends GetxController {
       case AuthStage.register:
         return 'Start your business journey Today';
       case AuthStage.otpVerification:
-        return 'We have sent a 4 digit verification code to\n+917104891234';
+        final masked = otpMobileNumber.value.isNotEmpty
+            ? '+91${otpMobileNumber.value}'
+            : _sanitizeMobile(mobile.value).isNotEmpty
+                ? '+91${_sanitizeMobile(mobile.value)}'
+                : 'your registered mobile';
+        return 'We have sent a 4 digit verification code to\n$masked';
     }
   }
 
-  void setStage(AuthStage stage) => currentStage.value = stage;
-
-  void togglePasswordVisibility() {
-    isPasswordHidden.value = !isPasswordHidden.value;
+  void setStage(AuthStage stage) {
+    currentStage.value = stage;
+    _clearError();
+    _clearInfo();
+    otp.assignAll(List<String>.filled(4, ''));
   }
 
-  void toggleConfirmPasswordVisibility() {
-    isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
-  }
+  void togglePasswordVisibility() => isPasswordHidden.value = !isPasswordHidden.value;
+
+  void toggleConfirmPasswordVisibility() =>
+      isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
 
   void toggleRememberMe() => rememberMe.value = !rememberMe.value;
 
@@ -70,7 +91,181 @@ class AuthController extends GetxController {
     otp[index] = value;
   }
 
-  void onSubmit() {
+  Future<void> onSubmit() async {
+    _clearError();
+    _clearInfo();
+    switch (currentStage.value) {
+      case AuthStage.login:
+        await _handleLogin();
+        break;
+      case AuthStage.register:
+        await _handleRegister();
+        break;
+      case AuthStage.otpVerification:
+        await _handleOtpVerification();
+        break;
+      case AuthStage.forgotPassword:
+        _setError('Forgot password flow is not yet connected.');
+        break;
+    }
+  }
+
+  Future<void> resendOtp() async {
+    _clearError();
+    _clearInfo();
+    final request = pendingSignupRequest.value;
+    if (request == null) {
+      _setError('Please complete the signup first to receive an OTP.');
+      return;
+    }
+
+    final success = await _perform(() async => await _sendSignupOtp(request));
+    if (!success) return;
+    _setInfo('OTP resent to +91${request.mobile}');
+  }
+
+  Future<void> _handleLogin() async {
+    final mobileValue = _sanitizeMobile(email.value);
+    if (!_isValidMobile(mobileValue)) {
+      _setError('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    final passwordValue = password.value.trim();
+    if (passwordValue.isEmpty) {
+      _setError('Password cannot be empty.');
+      return;
+    }
+
+    final success = await _perform(() async {
+      await authRepository.login(
+        LoginRequest(mobile: mobileValue, password: passwordValue),
+      );
+    });
+
+    if (!success) return;
     Get.offNamed(AppRoutes.dashboard);
+  }
+
+  Future<void> _handleRegister() async {
+    final name = businessName.value.trim();
+    if (name.isEmpty) {
+      _setError('Business name is required.');
+      return;
+    }
+
+    final emailValue = email.value.trim();
+    if (!_isValidEmail(emailValue)) {
+      _setError('Please enter a valid email address.');
+      return;
+    }
+
+    final mobileValue = otpMobileNumber.value.isNotEmpty
+        ? otpMobileNumber.value
+        : _sanitizeMobile(mobile.value);
+    if (!_isValidMobile(mobileValue)) {
+      _setError('Please provide a valid 10-digit mobile number.');
+      return;
+    }
+
+    final passwordValue = password.value.trim();
+    final confirmValue = confirmPassword.value.trim();
+    if (!_isValidPassword(passwordValue)) {
+      _setError('Password must be between 6 and 20 characters.');
+      return;
+    }
+
+    if (passwordValue != confirmValue) {
+      _setError('Password and confirm password does not match.');
+      return;
+    }
+
+    final request = SignupRequest(
+      outletName: name,
+      email: emailValue,
+      mobile: mobileValue,
+      password: passwordValue,
+      confirmPassword: confirmValue,
+      authorize: true,
+    );
+
+    final success = await _perform(() async => await _sendSignupOtp(request));
+    if (!success) return;
+
+    pendingSignupRequest.value = request;
+    otpMobileNumber.value = request.mobile;
+    setStage(AuthStage.otpVerification);
+  }
+
+  Future<void> _sendSignupOtp(SignupRequest request) =>
+      authRepository.signup(request);
+
+  Future<void> _handleOtpVerification() async {
+    final otpCode = otp.join().trim();
+    if (otpCode.length != 4) {
+      _setError('Enter a 4-digit OTP.');
+      return;
+    }
+
+    final mobileValue = _sanitizeMobile(mobile.value);
+    if (!_isValidMobile(mobileValue)) {
+      _setError('Invalid mobile number provided for verification.');
+      return;
+    }
+
+    final success = await _perform(() async {
+      await authRepository.verifyOtp(
+        OtpVerificationRequest(mobile: mobileValue, otp: otpCode),
+      );
+    });
+
+    if (!success) return;
+    Get.offNamed(AppRoutes.dashboard);
+  }
+
+  Future<bool> _perform(Future<void> Function() action) async {
+    isSubmitting.value = true;
+    try {
+      await action();
+      return true;
+    } on NetworkException catch (error) {
+      _setError(error.message);
+      return false;
+    } catch (_) {
+      _setError('Something went wrong. Please try again.');
+      return false;
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+
+  bool _isValidMobile(String value) => RegExp(r'^[6-9]\d{9}$').hasMatch(value);
+
+  String _sanitizeMobile(String value) => value.replaceAll(RegExp(r'[^0-9]'), '');
+
+  bool _isValidEmail(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return false;
+    return RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(trimmed);
+  }
+
+  bool _isValidPassword(String value) => value.length >= 6 && value.length <= 20;
+
+  void _setError(String message) {
+    infoMessage.value = '';
+    formError.value = message;
+  }
+
+  void _setInfo(String message) {
+    formError.value = '';
+    infoMessage.value = message;
+  }
+
+  void _clearError() {
+    formError.value = '';
+  }
+
+  void _clearInfo() {
+    infoMessage.value = '';
   }
 }

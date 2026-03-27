@@ -21,6 +21,10 @@ class AppTextField extends StatelessWidget {
     this.readOnly = false,
     this.onSubmitted,
     this.maxLines = 1,
+    this.controller,
+    this.focusNode,
+    this.textInputAction,
+    this.autofocus = false,
   });
 
   final String hint;
@@ -37,13 +41,21 @@ class AppTextField extends StatelessWidget {
   final int? maxLines;
   final double? height;
   final List<TextInputFormatter>? inputFormatters;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: height ?? AppDimensions.inputHeight,
       child: TextFormField(
-        initialValue: initialValue,
+        controller: controller,
+        focusNode: focusNode,
+        textInputAction: textInputAction,
+        autofocus: autofocus,
+        initialValue: controller == null ? initialValue : null,
         onChanged: onChanged,
         obscureText: obscureText,
         keyboardType: keyboardType,
