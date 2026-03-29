@@ -99,7 +99,7 @@ class DashboardHeader extends GetView<DashboardController> {
                             _StatBadge(
                               icon: Icons.star_rounded,
                               value: controller.businessRating.value,
-                              iconColor: const Color(0xFFFBB13C),
+                              iconColor: AppColors.starYellow,
                             ),
                             SizedBox(width: 8.w),
                             _StatBadge(

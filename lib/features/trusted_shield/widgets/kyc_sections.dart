@@ -137,7 +137,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
           () => Container(
             height: 220.h,
             decoration: BoxDecoration(
-              color: const Color(0xFF1A1A2E),
+              color: AppColors.livenessBackground,
               borderRadius: BorderRadius.circular(12.r),
             ),
             clipBehavior: Clip.hardEdge,
@@ -153,7 +153,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     borderRadius: BorderRadius.circular(80.r),
                     border: Border.all(
                       color: controller.isFaceDetected.value
-                          ? Colors.greenAccent
+                          ? AppColors.onlineIndicator
                           : AppColors.white.withOpacity(0.4),
                       width: 2.5,
                     ),
@@ -174,7 +174,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     child: LinearProgressIndicator(
                       value: controller.scanProgress.value,
                       backgroundColor: AppColors.white.withOpacity(0.2),
-                      color: Colors.greenAccent,
+                      color: AppColors.onlineIndicator,
                       minHeight: 3,
                     ),
                   ),
@@ -184,11 +184,11 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(height: 60.h),
-                      Icon(Icons.check_circle, color: Colors.greenAccent, size: 32.sp),
+                      Icon(Icons.check_circle, color: AppColors.onlineIndicator, size: 32.sp),
                       SizedBox(height: 8.h),
                       Text(
                         'Face Verified!',
-                        style: TextStyle(color: Colors.greenAccent, fontSize: 12.sp, fontWeight: FontWeight.w700),
+                        style: TextStyle(color: AppColors.onlineIndicator, fontSize: 12.sp, fontWeight: FontWeight.w700),
                       ),
                     ],
                   ),

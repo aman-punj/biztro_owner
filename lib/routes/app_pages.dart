@@ -4,7 +4,7 @@ import 'package:bizrato_owner/features/dashboard/controllers/dashboard_binding.d
 import 'package:bizrato_owner/features/dashboard/views/dashboard_view.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_binding.dart';
 import 'package:bizrato_owner/features/messages/views/messages_view.dart';
-import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
+import 'package:bizrato_owner/features/onboarding/controllers/onboarding_binding.dart';
 import 'package:bizrato_owner/features/onboarding/views/onboarding_view.dart';
 import 'package:bizrato_owner/features/splash/views/splash_view.dart';
 import 'package:bizrato_owner/features/trusted_shield/controllers/trusted_shield_binding.dart';
@@ -28,9 +28,7 @@ class AppPages {
     GetPage<OnboardingView>(
       name: AppRoutes.onboarding,
       page: OnboardingView.new,
-      binding: BindingsBuilder(
-        () => Get.lazyPut<OnboardingController>(OnboardingController.new),
-      ),
+      binding: OnboardingBinding(),
     ),
     GetPage<DashboardView>(
       name: AppRoutes.dashboard,

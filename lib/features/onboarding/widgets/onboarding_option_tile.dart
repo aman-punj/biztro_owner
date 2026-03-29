@@ -25,7 +25,7 @@ class OnboardingOptionTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFEFF5FF) : AppColors.white,
+          color: isSelected ? AppColors.optionSelectedBackground : AppColors.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.borderLight,

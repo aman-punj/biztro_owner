@@ -103,7 +103,7 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
         color: AppColors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: AppColors.surfaceDark.withOpacity(0.06),
             offset: const Offset(0, -2),
             blurRadius: 10,
           ),
@@ -295,7 +295,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
       pinned: true,
       elevation: 0,
       scrolledUnderElevation: 0,
-      shadowColor: Colors.black.withOpacity(0.10),
+      shadowColor: AppColors.surfaceDark.withOpacity(0.10),
       automaticallyImplyLeading: false,
       surfaceTintColor: Colors.transparent,
 
@@ -372,7 +372,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                        color: AppColors.surfaceDark.withOpacity(0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -422,9 +422,11 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                   SizedBox(height: 6.h),
                                   Row(
                                     children: [
-                                      Icon(Icons.star_rounded,
-                                          size: 13.sp,
-                                          color: const Color(0xFFFBB13C)),
+                                      Icon(
+                                        Icons.star_rounded,
+                                        size: 13.sp,
+                                        color: AppColors.starYellow,
+                                      ),
                                       SizedBox(width: 2.w),
                                       Text(
                                         controller.businessRating.value,
@@ -448,8 +450,11 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                         ),
                                       ),
                                       SizedBox(width: 8.w),
-                                      Icon(Icons.favorite_rounded,
-                                          size: 13.sp, color: Colors.redAccent),
+                                      Icon(
+                                        Icons.favorite_rounded,
+                                        size: 13.sp,
+                                        color: AppColors.error,
+                                      ),
                                       SizedBox(width: 2.w),
                                       Text(
                                         controller.businessFollowers.value,

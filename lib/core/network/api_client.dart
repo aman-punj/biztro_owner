@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:bizrato_owner/core/storage/auth_storage.dart';
+import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 
-import 'network_exception.dart';
+import 'app_errors.dart';
+import 'app_response.dart';
 
 class ApiClient extends GetxService {
   ApiClient({
@@ -22,19 +27,43 @@ class ApiClient extends GetxService {
       requestBody: true,
       requestHeader: false,
     ));
+    _dio.interceptors.add(QueuedInterceptorsWrapper(
+      onRequest: (options, handler) {
+        final authStorage = Get.find<AuthStorage>();
+        final token = authStorage.token;
+        if (token?.isNotEmpty ?? false) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+        handler.next(options);
+      },
+      onResponse: (response, handler) => handler.next(response),
+      onError: (error, handler) async {
+      if (error.response?.statusCode == 401) {
+        final authStorage = Get.find<AuthStorage>();
+        final hasToken = (authStorage.token?.isNotEmpty ?? false);
+        if (hasToken) {
+          await authStorage.clear();
+          // Future: attempt token refresh here before logout
+          await Get.find<LogoutService>().logout();
+          return;
+        }
+      }
+      handler.next(error);
+    },
+  ));
   }
 
   final String baseUrl;
   final Dio _dio;
 
-  Future<dynamic> get(
+  Future<AppResponse<dynamic>> get(
     String path, {
     Map<String, dynamic>? queryParameters,
   }) async {
     return _send(() => _dio.get(path, queryParameters: queryParameters));
   }
 
-  Future<dynamic> post(
+  Future<AppResponse<dynamic>> post(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
@@ -46,23 +75,46 @@ class ApiClient extends GetxService {
         ));
   }
 
-  Future<dynamic> _send(Future<Response<dynamic>> Function() request) async {
+  Future<AppResponse<dynamic>> _send(
+    Future<Response<dynamic>> Function() request,
+  ) async {
     try {
       final response = await request();
-      return _handleResponse(response);
-    } on DioError catch (error) {
-      throw NetworkException.fromDio(error);
+      return AppResponse.fromResponse(response);
+    } on DioException catch (error) {
+      return AppResponse.failure(
+        message: _messageFromDioException(error),
+        statusCode: error.response?.statusCode,
+        data: error.response?.data,
+      );
+    } catch (_) {
+      return AppResponse.failure(message: AppErrors.unknown);
     }
   }
 
-  dynamic _handleResponse(Response<dynamic> response) {
-    final statusCode = response.statusCode ?? 0;
-    if (statusCode >= 200 && statusCode < 300) {
-      return response.data;
+  String _messageFromDioException(DioException error) {
+    if (_isNoInternet(error)) {
+      return AppErrors.noInternet;
     }
-    throw NetworkException(
-      statusCode: statusCode,
-      message: response.statusMessage ?? 'Unknown server failure',
-    );
+
+    if (error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.sendTimeout ||
+        error.type == DioExceptionType.receiveTimeout) {
+      return AppErrors.serverNotResponding;
+    }
+
+    final serverMessage = AppResponse.extractMessage(error.response?.data);
+    if (serverMessage.isNotEmpty) {
+      return serverMessage;
+    }
+
+    return error.response?.statusMessage ??
+        error.message ??
+        AppErrors.unknown;
+  }
+
+  bool _isNoInternet(DioException error) {
+    final errorType = error.type;
+    return errorType == DioExceptionType.unknown && error.error is SocketException;
   }
 }

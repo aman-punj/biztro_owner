@@ -1,12 +1,11 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/theme/dimensions.dart';
-import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/features/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:pinput/pinput.dart';
 
 class OtpStageView extends StatefulWidget {
   const OtpStageView({super.key});
@@ -16,43 +15,47 @@ class OtpStageView extends StatefulWidget {
 }
 
 class _OtpStageViewState extends State<OtpStageView> {
-  late final List<FocusNode> _focusNodes;
-  late final List<TextEditingController> _controllers;
+  late final TextEditingController _pinController;
+
+  PinTheme get _pinTheme => PinTheme(
+        width: 55.w,
+        height: 55.h,
+        textStyle: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimaryLight,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          border: Border.all(color: AppColors.borderLight),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+      );
 
   @override
   void initState() {
     super.initState();
-    _focusNodes = List.generate(4, (_) => FocusNode());
-    _controllers = List.generate(4, (_) => TextEditingController());
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _focusNodes.first.requestFocus();
-      }
-    });
+    _pinController = TextEditingController();
   }
 
   @override
   void dispose() {
-    for (final node in _focusNodes) {
-      node.dispose();
-    }
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
+    _pinController.dispose();
     super.dispose();
   }
 
-  void _onDigitChanged(int index, String value) {
+  void _onOtpChanged(String value) {
     final controller = Get.find<AuthController>();
-    controller.onOtpChanged(index, value);
+    final digits = List<String>.generate(
+      4,
+      (index) => index < value.length ? value[index] : '',
+    );
+    controller.otp.assignAll(digits);
+  }
 
-    if (value.isNotEmpty && index < _focusNodes.length - 1) {
-      _focusNodes[index + 1].requestFocus();
-    }
-
-    if (value.isEmpty && index > 0) {
-      _focusNodes[index - 1].requestFocus();
-    }
+  void _onCompleted(String value) {
+    _onOtpChanged(value);
+    Get.find<AuthController>().onSubmit();
   }
 
   @override
@@ -61,34 +64,22 @@ class _OtpStageViewState extends State<OtpStageView> {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(
-            4,
-            (index) => SizedBox(
-              width: 55.w,
-              child: AppTextField(
-                controller: _controllers[index],
-                focusNode: _focusNodes[index],
-                textInputAction:
-                    index == _focusNodes.length - 1 ? TextInputAction.done : TextInputAction.next,
-                onSubmitted: (_) {
-                  if (index < _focusNodes.length - 1) {
-                    _focusNodes[index + 1].requestFocus();
-                  } else {
-                    controller.onSubmit();
-                  }
-                },
-                hint: '',
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                maxLength: 1,
-                height: 55.h,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChanged: (value) => _onDigitChanged(index, value),
-              ),
+        Pinput(
+          length: 4,
+          controller: _pinController,
+          defaultPinTheme: _pinTheme,
+          focusedPinTheme: _pinTheme.copyWith(
+            decoration: _pinTheme.decoration?.copyWith(
+              border: Border.all(color: AppColors.primary, width: 1.5),
             ),
           ),
+          submittedPinTheme: _pinTheme.copyWith(
+            decoration: _pinTheme.decoration?.copyWith(
+              color: AppColors.backgroundLight,
+            ),
+          ),
+          onChanged: _onOtpChanged,
+          onCompleted: _onCompleted,
         ),
         SizedBox(height: AppDimensions.sectionSpacing),
         Obx(

@@ -15,10 +15,10 @@ class LoginStageView extends GetView<AuthController> {
     return Column(
       children: [
         AppTextField(
-          hint: 'Email ID/Mobile No.',
-          keyboardType: TextInputType.emailAddress,
+          hint: 'Mobile No.',
+          keyboardType: TextInputType.number,
           prefixIcon: Icon(Icons.person_outline_rounded, size: 14.sp),
-          initialValue: controller.email.value,
+          initialValue: controller.mobile.value,
           onChanged: controller.onEmailChanged,
         ),
         SizedBox(height: 20.h),

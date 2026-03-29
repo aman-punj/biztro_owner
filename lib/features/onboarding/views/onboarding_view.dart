@@ -2,6 +2,7 @@ import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/theme/dimensions.dart';
 import 'package:bizrato_owner/core/widgets/app_image.dart';
+import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:bizrato_owner/features/onboarding/widgets/business_information_stage.dart';
 import 'package:bizrato_owner/features/onboarding/widgets/business_services_stage.dart';
@@ -16,53 +17,94 @@ class OnboardingView extends GetView<OnboardingController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Obx(
-          () => SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppDimensions.screenHorizontalPadding,
-              vertical: 12.h,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        controller.handleBackPress();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppDimensions.screenHorizontalPadding,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const AppImage(path: AppAssets.appTextLogo, width: 86),
-                    const Spacer(),
-                    _ActionIcon(icon: Icons.notifications_none_outlined),
-                    SizedBox(width: 8.w),
-                    _ActionIcon(icon: Icons.logout),
+                    Row(
+                      children: [
+                        const AppImage(path: AppAssets.appTextLogo, width: 86),
+                        const Spacer(),
+                        _ActionIcon(
+                          icon: AppAssets.youtubeRedIcon,
+                          onTap: () {},
+                        ),
+                        SizedBox(width: 8.w),
+                        _ActionIcon(
+                          icon: AppAssets.logoutRedIcon,
+                          onTap: () async {
+                            await Get.find<LogoutService>().logout();
+                          },
+                        ),
+                      ],
+                    ),
+                    Obx(
+                      () => OnboardingStageIndicator(
+                        stages: OnboardingController.stageTitles,
+                        currentIndex: controller.stageIndex,
+                        onStageTap: controller.goToStageIfAllowed,
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                    Obx(
+                      () => Text(
+                        _titleByIndex(controller.stageIndex),
+                        style: TextStyle(
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimaryLight,
+                        ),
+                      ),
+                    ),
+                    Obx(
+                      () => Text(
+                        _subtitleByIndex(controller.stageIndex),
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: AppColors.textSecondaryLight,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(height: 16.h),
-                OnboardingStageIndicator(
-                  stages: OnboardingController.stageTitles,
-                  currentIndex: controller.stageIndex,
-                ),
-                SizedBox(height: 24.h),
-                Text(
-                  _titleByIndex(controller.stageIndex),
-                  style: TextStyle(
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimaryLight,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimensions.screenHorizontalPadding,
+                  ),
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8.h),
+                        if (controller.stageIndex == 0)
+                          BusinessInformationStage(),
+                        if (controller.stageIndex == 1)
+                          const BusinessServicesStage(),
+                        if (controller.stageIndex == 2)
+                          const PersonalInformationStage(),
+                        SizedBox(height: 24.h),
+                      ],
+                    ),
                   ),
                 ),
-                Text(
-                  _subtitleByIndex(controller.stageIndex),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.textSecondaryLight,
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                if (controller.stageIndex == 0) BusinessInformationStage(),
-                if (controller.stageIndex == 1) const BusinessServicesStage(),
-                if (controller.stageIndex == 2) const PersonalInformationStage(),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -93,20 +135,32 @@ class OnboardingView extends GetView<OnboardingController> {
 }
 
 class _ActionIcon extends StatelessWidget {
-  const _ActionIcon({required this.icon});
+  const _ActionIcon({required this.icon, required this.onTap});
 
-  final IconData icon;
+  final String icon;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 24.w,
-      height: 24.w,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF1F3),
-        borderRadius: BorderRadius.circular(8.r),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32.w,
+        height: 32.w,
+        padding: EdgeInsets.all(6.w),
+        decoration: BoxDecoration(
+          color: AppColors.errorSurfaceLight,
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: AppColors.errorBorderLight),
+        ),
+        child: AppImage(
+          path: icon,
+          height: 14,
+          width: 14,
+          fit: BoxFit.contain,
+          color: AppColors.error,
+        ),
       ),
-      child: Icon(icon, size: 14.sp, color: AppColors.error),
     );
   }
 }

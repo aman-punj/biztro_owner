@@ -6,63 +6,75 @@ class OnboardingStageIndicator extends StatelessWidget {
   const OnboardingStageIndicator({
     required this.stages,
     required this.currentIndex,
+    this.onStageTap,
     super.key,
   });
 
   final List<String> stages;
   final int currentIndex;
+  final void Function(int index)? onStageTap;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Row(
-                children: List.generate(
-                  stages.length - 1,
-                  (index) => Expanded(
-                    child: Container(
-                      height: 1.h,
-                      color: index < currentIndex
-                          ? AppColors.primary
-                          : AppColors.borderLight,
-                    ),
+        Row(
+          children: List.generate(stages.length * 2 - 1, (i) {
+            if (i.isEven) {
+              final index = i ~/ 2;
+              return GestureDetector(
+                onTap: () => onStageTap?.call(index),
+                child: _buildStageDot(index),
+              );
+            } else {
+              final lineIndex = i ~/ 2;
+              return Expanded(
+                child: Container(
+                  height: 1.5.h,
+                  color: lineIndex < currentIndex
+                      ? AppColors.success
+                      : AppColors.borderLight,
+                ),
+              );
+            }
+          }),
+        ),
+        SizedBox(height: 6.h),
+        // ── Labels ────────────────────────────────────────────────
+        // Each label is Expanded so it fills space between connectors.
+        // First label aligns left, last aligns right, middle centered —
+        // this keeps them visually over their dots without overflow.
+        Row(
+          children: List.generate(stages.length * 2 - 1, (i) {
+            if (i.isEven) {
+              final index = i ~/ 2;
+              final bool isDone = index < currentIndex;
+              final bool isActive = index == currentIndex;
+              TextAlign align = TextAlign.center;
+              if (index == 0) align = TextAlign.left;
+              if (index == stages.length - 1) align = TextAlign.right;
+              return Expanded(
+                child: Text(
+                  stages[index],
+                  textAlign: align,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight:
+                    isActive ? FontWeight.w600 : FontWeight.w400,
+                    color: isActive
+                        ? AppColors.primary
+                        : isDone
+                        ? AppColors.success
+                        : AppColors.textSecondaryLight,
                   ),
                 ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(
-                stages.length,
-                (index) => _buildStageDot(index),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 8.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(
-            stages.length,
-            (index) => Expanded(
-              child: Text(
-                stages[index],
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: index == currentIndex ? FontWeight.w600 : FontWeight.w400,
-                  color: index == currentIndex
-                      ? AppColors.primary
-                      : AppColors.textSecondaryLight,
-                ),
-              ),
-            ),
-          ),
+              );
+            } else {
+              return SizedBox(width: 4.w);
+            }
+          }),
         ),
       ],
     );
@@ -73,13 +85,21 @@ class OnboardingStageIndicator extends StatelessWidget {
     final bool isDone = index < currentIndex;
 
     return Container(
-      width: 24.w,
-      height: 24.w,
+      width: 32.w,
+      height: 32.w,
       decoration: BoxDecoration(
-        color: isActive || isDone ? AppColors.primary : AppColors.surfaceLight,
+        color: isDone
+            ? AppColors.success
+            : isActive
+            ? AppColors.primary
+            : AppColors.surfaceLight,
         shape: BoxShape.circle,
         border: Border.all(
-          color: isActive || isDone ? AppColors.primary : AppColors.borderLight,
+          color: isDone
+              ? AppColors.success
+              : isActive
+              ? AppColors.primary
+              : AppColors.borderLight,
           width: 1,
         ),
       ),
@@ -87,13 +107,15 @@ class OnboardingStageIndicator extends StatelessWidget {
         child: isDone
             ? Icon(Icons.check, size: 14.sp, color: AppColors.white)
             : Text(
-                '${index + 1}',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
-                  color: isActive ? AppColors.white : AppColors.textSecondaryLight,
-                ),
-              ),
+          '${index + 1}',
+          style: TextStyle(
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w600,
+            color: isActive
+                ? AppColors.white
+                : AppColors.textSecondaryLight,
+          ),
+        ),
       ),
     );
   }

@@ -185,7 +185,7 @@ class _DrawerItem extends StatelessWidget {
             Icon(
               icon,
               size: 20.sp,
-              color: iconColor ?? const Color(0xFF637381),
+              color: iconColor ?? AppColors.textSecondaryLight,
             ),
             SizedBox(width: 16.w),
             Text(
@@ -193,7 +193,7 @@ class _DrawerItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor ?? const Color(0xFF212B36),
+                color: textColor ?? AppColors.surfaceDark,
               ),
             ),
           ],

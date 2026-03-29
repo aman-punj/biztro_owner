@@ -11,9 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class LoginView extends GetView<AuthController> {
-  // @Preview(
-  //   name: "Login UI",
-  // )
   const LoginView({super.key});
 
   @override

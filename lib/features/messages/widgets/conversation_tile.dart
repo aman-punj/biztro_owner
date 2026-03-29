@@ -9,15 +9,7 @@ class ConversationTile extends StatelessWidget {
   final ConversationModel model;
 
   Color get _avatarColor {
-    final colors = [
-      const Color(0xFF6C5CE7),
-      const Color(0xFF00B894),
-      const Color(0xFFE17055),
-      const Color(0xFF0984E3),
-      const Color(0xFFD63031),
-      const Color(0xFFFDCB6E),
-    ];
-    return colors[model.id.hashCode % colors.length];
+    return AppColors.avatarPalette[model.id.hashCode % AppColors.avatarPalette.length];
   }
 
   @override
@@ -38,7 +30,7 @@ class ConversationTile extends StatelessWidget {
                   child: Text(
                     model.avatarInitials,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.white,
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
                     ),
@@ -48,15 +40,15 @@ class ConversationTile extends StatelessWidget {
                   Positioned(
                     right: 0,
                     bottom: 0,
-                    child: Container(
-                      width: 10.r,
-                      height: 10.r,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.greenAccent,
-                        border: Border.all(color: Colors.white, width: 1.5),
-                      ),
-                    ),
+                        child: Container(
+                          width: 10.r,
+                          height: 10.r,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.onlineIndicator,
+                            border: Border.all(color: AppColors.white, width: 1.5),
+                          ),
+                        ),
                   ),
               ],
             ),
@@ -117,10 +109,10 @@ class ConversationTile extends StatelessWidget {
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(20.r),
                           ),
-                          child: Text(
-                            '${model.unreadCount}',
-                            style: TextStyle(
-                              color: Colors.white,
+                            child: Text(
+                              '${model.unreadCount}',
+                              style: TextStyle(
+                                color: AppColors.white,
                               fontSize: 9.sp,
                               fontWeight: FontWeight.w700,
                             ),

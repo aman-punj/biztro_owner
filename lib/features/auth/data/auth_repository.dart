@@ -1,30 +1,83 @@
+import 'dart:convert';
+
+import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/core/network/api_client.dart';
+import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/features/auth/data/models/login_request.dart';
 import 'package:bizrato_owner/features/auth/data/models/otp_verification_request.dart';
 import 'package:bizrato_owner/features/auth/data/models/signup_request.dart';
+import 'package:bizrato_owner/features/auth/data/models/user_model.dart';
 
 class AuthRepository {
-  AuthRepository({required this.apiClient});
+  AuthRepository({
+    required this.apiClient,
+    required this.authStorage,
+  });
 
   final ApiClient apiClient;
+  final AuthStorage authStorage;
 
-  Future<dynamic> getTestData() => apiClient.get('/api/auth/test');
+  Future<AppResponse<dynamic>> getTestData() =>
+      apiClient.get('/api/auth/test');
 
-  Future<dynamic> login(LoginRequest request) =>
-      apiClient.post('/api/auth/login', data: request.toJson());
+  Future<AppResponse<UserModel>> login(LoginRequest request) async {
+    final response =
+        await apiClient.post('/api/auth/login', data: request.toJson());
 
-  Future<dynamic> signup(SignupRequest request) =>
+    if (!response.success) {
+      return AppResponse.failure(
+        message: response.message,
+        statusCode: response.statusCode,
+      );
+    }
+
+    final payload = response.data;
+    if (payload is! Map<String, dynamic>) {
+      return AppResponse.failure(
+        message: 'Invalid login response',
+        statusCode: response.statusCode,
+      );
+    }
+
+    final token = payload['Token']?.toString() ?? '';
+    final userPayload = payload['User'];
+    if (userPayload is! Map<String, dynamic>) {
+      return AppResponse.failure(
+        message: 'Invalid user data',
+        statusCode: response.statusCode,
+      );
+    }
+
+    final user = UserModel.fromJson(userPayload);
+    await Future.wait([
+      authStorage.saveToken(token),
+      authStorage.setLoggedIn(true),
+      authStorage.saveMerchantId(user.merchantId),
+      authStorage.saveProfileStep(user.businessProfileStep),
+      authStorage.saveUserJson(jsonEncode(user.toJson())),
+    ]);
+
+    return AppResponse<UserModel>(
+      success: true,
+      message: response.message,
+      data: user,
+      statusCode: response.statusCode,
+    );
+  }
+
+  Future<AppResponse<dynamic>> signup(SignupRequest request) =>
       apiClient.post('/api/auth/signup', data: request.toJson());
 
-  Future<dynamic> verifyOtp(OtpVerificationRequest request) =>
+  Future<AppResponse<dynamic>> verifyOtp(OtpVerificationRequest request) =>
       apiClient.post('/api/auth/verify-otp', data: request.toJson());
 
-  Future<dynamic> search(String term) => apiClient.get(
+  Future<AppResponse<dynamic>> search(String term) => apiClient.get(
         '/api/auth/search',
         queryParameters: {'term': term},
       );
 
-  Future<dynamic> getKeywords(String categoryId) => apiClient.get(
+  Future<AppResponse<dynamic>> getKeywords(String categoryId) =>
+      apiClient.get(
         '/api/auth/get-keywords',
         queryParameters: {'categoryId': categoryId},
       );

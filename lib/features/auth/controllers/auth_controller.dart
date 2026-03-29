@@ -1,4 +1,6 @@
-import 'package:bizrato_owner/core/network/network_exception.dart';
+import 'package:bizrato_owner/core/notifications/notification_service.dart';
+import 'package:bizrato_owner/core/notifications/notification_service_extension.dart';
+import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/features/auth/data/auth_repository.dart';
 import 'package:bizrato_owner/features/auth/data/models/login_request.dart';
 import 'package:bizrato_owner/features/auth/data/models/otp_verification_request.dart';
@@ -19,10 +21,10 @@ class AuthController extends GetxController {
   final rememberMe = false.obs;
 
   final email = 'apsingh.amanpreet@gmail.com'.obs;
-  final password = 'Asdf@1234'.obs;
+  final password = 'aman@12345'.obs;
   final businessName = 'Aman Business'.obs;
-  final confirmPassword = 'Asdf@1234'.obs;
-  final mobile = '9309325375'.obs;
+  final confirmPassword = 'aman@12345'.obs;
+  final mobile = '9799352145'.obs;
   final otp = List<String>.filled(4, '').obs;
 
   final isSubmitting = false.obs;
@@ -92,6 +94,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> onSubmit() async {
+    isSubmitting.value =true;
     _clearError();
     _clearInfo();
     switch (currentStage.value) {
@@ -108,6 +111,7 @@ class AuthController extends GetxController {
         _setError('Forgot password flow is not yet connected.');
         break;
     }
+    isSubmitting.value =false;
   }
 
   Future<void> resendOtp() async {
@@ -137,14 +141,33 @@ class AuthController extends GetxController {
       return;
     }
 
-    final success = await _perform(() async {
-      await authRepository.login(
-        LoginRequest(mobile: mobileValue, password: passwordValue),
-      );
-    });
+    final response = await authRepository.login(
+      LoginRequest(mobile: mobileValue, password: passwordValue),
+    );
 
-    if (!success) return;
-    Get.offNamed(AppRoutes.dashboard);
+    if (!response.success) {
+      _setError(response.message);
+      return;
+    }
+
+    final user = response.data;
+    if (user == null) {
+      _setError('Login succeeded but user data is unavailable.');
+      return;
+    }
+
+    if (user.businessProfileStep >= 3) {
+      Get.offAllNamed(AppRoutes.dashboard);
+      return;
+    }
+
+    Get.offNamed(
+      AppRoutes.onboarding,
+      arguments: {
+        'businessName': user.outletName,
+        'User': user.toJson(),
+      },
+    );
   }
 
   Future<void> _handleRegister() async {
@@ -197,7 +220,7 @@ class AuthController extends GetxController {
     setStage(AuthStage.otpVerification);
   }
 
-  Future<void> _sendSignupOtp(SignupRequest request) =>
+  Future<AppResponse<dynamic>> _sendSignupOtp(SignupRequest request) =>
       authRepository.signup(request);
 
   Future<void> _handleOtpVerification() async {
@@ -213,24 +236,25 @@ class AuthController extends GetxController {
       return;
     }
 
-    final success = await _perform(() async {
-      await authRepository.verifyOtp(
-        OtpVerificationRequest(mobile: mobileValue, otp: otpCode),
-      );
-    });
+    final success = await _perform(() async => await authRepository.verifyOtp(
+          OtpVerificationRequest(mobile: mobileValue, otp: otpCode),
+        ));
 
     if (!success) return;
     Get.offNamed(AppRoutes.dashboard);
   }
 
-  Future<bool> _perform(Future<void> Function() action) async {
+  Future<bool> _perform(
+    Future<AppResponse<dynamic>> Function() action,
+  ) async {
     isSubmitting.value = true;
     try {
-      await action();
+      final response = await action();
+      if (!response.success) {
+        _setError(response.message);
+        return false;
+      }
       return true;
-    } on NetworkException catch (error) {
-      _setError(error.message);
-      return false;
     } catch (_) {
       _setError('Something went wrong. Please try again.');
       return false;
@@ -254,6 +278,7 @@ class AuthController extends GetxController {
   void _setError(String message) {
     infoMessage.value = '';
     formError.value = message;
+    Get.find<NotificationService>().error(message);
   }
 
   void _setInfo(String message) {

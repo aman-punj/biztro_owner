@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
+import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,6 +47,7 @@ class DashboardController extends GetxController {
   final xLabels = <String>[].obs; // Labels like 'Books', 'Clothing'
 
   final legendCategories = <LeadAnalyticsCategory>[
+    // Chart palette — intentional, not theme colors
     const LeadAnalyticsCategory(label: 'Books', color: Color(0xFFFF6B35)),
     const LeadAnalyticsCategory(label: 'Clothing', color: Color(0xFF2196F3)),
     const LeadAnalyticsCategory(label: 'Electronics', color: Color(0xFF0D47A1)),
@@ -86,25 +88,25 @@ class DashboardController extends GetxController {
           label: 'Business Leads',
           value: '31K',
           iconPath: AppAssets.statHotLeads,
-          iconBg: Color(0xFFEAF0FF),
+          iconBg: AppColors.insightIconBlue,
         ),
         const BusinessInsightStat(
           label: 'Total Clicks',
           value: '59K',
           iconPath: AppAssets.statTotalLeads,
-          iconBg: Color(0xFFFFF3E0),
+          iconBg: AppColors.insightIconPeach,
         ),
         const BusinessInsightStat(
           label: 'Add Calls',
           value: '24K',
           iconPath: AppAssets.statAddCode,
-          iconBg: Color(0xFFF3E5F5),
+          iconBg: AppColors.insightIconLavender,
         ),
         const BusinessInsightStat(
           label: 'Total Views',
           value: '258K',
           iconPath: AppAssets.statTotalViews,
-          iconBg: Color(0xFFE8F5E9),
+          iconBg: AppColors.insightIconMint,
         ),
       ]);
 
