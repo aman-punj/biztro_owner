@@ -25,11 +25,17 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
   late final TextEditingController _websiteController;
   late final TextEditingController _famousForController;
   late final TextEditingController _estbYearController;
+  late final TextEditingController _businessEmailController;
+  late final TextEditingController _businessWhatsAppController;
+  late final TextEditingController _businessLandlineController;
 
   Worker? _businessNameWorker;
   Worker? _websiteWorker;
   Worker? _famousForWorker;
   Worker? _estbYearWorker;
+  Worker? _businessEmailWorker;
+  Worker? _businessWhatsAppWorker;
+  Worker? _businessLandlineWorker;
 
   @override
   void initState() {
@@ -41,6 +47,12 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
         TextEditingController(text: controller.page2FamousFor.value);
     _estbYearController =
         TextEditingController(text: controller.page2EstbYear.value);
+    _businessEmailController =
+        TextEditingController(text: controller.page2BusinessEmail.value);
+    _businessWhatsAppController =
+        TextEditingController(text: controller.page2BusinessWhatsApp.value);
+    _businessLandlineController =
+        TextEditingController(text: controller.page2BusinessLandline.value);
 
     _businessNameWorker = ever<String>(
       controller.page2BusinessName,
@@ -58,6 +70,18 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
       controller.page2EstbYear,
       (value) => _syncController(_estbYearController, value),
     );
+    _businessEmailWorker = ever<String>(
+      controller.page2BusinessEmail,
+      (value) => _syncController(_businessEmailController, value),
+    );
+    _businessWhatsAppWorker = ever<String>(
+      controller.page2BusinessWhatsApp,
+      (value) => _syncController(_businessWhatsAppController, value),
+    );
+    _businessLandlineWorker = ever<String>(
+      controller.page2BusinessLandline,
+      (value) => _syncController(_businessLandlineController, value),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.initPage2Data();
@@ -70,10 +94,16 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
     _websiteWorker?.dispose();
     _famousForWorker?.dispose();
     _estbYearWorker?.dispose();
+    _businessEmailWorker?.dispose();
+    _businessWhatsAppWorker?.dispose();
+    _businessLandlineWorker?.dispose();
     _businessNameController.dispose();
     _websiteController.dispose();
     _famousForController.dispose();
     _estbYearController.dispose();
+    _businessEmailController.dispose();
+    _businessWhatsAppController.dispose();
+    _businessLandlineController.dispose();
     super.dispose();
   }
 
@@ -115,6 +145,43 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
             ),
           ),
           SizedBox(height: 8.h),
+          Obx(() {
+            final data = controller.businessServiceData.value;
+            if (data == null) {
+              return const SizedBox.shrink();
+            }
+
+            return Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(bottom: 16.h),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: AppTokens.selectionBackground,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: AppTokens.brandPrimary),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.category_outlined,
+                    size: 16.sp,
+                    color: AppTokens.brandPrimary,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      data.displayName,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppTokens.brandPrimary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
           OnboardingSectionCard(
             title: 'BUSINESS SERVICES',
             child: Column(
@@ -146,21 +213,32 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                   ],
                   onChanged: (value) => controller.page2EstbYear.value = value,
                 ),
+                // SizedBox(height: 12.h),
+                // AppTextField(
+                //   controller: _businessEmailController,
+                //   hint: 'Business Email (Optional)',
+                //   keyboardType: TextInputType.emailAddress,
+                //   onChanged: (value) => controller.page2BusinessEmail.value = value,
+                // ),
+                // SizedBox(height: 12.h),
+                // AppTextField(
+                //   controller: _businessWhatsAppController,
+                //   hint: 'Business WhatsApp (Optional)',
+                //   keyboardType: TextInputType.phone,
+                //   onChanged: (value) =>
+                //       controller.page2BusinessWhatsApp.value = value,
+                // ),
+                // SizedBox(height: 12.h),
+                // AppTextField(
+                //   controller: _businessLandlineController,
+                //   hint: 'Business Landline (Optional)',
+                //   keyboardType: TextInputType.phone,
+                //   onChanged: (value) =>
+                //       controller.page2BusinessLandline.value = value,
+                // ),
               ],
             ),
           ),
-          SizedBox(height: 16.h),
-          Obx(() {
-            final data = controller.businessServiceData.value;
-            if (data == null) {
-              return const SizedBox.shrink();
-            }
-
-            return OnboardingSectionCard(
-              title: 'SELECTED CATEGORY',
-              child: _SelectedCategoryChip(label: data.displayName),
-            );
-          }),
           SizedBox(height: 16.h),
           OnboardingSectionCard(
             title: 'SERVICES OFFERED',
@@ -236,7 +314,7 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
     }
 
     return ScrollableOptionList(
-      maxHeight: 220,
+      maxHeight: 220.h,
       items: items
           .map((item) => ScrollableOptionItem(id: item.id, label: item.name))
           .toList(),
@@ -254,48 +332,6 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
       text: value,
       selection: TextSelection.collapsed(offset: value.length),
       composing: TextRange.empty,
-    );
-  }
-}
-
-class _SelectedCategoryChip extends StatelessWidget {
-  const _SelectedCategoryChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: AppTokens.selectionBackground,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: AppTokens.brandPrimary,
-          width: 1.w,
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.category_outlined,
-            size: 18.sp,
-            color: AppTokens.brandPrimary,
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: AppTokens.textPrimary,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

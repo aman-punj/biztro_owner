@@ -24,7 +24,7 @@ class AuthController extends GetxController {
   final password = 'aman@12345'.obs;
   final businessName = 'Aman Business'.obs;
   final confirmPassword = 'aman@12345'.obs;
-  final mobile = '9799352145'.obs;
+  final mobile = '930932537'.obs;
   final otp = List<String>.filled(4, '').obs;
 
   final isSubmitting = false.obs;

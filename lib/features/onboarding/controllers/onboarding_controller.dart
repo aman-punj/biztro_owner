@@ -67,6 +67,9 @@ class OnboardingController extends GetxController {
   final RxString page2Website = ''.obs;
   final RxString page2FamousFor = ''.obs;
   final RxString page2EstbYear = ''.obs;
+  final RxString page2BusinessEmail = ''.obs;
+  final RxString page2BusinessWhatsApp = ''.obs;
+  final RxString page2BusinessLandline = ''.obs;
 
   final RxBool isLoadingContactInfo = false.obs;
   final RxBool isSavingContact = false.obs;
@@ -316,6 +319,9 @@ class OnboardingController extends GetxController {
       page2Website.value = data.website ?? '';
       page2FamousFor.value = data.famousFor ?? '';
       page2EstbYear.value = data.estbYear ?? '';
+      page2BusinessEmail.value = data.businessEmailId ?? '';
+      page2BusinessWhatsApp.value = data.businessWhatsappNo ?? '';
+      page2BusinessLandline.value = data.businessLandLineNo ?? '';
 
       final categoryLookupId = data.encryptSubCategoryId.isNotEmpty
           ? data.encryptSubCategoryId
@@ -366,8 +372,39 @@ class OnboardingController extends GetxController {
       selectedFacilityIds
         ..clear()
         ..addAll(
-          items.facilities.where((item) => item.isSelected).map((item) => item.id),
+          items.facilities
+              .where((item) => item.isSelected)
+              .map((item) => item.id),
         );
+
+      final savedData = businessServiceData.value;
+      if (savedData != null) {
+        final savedServiceIds = savedData.serviceOfferedList
+            .where((service) => service.isSelected)
+            .map((service) => service.serviceOfferedId)
+            .toSet();
+
+        final savedFacilityIds = savedData.facilitiesList
+            .where((facility) => facility.isSelected)
+            .map((facility) => facility.facilitiesId)
+            .toSet();
+
+        selectedServiceIds
+          ..clear()
+          ..addAll(
+            servicesOfferedList
+                .where((item) => savedServiceIds.contains(item.id))
+                .map((item) => item.id),
+          );
+
+        selectedFacilityIds
+          ..clear()
+          ..addAll(
+            facilitiesList
+                .where((item) => savedFacilityIds.contains(item.id))
+                .map((item) => item.id),
+          );
+      }
     } finally {
       isLoadingFacilities.value = false;
     }
@@ -398,6 +435,15 @@ class OnboardingController extends GetxController {
       website: page2Website.value.trim(),
       famousFor: page2FamousFor.value.trim(),
       estbYear: page2EstbYear.value.trim(),
+      businessEmail: page2BusinessEmail.value.trim().isEmpty
+          ? null
+          : page2BusinessEmail.value.trim(),
+      businessWhatsappNo: page2BusinessWhatsApp.value.trim().isEmpty
+          ? null
+          : page2BusinessWhatsApp.value.trim(),
+      businessLandLineNo: page2BusinessLandline.value.trim().isEmpty
+          ? null
+          : page2BusinessLandline.value.trim(),
       servicesOffered: selectedServiceIds.toList()..sort(),
       facilities: selectedFacilityIds.toList()..sort(),
     );
@@ -588,8 +634,7 @@ class OnboardingController extends GetxController {
         }
         if (matchedArea == null && (result.areaName?.isNotEmpty ?? false)) {
           for (final area in p3AreaList) {
-            if (area.areaName.toLowerCase() ==
-                result.areaName!.toLowerCase()) {
+            if (area.areaName.toLowerCase() == result.areaName!.toLowerCase()) {
               matchedArea = area;
               break;
             }
@@ -857,7 +902,8 @@ class OnboardingController extends GetxController {
     return step;
   }
 
-  int? get _resolvedMerchantId => _authStorage.merchantId ?? _merchantIdOverride;
+  int? get _resolvedMerchantId =>
+      _authStorage.merchantId ?? _merchantIdOverride;
 
   void _notifyError(String message) {
     Get.find<NotificationService>().error(message);

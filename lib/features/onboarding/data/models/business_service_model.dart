@@ -61,10 +61,10 @@ class BusinessServiceResult {
       estbYear: _parseNullableString(json['EstbYear']),
       categoryList: _parseCategoryList(json['CategoryList']),
       subCategoryList: _parseSubCategoryList(json['SubCategoryList']),
-      serviceOfferedList: _parseDynamicList(
+      serviceOfferedList: _parseServiceOfferedList(
         json['ServiceofferedList'] ?? json['ServiceOfferedList'],
       ),
-      facilitiesList: _parseDynamicList(json['FacilitiesList']),
+      facilitiesList: _parseFacilitiesList(json['FacilitiesList']),
       categoryId: _parseInt(json['CategoryId']),
       subCategoryId: _parseInt(
         json['SubcategoryId'] ?? json['SubCategoryId'],
@@ -86,8 +86,8 @@ class BusinessServiceResult {
   final String? estbYear;
   final List<BusinessCategoryItem> categoryList;
   final List<BusinessSubCategoryItem> subCategoryList;
-  final List<dynamic> serviceOfferedList;
-  final List<dynamic> facilitiesList;
+  final List<ServiceOfferedItem> serviceOfferedList;
+  final List<FacilityItem> facilitiesList;
   final int categoryId;
   final int subCategoryId;
   final String encryptSubCategoryId;
@@ -134,6 +134,52 @@ class BusinessSubCategoryItem {
   final bool isSelected;
 }
 
+class ServiceOfferedItem {
+  const ServiceOfferedItem({
+    required this.serviceOfferedId,
+    required this.categoryId,
+    required this.serviceOfferedName,
+    required this.isSelected,
+  });
+
+  factory ServiceOfferedItem.fromJson(Map<String, dynamic> json) {
+    return ServiceOfferedItem(
+      serviceOfferedId: _parseInt(json['ServiceOfferedId']),
+      categoryId: _parseInt(json['CategoryId']),
+      serviceOfferedName: _parseNullableString(json['ServiceOfferedName']),
+      isSelected: _parseBool(json['IsSelected']),
+    );
+  }
+
+  final int serviceOfferedId;
+  final int categoryId;
+  final String? serviceOfferedName;
+  final bool isSelected;
+}
+
+class FacilityItem {
+  const FacilityItem({
+    required this.facilitiesId,
+    required this.categoryId,
+    required this.facilitiesName,
+    required this.isSelected,
+  });
+
+  factory FacilityItem.fromJson(Map<String, dynamic> json) {
+    return FacilityItem(
+      facilitiesId: _parseInt(json['FacilitiesId']),
+      categoryId: _parseInt(json['CategoryId']),
+      facilitiesName: _parseNullableString(json['FacilitiesName']),
+      isSelected: _parseBool(json['IsSelected']),
+    );
+  }
+
+  final int facilitiesId;
+  final int categoryId;
+  final String? facilitiesName;
+  final bool isSelected;
+}
+
 List<BusinessCategoryItem> _parseCategoryList(dynamic raw) {
   if (raw is! List) {
     return const <BusinessCategoryItem>[];
@@ -161,11 +207,26 @@ List<BusinessSubCategoryItem> _parseSubCategoryList(dynamic raw) {
       .toList();
 }
 
-List<dynamic> _parseDynamicList(dynamic raw) {
-  if (raw is List) {
-    return List<dynamic>.from(raw);
+List<ServiceOfferedItem> _parseServiceOfferedList(dynamic raw) {
+  if (raw is! List) {
+    return const <ServiceOfferedItem>[];
   }
-  return const <dynamic>[];
+
+  return raw
+      .whereType<Map>()
+      .map((entry) => ServiceOfferedItem.fromJson(entry.cast<String, dynamic>()))
+      .toList();
+}
+
+List<FacilityItem> _parseFacilitiesList(dynamic raw) {
+  if (raw is! List) {
+    return const <FacilityItem>[];
+  }
+
+  return raw
+      .whereType<Map>()
+      .map((entry) => FacilityItem.fromJson(entry.cast<String, dynamic>()))
+      .toList();
 }
 
 String? _parseNullableString(dynamic value) {

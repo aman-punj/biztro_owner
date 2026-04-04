@@ -6,6 +6,9 @@ class SaveServiceFacilitiesRequest {
     required this.website,
     required this.famousFor,
     required this.estbYear,
+    required this.businessEmail,
+    required this.businessWhatsappNo,
+    required this.businessLandLineNo,
     required this.servicesOffered,
     required this.facilities,
   });
@@ -16,6 +19,9 @@ class SaveServiceFacilitiesRequest {
   final String website;
   final String famousFor;
   final String estbYear;
+  final String? businessEmail;
+  final String? businessWhatsappNo;
+  final String? businessLandLineNo;
   final List<int> servicesOffered;
   final List<int> facilities;
 
@@ -27,6 +33,9 @@ class SaveServiceFacilitiesRequest {
       'Website': website,
       'FamousFor': famousFor,
       'EstbYear': estbYear,
+      'BusinessEmailId': businessEmail,
+      'BusinessWhatsappNo': businessWhatsappNo,
+      'BusinessLandLineNo': businessLandLineNo,
       'ServicesOffered': servicesOffered,
       'Facilities': facilities,
     };
