@@ -1,6 +1,7 @@
 import 'package:bizrato_owner/core/network/api_client.dart';
 import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
+import 'package:bizrato_owner/features/onboarding/data/models/business_details_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_service_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/contact_info_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/keyword_model.dart';
@@ -143,6 +144,49 @@ class OnboardingRepository {
     return AppResponse<SavedKeywordsModel>(
       success: true,
       message: response.message,
+      data: model,
+      statusCode: response.statusCode,
+    );
+  }
+
+  Future<AppResponse<BusinessDetailsModel>> getBusinessDetails(
+    int merchantId,
+  ) async {
+    final response = await apiClient.get(
+      '/api/auth/get-businessdetails',
+      queryParameters: {'merchantId': merchantId},
+    );
+
+    if (!response.success) {
+      return AppResponse<BusinessDetailsModel>.failure(
+        message: response.message,
+        statusCode: response.statusCode,
+        data: response.data,
+      );
+    }
+
+    if (response.data is! Map) {
+      return AppResponse<BusinessDetailsModel>.failure(
+        message: 'Business details are unavailable.',
+        statusCode: response.statusCode,
+        data: response.data,
+      );
+    }
+
+    final model = BusinessDetailsModel.fromJson(_forceMap(response.data as Map));
+    if (!model.isSuccessful) {
+      return AppResponse<BusinessDetailsModel>.failure(
+        message: model.message.isNotEmpty
+            ? model.message
+            : 'Business details are unavailable.',
+        statusCode: response.statusCode,
+        data: model,
+      );
+    }
+
+    return AppResponse<BusinessDetailsModel>(
+      success: true,
+      message: model.message.isNotEmpty ? model.message : response.message,
       data: model,
       statusCode: response.statusCode,
     );

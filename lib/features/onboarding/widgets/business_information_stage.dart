@@ -153,36 +153,50 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
         SizedBox(height: 16.h),
         OnboardingSectionCard(
           title: 'SEARCH YOUR BUSINESS CATEGORY',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppTextField(
-                controller: _searchController,
-                hint: 'e.g. Sweets, Restaurant...',
-                prefixIcon: Icon(Icons.search,
-                    size: 20.sp, color: AppColors.textSecondaryLight),
-                suffixIcon: Obx(
-                  () => controller.isSearching.value
-                      ? SizedBox(
-                          width: 18.w,
-                          height: 18.w,
-                          child:
-                              const CircularProgressIndicator(strokeWidth: 2),
+          child: Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppTextField(
+                  controller: _searchController,
+                  hint: 'e.g. Sweets, Restaurant...',
+                  readOnly: controller.isCategoryRestored.value,
+                  prefixIcon: Icon(
+                    Icons.search,
+                    size: 20.sp,
+                    color: AppColors.textSecondaryLight,
+                  ),
+                  suffixIcon: controller.isCategoryRestored.value
+                      ? IconButton(
+                          onPressed: controller.clearRestoredCategory,
+                          icon: Icon(
+                            Icons.close,
+                            size: 18.sp,
+                            color: AppColors.textSecondaryLight,
+                          ),
                         )
-                      : const SizedBox.shrink(),
+                      : controller.isSearching.value
+                          ? SizedBox(
+                              width: 18.w,
+                              height: 18.w,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                 ),
-              ),
-              Obx(() => AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    switchInCurve: Curves.easeOut,
-                    switchOutCurve: Curves.easeIn,
-                    transitionBuilder: (child, animation) => FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    ),
-                    child: _buildSearchResults(),
-                  )),
-            ],
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  switchInCurve: Curves.easeOut,
+                  switchOutCurve: Curves.easeIn,
+                  transitionBuilder: (child, animation) => FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                  child: _buildSearchResults(),
+                ),
+              ],
+            ),
           ),
         ),
         SizedBox(height: 16.h),

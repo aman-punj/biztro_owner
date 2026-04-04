@@ -10,7 +10,7 @@ class NetworkException implements Exception {
     this.isConnectionError = false,
   });
 
-  factory NetworkException.fromDio(DioError error) {
+  factory NetworkException.fromDio(DioException error) {
     final statusCode = error.response?.statusCode;
     if (_isConnectionError(error)) {
       return NetworkException(
@@ -32,12 +32,13 @@ class NetworkException implements Exception {
     );
   }
 
-  static bool _isConnectionError(DioError error) {
+  static bool _isConnectionError(DioException error) {
     final errorType = error.type;
-    return errorType == DioErrorType.connectionTimeout ||
-        errorType == DioErrorType.receiveTimeout ||
-        errorType == DioErrorType.sendTimeout ||
-        (errorType == DioErrorType.unknown && error.error is SocketException);
+    return errorType == DioExceptionType.connectionTimeout ||
+        errorType == DioExceptionType.receiveTimeout ||
+        errorType == DioExceptionType.sendTimeout ||
+        (errorType == DioExceptionType.unknown &&
+            error.error is SocketException);
   }
 
   final int? statusCode;

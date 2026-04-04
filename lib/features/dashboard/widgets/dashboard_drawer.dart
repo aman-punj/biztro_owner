@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -106,7 +107,9 @@ class DashboardDrawer extends StatelessWidget {
               text: 'Sign Out',
               textColor: AppColors.error,
               iconColor: AppColors.error,
-              onTap: () {},
+              onTap: () async {
+                await Get.find<LogoutService>().logout();
+              },
             ),
           ),
         ],

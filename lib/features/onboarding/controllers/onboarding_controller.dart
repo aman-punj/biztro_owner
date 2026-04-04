@@ -6,6 +6,7 @@ import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
+import 'package:bizrato_owner/features/onboarding/data/models/business_details_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_service_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/contact_info_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/keyword_model.dart';
@@ -50,6 +51,7 @@ class OnboardingController extends GetxController {
   final RxBool isSaving = false.obs;
   final RxBool isSavingServiceData = false.obs;
   final RxBool isRestoringKeywords = false.obs;
+  final RxBool isCategoryRestored = false.obs;
 
   final Rxn<BusinessServiceResult> businessServiceData =
       Rxn<BusinessServiceResult>();
@@ -203,6 +205,18 @@ class OnboardingController extends GetxController {
 
   void removeCustomKeyword(String value) {
     customKeywords.remove(value);
+  }
+
+  void clearRestoredCategory() {
+    selectedCategory.value = null;
+    searchQuery.value = '';
+    searchResults.clear();
+    qualityKeywords.clear();
+    serviceKeywords.clear();
+    selectedKeywordIds.clear();
+    customKeywords.clear();
+    isCategoryRestored.value = false;
+    _lastLoadedCategoryId = null;
   }
 
   Future<void> saveAndContinue() async {
@@ -462,71 +476,44 @@ class OnboardingController extends GetxController {
   }
 
   Future<void> _restoreKeywordContextIfNeeded(int merchantId) async {
-    if (selectedCategory.value != null &&
-        (qualityKeywords.isNotEmpty || serviceKeywords.isNotEmpty)) {
-      return;
-    }
-
-    BusinessServiceResult? categoryContext = businessServiceData.value;
-    if (categoryContext == null) {
-      final businessResponse =
-          await onboardingRepository.getBusinessServiceData(merchantId);
-      if (!businessResponse.success || businessResponse.data?.result == null) {
-        print(
-          '[OnboardingController] Could not restore category context: ${businessResponse.message}',
-        );
-        return;
-      }
-
-      categoryContext = businessResponse.data!.result!;
-      businessServiceData.value = categoryContext;
-      if (businessName.value.isEmpty) {
-        businessName.value = categoryContext.businessName;
-      }
-      page2BusinessName.value = categoryContext.businessName;
-      page2Website.value = categoryContext.website ?? '';
-      page2FamousFor.value = categoryContext.famousFor ?? '';
-      page2EstbYear.value = categoryContext.estbYear ?? '';
-    }
-
-    final displayName = categoryContext.displayName.trim();
-    if (displayName.isEmpty) {
-      print(
-        '[OnboardingController] Could not restore category context: Missing display name',
-      );
-      return;
-    }
-
-    SearchResultModel? matchedCategory = selectedCategory.value;
-    if (matchedCategory == null) {
-      final searchResponse =
-          await onboardingRepository.searchCategory(displayName);
-      final searchResults = searchResponse.data ?? const <SearchResultModel>[];
-      if (!searchResponse.success || searchResults.isEmpty) {
-        print(
-          '[OnboardingController] Could not restore category context: ${searchResponse.message}',
-        );
-        return;
-      }
-
-      for (final result in searchResults) {
-        if (result.displayName.toLowerCase() == displayName.toLowerCase()) {
-          matchedCategory = result;
-          break;
-        }
-      }
-      matchedCategory ??= searchResults.first;
-
-      selectedCategory.value = matchedCategory;
-      searchQuery.value = matchedCategory.displayName;
-    }
-
+    // Already have keywords loaded - nothing to do.
     if (qualityKeywords.isNotEmpty || serviceKeywords.isNotEmpty) {
       return;
     }
 
-    final keywordResponse =
-        await onboardingRepository.getKeywords(matchedCategory.keywordId);
+    final AppResponse<BusinessDetailsModel> detailsResponse =
+        await onboardingRepository.getBusinessDetails(merchantId);
+    if (!detailsResponse.success || detailsResponse.data?.result == null) {
+      print(
+        '[OnboardingController] Could not restore category context: ${detailsResponse.message}',
+      );
+      return;
+    }
+
+    final BusinessDetailsResult details = detailsResponse.data!.result!;
+    final String categoryId = details.encryptSubCategoryId.trim();
+    final String displayName = details.displayName.trim();
+    if (categoryId.isEmpty || displayName.isEmpty) {
+      print(
+        '[OnboardingController] Could not restore category context: Missing business details fields',
+      );
+      return;
+    }
+
+    if (businessName.value.isEmpty && details.businessName.isNotEmpty) {
+      businessName.value = details.businessName;
+    }
+
+    selectedCategory.value = SearchResultModel(
+      keywordId: categoryId,
+      displayName: displayName,
+    );
+    searchQuery.value = displayName;
+    searchResults.clear();
+    isCategoryRestored.value = true;
+
+    final AppResponse<List<KeywordModel>> keywordResponse =
+        await onboardingRepository.getKeywords(categoryId);
     if (!keywordResponse.success) {
       print(
         '[OnboardingController] Could not restore category context: ${keywordResponse.message}',
@@ -541,7 +528,7 @@ class OnboardingController extends GetxController {
     serviceKeywords.assignAll(
       keywords.where((keyword) => keyword.keywordTypeId == 2).toList(),
     );
-    _lastLoadedCategoryId = matchedCategory.keywordId;
+    _lastLoadedCategoryId = categoryId;
   }
 
   Future<void> loadContactInfo() async {
