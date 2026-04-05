@@ -1,3 +1,4 @@
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/core/constants/app_assets.dart';
@@ -98,18 +99,19 @@ class DashboardHeader extends GetView<DashboardController> {
                           children: [
                             _StatBadge(
                               icon: Icons.star_rounded,
-                              value: controller.businessRating.value,
+                              value: controller.totalClickCount.value,
                               iconColor: AppColors.starYellow,
                             ),
                             SizedBox(width: 8.w),
                             _StatBadge(
-                              icon: Icons.reviews_outlined,
-                              value: controller.businessReviews.value,
+                              icon: Icons.remove_red_eye,
+                              iconColor: AppTokens.info,
+                              value: controller.viewCount.value,
                             ),
                             SizedBox(width: 8.w),
                             _StatBadge(
-                              icon: Icons.people_outline,
-                              value: controller.businessFollowers.value,
+                              icon: Icons.monitor_heart,
+                              value: controller.likeCount.value,
                             ),
                           ],
                         ),

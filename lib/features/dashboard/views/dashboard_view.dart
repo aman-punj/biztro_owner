@@ -60,7 +60,7 @@ class DashboardView extends GetView<DashboardController> {
                         child: const LeadAnalyticsSection(),
                       ),
                     ),
-                    SizedBox(height: 90.h), // Space for bottom nav
+                    SizedBox(height: 90.h),
                   ]),
                 ),
               ),
@@ -372,7 +372,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                        color: AppColors.surfaceDark.withOpacity(0.08),
+                            color: AppColors.surfaceDark.withOpacity(0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -429,7 +429,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                       ),
                                       SizedBox(width: 2.w),
                                       Text(
-                                        controller.businessRating.value,
+                                        controller.totalClickCount.value,
                                         style: TextStyle(
                                           color: AppColors.textPrimaryLight,
                                           fontSize: 10.sp,
@@ -442,7 +442,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                           color: AppColors.primary),
                                       SizedBox(width: 2.w),
                                       Text(
-                                        controller.businessReviews.value,
+                                        controller.viewCount.value,
                                         style: TextStyle(
                                           color: AppColors.textPrimaryLight,
                                           fontSize: 10.sp,
@@ -457,7 +457,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                       ),
                                       SizedBox(width: 2.w),
                                       Text(
-                                        controller.businessFollowers.value,
+                                        controller.likeCount.value,
                                         style: TextStyle(
                                           color: AppColors.textPrimaryLight,
                                           fontSize: 10.sp,

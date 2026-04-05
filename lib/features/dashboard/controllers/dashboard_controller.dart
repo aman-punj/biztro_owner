@@ -1,5 +1,8 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
+import 'package:bizrato_owner/core/network/api_client.dart';
+import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/utils/formatters.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +28,38 @@ class LeadAnalyticsCategory {
   const LeadAnalyticsCategory({required this.label, required this.color});
 }
 
+class DashboardStatsModel {
+  final int viewCount;
+  final int whatsAppCount;
+  final int contactCount;
+  final int enquiryCount;
+  final int totalClickCount;
+  final int likeCount;
+  final int shareCount;
+
+  const DashboardStatsModel({
+    required this.viewCount,
+    required this.whatsAppCount,
+    required this.contactCount,
+    required this.enquiryCount,
+    required this.totalClickCount,
+    required this.likeCount,
+    required this.shareCount,
+  });
+
+  factory DashboardStatsModel.fromJson(Map<String, dynamic> json) {
+    return DashboardStatsModel(
+      viewCount: AppFormatters.parseCount(json['ViewCount']),
+      whatsAppCount: AppFormatters.parseCount(json['WhatsAppCount']),
+      contactCount: AppFormatters.parseCount(json['ContactCount']),
+      enquiryCount: AppFormatters.parseCount(json['EnquiryCount']),
+      totalClickCount: AppFormatters.parseCount(json['TotalClickCount']),
+      likeCount: AppFormatters.parseCount(json['LikeCount']),
+      shareCount: AppFormatters.parseCount(json['ShareCount']),
+    );
+  }
+}
+
 class DashboardController extends GetxController {
   final isLoading = true.obs;
   final hasError = false.obs;
@@ -33,9 +68,9 @@ class DashboardController extends GetxController {
 // Business info
   final businessName = 'Haldiram Restaurant'.obs;
   final businessType = 'Dine-In Delhi, 10:00'.obs;
-  final businessRating = '4.5'.obs;
-  final businessReviews = '8.6k'.obs;
-  final businessFollowers = '2.1M'.obs;
+  final totalClickCount = '0'.obs;
+  final viewCount = '0'.obs;
+  final likeCount = '0'.obs;
   final profileCompletionPercent = 0.60.obs;
   final profileCompletionLabel = '60%'.obs;
 
@@ -57,18 +92,14 @@ class DashboardController extends GetxController {
   ].obs;
 
   final quickActions = <Map<String, String>>[
-
-    {'label': 'Business\nDetails', 'icon': AppAssets.quickActionBusinessDetails},
-
+    {
+      'label': 'Business\nDetails',
+      'icon': AppAssets.quickActionBusinessDetails
+    },
     {'label': 'Timing &\nDetails', 'icon': AppAssets.quickActionTimingDetails},
-
     {'label': 'Location\nInfo', 'icon': AppAssets.quickActionLocationInfo},
-
     {'label': 'Social\nLinks', 'icon': AppAssets.quickActionSocialLinks},
-
   ].obs;
-
-
 
   @override
   void onInit() {
@@ -82,33 +113,55 @@ class DashboardController extends GetxController {
     try {
       await Future<void>.delayed(const Duration(milliseconds: 1200));
 
-// 1. Load Insights
-      insightStats.assignAll([
-        const BusinessInsightStat(
-          label: 'Business Leads',
-          value: '31K',
-          iconPath: AppAssets.statHotLeads,
-          iconBg: AppColors.insightIconBlue,
-        ),
-        const BusinessInsightStat(
-          label: 'Total Clicks',
-          value: '59K',
-          iconPath: AppAssets.statTotalLeads,
-          iconBg: AppColors.insightIconPeach,
-        ),
-        const BusinessInsightStat(
-          label: 'Add Calls',
-          value: '24K',
-          iconPath: AppAssets.statAddCode,
-          iconBg: AppColors.insightIconLavender,
-        ),
-        const BusinessInsightStat(
-          label: 'Total Views',
-          value: '258K',
-          iconPath: AppAssets.statTotalViews,
-          iconBg: AppColors.insightIconMint,
-        ),
-      ]);
+      final merchantId = Get.find<AuthStorage>().merchantId;
+      if (merchantId == null || merchantId == 0) {
+        throw Exception('Merchant ID is not available');
+      }
+
+      final response = await Get.find<ApiClient>().get(
+        '/api/dashboard/dashboardstats',
+        queryParameters: {'merchantId': merchantId},
+      );
+
+      if (response.success && response.data is Map<String, dynamic>) {
+        final payload = response.data as Map<String, dynamic>;
+        final result = payload['Result'];
+        if (result is Map<String, dynamic>) {
+          final stats = DashboardStatsModel.fromJson(result);
+          totalClickCount.value = stats.totalClickCount.toString();
+          viewCount.value = stats.viewCount.toString();
+          likeCount.value = stats.likeCount.toString();
+
+          insightStats.assignAll([
+            BusinessInsightStat(
+              label: 'Business Leads',
+              value: AppFormatters.formatCount(stats.enquiryCount),
+              iconPath: AppAssets.statHotLeads,
+              iconBg: AppColors.insightIconBlue,
+            ),
+            BusinessInsightStat(
+              label: 'Total Clicks',
+              value: AppFormatters.formatCount(stats.totalClickCount),
+              iconPath: AppAssets.statTotalLeads,
+              iconBg: AppColors.insightIconPeach,
+            ),
+            BusinessInsightStat(
+              label: 'Add Calls',
+              value: AppFormatters.formatCount(stats.contactCount),
+              iconPath: AppAssets.statAddCode,
+              iconBg: AppColors.insightIconLavender,
+            ),
+            BusinessInsightStat(
+              label: 'Total Views',
+              value: AppFormatters.formatCount(stats.viewCount),
+              iconPath: AppAssets.statTotalViews,
+              iconBg: AppColors.insightIconMint,
+            ),
+          ]);
+        }
+      } else {
+        throw Exception(response.message);
+      }
 
 // 2. Load Chart Data (Matching the Image)
       _prepareChartData();
