@@ -45,17 +45,26 @@ class DashboardDrawer extends StatelessWidget {
                 _DrawerItem(
                   icon: Icons.work,
                   text: 'Business Info',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.editBusinessDetails);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.layers,
                   text: 'Business Service',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.editBusinessServices);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.location_on,
                   text: 'Location Info',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.editLocationInfo);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.access_time_filled,

@@ -4,6 +4,12 @@ import 'package:bizrato_owner/features/dashboard/controllers/dashboard_binding.d
 import 'package:bizrato_owner/features/dashboard/views/dashboard_view.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_binding.dart';
 import 'package:bizrato_owner/features/messages/views/messages_view.dart';
+import 'package:bizrato_owner/features/business_edit/bindings/edit_business_details_binding.dart';
+import 'package:bizrato_owner/features/business_edit/bindings/edit_business_services_binding.dart';
+import 'package:bizrato_owner/features/business_edit/bindings/edit_location_info_binding.dart';
+import 'package:bizrato_owner/features/business_edit/views/edit_business_details_view.dart';
+import 'package:bizrato_owner/features/business_edit/views/edit_business_services_view.dart';
+import 'package:bizrato_owner/features/business_edit/views/edit_location_info_view.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_binding.dart';
 import 'package:bizrato_owner/features/onboarding/views/onboarding_view.dart';
 import 'package:bizrato_owner/features/splash/views/splash_view.dart';
@@ -44,6 +50,21 @@ class AppPages {
       name: AppRoutes.messages,
       page: MessagesView.new,
       binding: MessagesBinding(),
+    ),
+    GetPage<EditBusinessDetailsView>(
+      name: AppRoutes.editBusinessDetails,
+      page: EditBusinessDetailsView.new,
+      binding: EditBusinessDetailsBinding(),
+    ),
+    GetPage<EditBusinessServicesView>(
+      name: AppRoutes.editBusinessServices,
+      page: EditBusinessServicesView.new,
+      binding: EditBusinessServicesBinding(),
+    ),
+    GetPage<EditLocationInfoView>(
+      name: AppRoutes.editLocationInfo,
+      page: EditLocationInfoView.new,
+      binding: EditLocationInfoBinding(),
     ),
   ];
 }

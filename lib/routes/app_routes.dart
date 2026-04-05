@@ -6,7 +6,6 @@ Widget mySampleText() {
   return const Text('Hello, World!');
 }
 
-
 class AppRoutes {
   AppRoutes._();
 
@@ -16,4 +15,7 @@ class AppRoutes {
   static const dashboard = '/dashboard';
   static const trustedShield = '/trusted-shield';
   static const messages = '/messages';
+  static const editBusinessDetails = '/edit-business-details';
+  static const editBusinessServices = '/edit-business-services';
+  static const editLocationInfo = '/edit-location-info';
 }

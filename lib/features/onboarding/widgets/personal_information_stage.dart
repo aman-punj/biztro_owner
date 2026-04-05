@@ -152,21 +152,21 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextButton.icon(
-            onPressed: controller.previousStage,
-            icon: Icon(
-              Icons.arrow_back_ios,
-              size: 14.sp,
-              color: AppColors.primary,
-            ),
-            label: Text(
-              'Back',
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: AppColors.primary,
-              ),
-            ),
-          ),
+          // TextButton.icon(
+          //   onPressed: controller.previousStage,
+          //   icon: Icon(
+          //     Icons.arrow_back_ios,
+          //     size: 14.sp,
+          //     color: AppColors.primary,
+          //   ),
+          //   label: Text(
+          //     'Back',
+          //     style: TextStyle(
+          //       fontSize: 13.sp,
+          //       color: AppColors.primary,
+          //     ),
+          //   ),
+          // ),
           SizedBox(height: 8.h),
           OnboardingSectionCard(
             title: 'Personal Information',
@@ -205,7 +205,8 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                         controller: _whatsAppController,
                         hint: 'WhatsApp No.',
                         keyboardType: TextInputType.phone,
-                        onChanged: (value) => controller.p3WhatsApp.value = value,
+                        onChanged: (value) =>
+                            controller.p3WhatsApp.value = value,
                       ),
                     ),
                   ],
@@ -233,7 +234,8 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                 AppTextField(
                   controller: _businessEmailController,
                   hint: 'Business Email',
-                  onChanged: (value) => controller.p3BusinessEmail.value = value,
+                  onChanged: (value) =>
+                      controller.p3BusinessEmail.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
