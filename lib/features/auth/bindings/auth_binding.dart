@@ -1,5 +1,4 @@
 import 'package:bizrato_owner/core/network/api_client.dart';
-import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:get/get.dart';
 
 import '../controllers/auth_controller.dart';

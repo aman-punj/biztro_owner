@@ -7,8 +7,7 @@ import 'package:bizrato_owner/features/onboarding/data/models/business_details_m
 import 'package:bizrato_owner/features/onboarding/data/models/keyword_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/saved_keywords_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/save_keywords_request.dart';
-import 'package:bizrato_owner/features/onboarding/data/models/search_result_model.dart';
-import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
+import 'package:bizrato_owner/features/onboarding/data/models/search_result_model.dart'; 
 import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
 import 'package:get/get.dart';
 

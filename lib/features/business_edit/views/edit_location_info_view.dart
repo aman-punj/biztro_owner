@@ -1,6 +1,6 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
-import 'package:bizrato_owner/core/widgets/edit_page_app_bar.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_location_info_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
@@ -79,124 +79,119 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const EditPageAppBar(title: 'Location Info'),
-      body: SafeArea(
-        child: Obx(
-          () {
-            if (controller.isLoadingPage.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return AppPageShell(
+      title: 'Location Info',
+      child: Obx(
+        () {
+          if (controller.isLoadingPage.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  OnboardingSectionCard(
-                    title: 'Location Information',
-                    child: Column(
-                      children: [
-                        AppTextField(
-                          controller: _addressController,
-                          hint: 'Building / Shop No.',
-                          onChanged: (value) =>
-                              controller.address.value = value,
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                OnboardingSectionCard(
+                  title: 'Location Information',
+                  child: Column(
+                    children: [
+                      AppTextField(
+                        controller: _addressController,
+                        hint: 'Building / Shop No.',
+                        onChanged: (value) => controller.address.value = value,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _streetController,
+                        hint: 'Street Name',
+                        onChanged: (value) => controller.streetNo.value = value,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _landmarkController,
+                        hint: 'Landmark',
+                        onChanged: (value) => controller.landmark.value = value,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _pincodeController,
+                        hint: 'Pincode',
+                        keyboardType: TextInputType.number,
+                        onChanged: controller.onPincodeChanged,
+                        suffixIcon: Obx(
+                          () => controller.isLoadingLocationDetails.value
+                              ? SizedBox(
+                                  width: 18.w,
+                                  height: 18.w,
+                                  child: const CircularProgressIndicator(
+                                      strokeWidth: 2),
+                                )
+                              : const SizedBox.shrink(),
                         ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _streetController,
-                          hint: 'Street Name',
-                          onChanged: (value) =>
-                              controller.streetNo.value = value,
-                        ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _landmarkController,
-                          hint: 'Landmark',
-                          onChanged: (value) =>
-                              controller.landmark.value = value,
-                        ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _pincodeController,
-                          hint: 'Pincode',
-                          keyboardType: TextInputType.number,
-                          onChanged: controller.onPincodeChanged,
-                          suffixIcon: Obx(
-                            () => controller.isLoadingLocationDetails.value
-                                ? SizedBox(
-                                    width: 18.w,
-                                    height: 18.w,
-                                    child: const CircularProgressIndicator(
-                                        strokeWidth: 2),
-                                  )
-                                : const SizedBox.shrink(),
+                      ),
+                      SizedBox(height: 12.h),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AppTextField(
+                              controller: _stateController,
+                              hint: 'State',
+                              readOnly: true,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: AppTextField(
-                                controller: _stateController,
-                                hint: 'State',
-                                readOnly: true,
-                              ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: AppTextField(
+                              controller: _cityController,
+                              hint: 'City',
+                              readOnly: true,
                             ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: AppTextField(
-                                controller: _cityController,
-                                hint: 'City',
-                                readOnly: true,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12.h),
-                        GestureDetector(
-                          onTap: _showAreaPicker,
-                          child: AbsorbPointer(
-                            child: Obx(
-                              () => AppTextField(
-                                controller: _areaController,
-                                hint: controller.areaList.isEmpty
-                                    ? 'Enter pincode first'
-                                    : 'Select Area',
-                                readOnly: true,
-                                suffixIcon: controller.isLoadingAreas.value
-                                    ? SizedBox(
-                                        width: 18.w,
-                                        height: 18.w,
-                                        child: const CircularProgressIndicator(
-                                            strokeWidth: 2),
-                                      )
-                                    : Icon(
-                                        Icons.keyboard_arrow_down,
-                                        size: 20.sp,
-                                        color: AppColors.textSecondaryLight,
-                                      ),
-                              ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                      GestureDetector(
+                        onTap: _showAreaPicker,
+                        child: AbsorbPointer(
+                          child: Obx(
+                            () => AppTextField(
+                              controller: _areaController,
+                              hint: controller.areaList.isEmpty
+                                  ? 'Enter pincode first'
+                                  : 'Select Area',
+                              readOnly: true,
+                              suffixIcon: controller.isLoadingAreas.value
+                                  ? SizedBox(
+                                      width: 18.w,
+                                      height: 18.w,
+                                      child: const CircularProgressIndicator(
+                                          strokeWidth: 2),
+                                    )
+                                  : Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 20.sp,
+                                      color: AppColors.textSecondaryLight,
+                                    ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 24.h),
-                  Obx(
-                    () => PrimaryButton(
-                      label: 'SAVE & CONTINUE',
-                      isLoading: controller.isSaving.value,
-                      onPressed: controller.saveAndUpdate,
-                    ),
+                ),
+                SizedBox(height: 24.h),
+                Obx(
+                  () => PrimaryButton(
+                    label: 'SAVE & CONTINUE',
+                    isLoading: controller.isSaving.value,
+                    onPressed: controller.saveAndUpdate,
                   ),
-                ],
-              ),
-            );
-          },
-        ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

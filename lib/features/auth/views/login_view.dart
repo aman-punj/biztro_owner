@@ -6,7 +6,6 @@ import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_hero_section.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_stage_content.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widget_previews.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 

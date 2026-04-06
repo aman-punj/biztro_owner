@@ -1,7 +1,7 @@
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
-import 'package:bizrato_owner/core/widgets/edit_page_app_bar.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_services_controller.dart';
@@ -109,20 +109,19 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const EditPageAppBar(title: 'Business Services'),
-      body: SafeArea(
-        child: Obx(
-          () {
-            if (controller.isLoadingPage.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return AppPageShell(
+      title: 'Business Services',
+      child: Obx(
+        () {
+          if (controller.isLoadingPage.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                   Obx(
                     () {
                       final data = controller.businessServiceData.value;
@@ -271,7 +270,6 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
             );
           },
         ),
-      ),
     );
   }
 

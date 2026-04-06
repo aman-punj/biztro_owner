@@ -286,7 +286,6 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    final topPadding = MediaQuery.of(context).padding.top;
 
     return SliverAppBar(
       backgroundColor: AppColors.white,

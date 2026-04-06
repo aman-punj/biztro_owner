@@ -8,7 +8,6 @@ import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_details_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_service_model.dart';
-import 'package:bizrato_owner/features/onboarding/data/models/contact_info_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/keyword_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/location_details_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/save_contact_request.dart';
