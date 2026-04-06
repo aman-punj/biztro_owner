@@ -22,4 +22,7 @@ class AppAssets {
   static const youtubeRedIcon = 'assets/icons/youtube_red_icon.svg';
   static const logoutRedIcon = 'assets/icons/logout_red_icon.svg';
   static const sparkleIcon = 'assets/icons/sparkling_icon.svg';
+  static const deleteRedIcon = 'assets/icons/delete_red_icon.svg';
+  static const flashIcon = 'assets/icons/flash_icon.svg';
+  static const businessIcon = 'assets/icons/business_icon.svg';
 }

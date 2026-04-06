@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../theme/app_tokens.dart';
+
 class AppTextField extends StatelessWidget {
   const AppTextField({
     required this.title, // Renamed hint to title for clarity
@@ -93,10 +95,14 @@ class AppTextField extends StatelessWidget {
               filled: true,
               fillColor: AppColors.textFieldBackground,
               counterText: '',
-              hintText: hintText,
-              hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
+              hintText: hintText ?? title,
+              hintStyle: TextStyle(
+                fontSize: 14.sp,
+                color: AppTokens.textSecondary,
+              ),
               // Smaller padding for a more compact look
-              contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
               prefixIcon: prefixIcon,
               suffixIcon: suffixIcon,
               border: OutlineInputBorder(

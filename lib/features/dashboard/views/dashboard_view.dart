@@ -352,12 +352,14 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Welcome text on blue
-                    Text(
-                      'Welcome to Haldiram Restaurant',
-                      style: TextStyle(
-                        color: AppColors.white.withValues(alpha: 0.88),
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w500,
+                    Obx(
+                      () => Text(
+                        'Welcome to ${controller.businessName.value}',
+                        style: TextStyle(
+                          color: AppColors.white.withValues(alpha: 0.88),
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                     SizedBox(height: 8.h),

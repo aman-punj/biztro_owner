@@ -315,6 +315,9 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
 
     return ScrollableOptionList(
       maxHeight: 220.h,
+      title: emptyMessage == 'Services list will be available soon.'
+          ? 'SERVICES OFFERED'
+          : 'FACILITIES',
       items: items
           .map((item) => ScrollableOptionItem(id: item.id, label: item.name))
           .toList(),

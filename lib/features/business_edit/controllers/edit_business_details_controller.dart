@@ -3,12 +3,14 @@ import 'package:bizrato_owner/core/notifications/notification_service.dart';
 import 'package:bizrato_owner/core/notifications/notification_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
+import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_details_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/keyword_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/saved_keywords_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/save_keywords_request.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/search_result_model.dart'; 
 import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
+import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class EditBusinessDetailsController extends GetxController {
@@ -216,6 +218,29 @@ class EditBusinessDetailsController extends GetxController {
     customKeywords.remove(value);
   }
 
+  void updateCustomKeyword({
+    required String oldValue,
+    required String newValue,
+  }) {
+    final trimmed = newValue.trim();
+    final currentIndex = customKeywords.indexOf(oldValue);
+    if (currentIndex == -1) {
+      return;
+    }
+
+    if (trimmed.isEmpty) {
+      customKeywords.removeAt(currentIndex);
+      return;
+    }
+
+    final duplicateIndex = customKeywords.indexOf(trimmed);
+    if (duplicateIndex != -1 && duplicateIndex != currentIndex) {
+      return;
+    }
+
+    customKeywords[currentIndex] = trimmed;
+  }
+
   void clearRestoredCategory() {
     selectedCategory.value = null;
     searchQuery.value = '';
@@ -260,12 +285,22 @@ class EditBusinessDetailsController extends GetxController {
     try {
       final AppResponse<void> response = await repository.saveKeywords(request);
       if (!response.success) {
-        _notificationService.error(response.message);
+        await AppStatusDialog.show(
+          dialog: AppStatusDialog.error(
+            message: response.message.isNotEmpty
+                ? response.message
+                : 'Unable to update business details.',
+          ),
+        );
         return;
       }
 
-      _notificationService.success('Business details updated');
-      Get.back();
+      await AppStatusDialog.show(
+        dialog: AppStatusDialog.success(
+          message: 'Business details updated successfully.',
+        ),
+        onDismissed: () => Get.offAllNamed(AppRoutes.dashboard),
+      );
     } finally {
       isSaving.value = false;
     }

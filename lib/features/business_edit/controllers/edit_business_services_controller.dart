@@ -2,10 +2,12 @@ import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/core/notifications/notification_service.dart';
 import 'package:bizrato_owner/core/notifications/notification_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
+import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_service_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/save_service_facilities_request.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
+import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class EditBusinessServicesController extends GetxController {
@@ -197,12 +199,22 @@ class EditBusinessServicesController extends GetxController {
       final AppResponse<void> response =
           await repository.saveServiceFacilities(request);
       if (!response.success) {
-        _notificationService.error(response.message);
+        await AppStatusDialog.show(
+          dialog: AppStatusDialog.error(
+            message: response.message.isNotEmpty
+                ? response.message
+                : 'Unable to update business services.',
+          ),
+        );
         return;
       }
 
-      _notificationService.success('Business services updated');
-      Get.back();
+      await AppStatusDialog.show(
+        dialog: AppStatusDialog.success(
+          message: 'Business services updated successfully.',
+        ),
+        onDismissed: () => Get.offAllNamed(AppRoutes.dashboard),
+      );
     } finally {
       isSaving.value = false;
     }

@@ -3,11 +3,13 @@ import 'package:bizrato_owner/core/notifications/notification_service.dart';
 import 'package:bizrato_owner/core/notifications/notification_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
+import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/contact_info_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/location_details_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/save_contact_request.dart';
 import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
+import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class EditLocationInfoController extends GetxController {
@@ -245,12 +247,22 @@ class EditLocationInfoController extends GetxController {
       final AppResponse<void> response =
           await repository.saveContactDetails(request);
       if (!response.success) {
-        _notificationService.error(response.message);
+        await AppStatusDialog.show(
+          dialog: AppStatusDialog.error(
+            message: response.message.isNotEmpty
+                ? response.message
+                : 'Unable to update location information.',
+          ),
+        );
         return;
       }
 
-      _notificationService.success('Location information updated');
-      Get.back();
+      await AppStatusDialog.show(
+        dialog: AppStatusDialog.success(
+          message: 'Location information updated successfully.',
+        ),
+        onDismissed: () => Get.offAllNamed(AppRoutes.dashboard),
+      );
     } finally {
       isSaving.value = false;
     }

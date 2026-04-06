@@ -1,5 +1,7 @@
+import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
@@ -234,6 +236,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                   // SizedBox(height: 16.h),
                   OnboardingSectionCard(
                     title: 'SERVICES OFFERED',
+                    titleIcon: AppImage(path: AppAssets.sparkleIcon),
                     child: Obx(
                       () => _buildServiceFacilityContent(
                         items: controller.servicesOfferedList,
@@ -247,6 +250,8 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                   // SizedBox(height: 16.h),
                   OnboardingSectionCard(
                     title: 'FACILITIES',
+
+                    titleIcon: AppImage(path: AppAssets.flashIcon),
                     child: Obx(
                       () => _buildServiceFacilityContent(
                         items: controller.facilitiesList,
@@ -305,7 +310,11 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
     }
 
     return ScrollableOptionList(
+
       maxHeight: 220.h,
+      title: emptyMessage == 'Services list will be available soon.'
+          ? 'SERVICES OFFERED'
+          : 'FACILITIES',
       items: items
           .map((item) => ScrollableOptionItem(id: item.id, label: item.name))
           .toList(),

@@ -209,6 +209,29 @@ class OnboardingController extends GetxController {
     customKeywords.remove(value);
   }
 
+  void updateCustomKeyword({
+    required String oldValue,
+    required String newValue,
+  }) {
+    final trimmed = newValue.trim();
+    final currentIndex = customKeywords.indexOf(oldValue);
+    if (currentIndex == -1) {
+      return;
+    }
+
+    if (trimmed.isEmpty) {
+      customKeywords.removeAt(currentIndex);
+      return;
+    }
+
+    final duplicateIndex = customKeywords.indexOf(trimmed);
+    if (duplicateIndex != -1 && duplicateIndex != currentIndex) {
+      return;
+    }
+
+    customKeywords[currentIndex] = trimmed;
+  }
+
   void clearRestoredCategory() {
     selectedCategory.value = null;
     searchQuery.value = '';

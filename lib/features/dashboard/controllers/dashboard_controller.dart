@@ -3,6 +3,7 @@ import 'package:bizrato_owner/core/network/api_client.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/utils/formatters.dart';
+import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,13 +62,22 @@ class DashboardStatsModel {
 }
 
 class DashboardController extends GetxController {
+  DashboardController({
+    required this.apiClient,
+    required this.authStorage,
+    required this.onboardingRepository,
+  });
+
+  final ApiClient apiClient;
+  final AuthStorage authStorage;
+  final OnboardingRepository onboardingRepository;
+
   final isLoading = true.obs;
   final hasError = false.obs;
   final errorMessage = ''.obs;
 
-// Business info
-  final businessName = 'Haldiram Restaurant'.obs;
-  final businessType = 'Dine-In Delhi, 10:00'.obs;
+  final businessName = 'Business'.obs;
+  final businessType = ''.obs;
   final totalClickCount = '0'.obs;
   final viewCount = '0'.obs;
   final likeCount = '0'.obs;
@@ -112,12 +122,14 @@ class DashboardController extends GetxController {
     try {
       await Future<void>.delayed(const Duration(milliseconds: 1200));
 
-      final merchantId = Get.find<AuthStorage>().merchantId;
+      final merchantId = authStorage.merchantId;
       if (merchantId == null || merchantId == 0) {
         throw Exception('Merchant ID is not available');
       }
 
-      final response = await Get.find<ApiClient>().get(
+      await _loadBusinessProfile(merchantId);
+
+      final response = await apiClient.get(
         '/api/dashboard/dashboardstats',
         queryParameters: {'merchantId': merchantId},
       );
@@ -170,6 +182,24 @@ class DashboardController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> _loadBusinessProfile(int merchantId) async {
+    final response = await onboardingRepository.getBusinessDetails(merchantId);
+    final result = response.data?.result;
+    if (!response.success || result == null) {
+      return;
+    }
+
+    if (result.businessName.trim().isNotEmpty) {
+      businessName.value = result.businessName.trim();
+    }
+
+    final parts = <String>[
+      if (result.displayName.trim().isNotEmpty) result.displayName.trim(),
+      // if (result.businessEmailId.trim().isNotEmpty) result.businessEmailId.trim(),
+    ];
+    businessType.value = parts.join(' • ');
   }
 
   void _prepareChartData() {
