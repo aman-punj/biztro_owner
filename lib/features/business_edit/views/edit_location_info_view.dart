@@ -80,7 +80,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
   @override
   Widget build(BuildContext context) {
     return AppPageShell(
-      title: 'Location Info',
+      title: 'Location Information',
       child: Obx(
         () {
           if (controller.isLoadingPage.value) {
