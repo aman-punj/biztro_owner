@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
@@ -9,6 +10,8 @@ import 'package:bizrato_owner/features/onboarding/widgets/onboarding_section_car
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
+import '../../../core/widgets/keyword_input_widget.dart';
 
 class EditBusinessDetailsView extends StatefulWidget {
   const EditBusinessDetailsView({super.key});
@@ -25,6 +28,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
   late final TextEditingController _customKeywordController;
   late final VoidCallback _searchListener;
   Worker? _searchQueryWorker;
+  bool _isAddingCustomKeyword = false;
 
   @override
   void initState() {
@@ -57,9 +61,28 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
   }
 
   void _addCustomKeywordFromField() {
+    final previousCount = controller.customKeywords.length;
     final value = _customKeywordController.text;
     controller.addCustomKeyword(value);
+    if (controller.customKeywords.length != previousCount) {
+      _customKeywordController.clear();
+      setState(() {
+        _isAddingCustomKeyword = false;
+      });
+    }
+  }
+
+  void _showCustomKeywordInput() {
+    setState(() {
+      _isAddingCustomKeyword = true;
+    });
+  }
+
+  void _hideCustomKeywordInput() {
     _customKeywordController.clear();
+    setState(() {
+      _isAddingCustomKeyword = false;
+    });
   }
 
   @override
@@ -295,7 +318,6 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
   Widget _buildKeywordSection() {
     return OnboardingSectionCard(
       key: const ValueKey('keywords-section'),
-      title: 'SUGGESTED KEYWORDS',
       child: Obx(
         () {
           if (controller.isLoadingKeywords.value) {
@@ -343,17 +365,10 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                   return const SizedBox.shrink();
                 },
               ),
-              Text(
-                'QUALITY SPECIALITIES',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondaryLight,
-                ),
-              ),
-              SizedBox(height: 12.h),
               ScrollableOptionList(
                 maxHeight: 220,
+                title: 'SUGGESTED KEYWORDS',
+                titleIconPath: AppAssets.sparkleIcon,
                 items: controller.qualityKeywords
                     .map(
                       (k) => ScrollableOptionItem(
@@ -366,17 +381,9 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                 onTap: (item) => controller.toggleKeyword(item.id),
               ),
               SizedBox(height: 12.h),
-              Text(
-                'SERVICES OFFERED',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondaryLight,
-                ),
-              ),
-              SizedBox(height: 12.h),
               ScrollableOptionList(
                 maxHeight: 220,
+                title: 'SERVICES BASED',
                 items: controller.serviceKeywords
                     .map(
                       (k) => ScrollableOptionItem(
@@ -389,57 +396,91 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                 onTap: (item) => controller.toggleKeyword(item.id),
               ),
               SizedBox(height: 12.h),
-              Text(
-                'ADD YOUR OWN',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondaryLight,
-                ),
-              ),
-              SizedBox(height: 8.h),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'ADD YOUR OWN',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textSecondaryLight,
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
                   ...controller.customKeywords.map(
-                    (keyword) => Padding(
-                      padding: EdgeInsets.only(bottom: 8.h),
-                      child: AppTextField(
-                        title: 'Keyword',
-                        initialValue: keyword,
-                        readOnly: true,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.delete_outline,
-                            color: AppColors.error.withValues(alpha: 0.5),
-                            size: 20.sp,
-                          ),
-                          onPressed: () =>
-                              controller.removeCustomKeyword(keyword),
-                        ),
+                    (keyword) => EditableKeywordRow(
+                      value: keyword,
+                      onDelete: () => controller.removeCustomKeyword(keyword),
+                      onSave: (value) => controller.updateCustomKeyword(
+                        oldValue: keyword,
+                        newValue: value,
                       ),
                     ),
                   ),
-                  if (controller.canAddMoreKeywords) ...[
-                    AppTextField(
-                      title: 'Enter keyword...',
+                  if (_isAddingCustomKeyword && controller.canAddMoreKeywords)
+                    KeywordInputRow(
                       controller: _customKeywordController,
+                      isReadOnly: false,
+                      hint: 'Enter keyword...',
+                      maxLines: 3,
+                      actionIcon: Icons.check,
+                      actionBackgroundColor:
+                          AppColors.primary.withValues(alpha: 0.12),
+                      actionIconColor: AppColors.primary,
                       onSubmitted: (_) => _addCustomKeywordFromField(),
-                      suffixIcon: IconButton(
-                        onPressed: _addCustomKeywordFromField,
-                        icon: Icon(
-                          Icons.add_circle_outline,
-                          size: 20.sp,
-                          color: AppColors.primary,
-                        ),
-                      ),
+                      onAction: _addCustomKeywordFromField,
                     ),
-                  ] else
+                  if (controller.canAddMoreKeywords)
                     Padding(
                       padding: EdgeInsets.only(top: 8.h),
+                      child: OutlinedButton(
+                        onPressed: _isAddingCustomKeyword
+                            ? _hideCustomKeywordInput
+                            : _showCustomKeywordInput,
+                        style: OutlinedButton.styleFrom(
+                          fixedSize: Size(double.maxFinite, 52.h),
+                          side: BorderSide(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          backgroundColor:
+                              AppColors.primary.withValues(alpha: 0.05),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              _isAddingCustomKeyword
+                                  ? Icons.close
+                                  : Icons.add_circle_outline,
+                              size: 20.sp,
+                              color: AppColors.primary,
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              _isAddingCustomKeyword
+                                  ? 'Cancel'
+                                  : 'Add Another Keyword',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    Center(
                       child: Text(
                         'Max 5 keywords reached',
                         style: TextStyle(
-                          fontSize: 10.sp,
+                          fontSize: 11.sp,
                           color: AppColors.error,
                         ),
                       ),

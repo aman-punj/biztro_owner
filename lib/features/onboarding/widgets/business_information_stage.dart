@@ -1,5 +1,7 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
+import 'package:bizrato_owner/core/widgets/keyword_input_widget.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
@@ -24,6 +26,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
   late final TextEditingController _customKeywordController;
   late final VoidCallback _searchListener;
   Worker? _searchQueryWorker;
+  bool _isAddingCustomKeyword = false;
 
   @override
   void initState() {
@@ -81,9 +84,28 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
   }
 
   void _addCustomKeywordFromField() {
+    final previousCount = controller.customKeywords.length;
     final value = _customKeywordController.text;
     controller.addCustomKeyword(value);
+    if (controller.customKeywords.length != previousCount) {
+      _customKeywordController.clear();
+      setState(() {
+        _isAddingCustomKeyword = false;
+      });
+    }
+  }
+
+  void _showCustomKeywordInput() {
+    setState(() {
+      _isAddingCustomKeyword = true;
+    });
+  }
+
+  void _hideCustomKeywordInput() {
     _customKeywordController.clear();
+    setState(() {
+      _isAddingCustomKeyword = false;
+    });
   }
 
   @override
@@ -161,7 +183,8 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
               children: [
                 AppTextField(
                   controller: _searchController,
-                  title: 'e.g. Sweets, Restaurant...',
+                  title: 'SEARCH YOUR BUSINESS CATEGORY',
+                  hintText: 'e.g. Sweets, Restaurant...',
                   readOnly: controller.isCategoryRestored.value,
                   prefixIcon: Icon(
                     Icons.search,
@@ -308,7 +331,6 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
   Widget _buildKeywordSection() {
     return OnboardingSectionCard(
       key: const ValueKey('keywords-section'),
-      title: 'SUGGESTED KEYWORDS',
       child: Obx(
         () {
           if (controller.isLoadingKeywords.value) {
@@ -352,17 +374,10 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                 }
                 return const SizedBox.shrink();
               }),
-              Text(
-                'QUALITY BASED',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondaryLight,
-                ),
-              ),
-              SizedBox(height: 12.h),
               ScrollableOptionList(
                 maxHeight: 220,
+                title: 'SUGGESTED KEYWORDS',
+                titleIconPath: AppAssets.sparkleIcon,
                 items: controller.qualityKeywords
                     .map(
                       (k) => ScrollableOptionItem(
@@ -375,17 +390,9 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                 onTap: (item) => controller.toggleKeyword(item.id),
               ),
               SizedBox(height: 12.h),
-              Text(
-                'SERVICE BASED',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondaryLight,
-                ),
-              ),
-              SizedBox(height: 12.h),
               ScrollableOptionList(
                 maxHeight: 220,
+                title: 'SERVICE BASED',
                 items: controller.serviceKeywords
                     .map(
                       (k) => ScrollableOptionItem(
@@ -410,31 +417,68 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
               Column(
                 children: [
                   ...controller.customKeywords.map(
-                    (keyword) => Padding(
-                      padding: EdgeInsets.only(bottom: 8.h),
-                      child: AppTextField(
-                        title: 'Keyword',
-                        initialValue: keyword,
-                        readOnly: true,
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.delete_outline,
-                              color: AppColors.error.withValues(alpha: 0.5),
-                              size: 20.sp),
-                          onPressed: () =>
-                              controller.removeCustomKeyword(keyword),
-                        ),
+                    (keyword) => EditableKeywordRow(
+                      value: keyword,
+                      onDelete: () => controller.removeCustomKeyword(keyword),
+                      onSave: (value) => controller.updateCustomKeyword(
+                        oldValue: keyword,
+                        newValue: value,
                       ),
                     ),
                   ),
-                  if (controller.canAddMoreKeywords) ...[
-                    AppTextField(
-                      title: 'Enter keyword...',
+                  if (_isAddingCustomKeyword && controller.canAddMoreKeywords)
+                    KeywordInputRow(
                       controller: _customKeywordController,
+                      isReadOnly: false,
+                      hint: 'Enter keyword...',
+                      maxLines: 3,
+                      actionIcon: Icons.check,
+                      actionBackgroundColor:
+                          AppColors.primary.withValues(alpha: 0.12),
+                      actionIconColor: AppColors.primary,
                       onSubmitted: (_) => _addCustomKeywordFromField(),
-                      suffixIcon: IconButton(
-                        onPressed: _addCustomKeywordFromField,
-                        icon: Icon(Icons.add_circle_outline,
-                            size: 20.sp, color: AppColors.primary),
+                      onAction: _addCustomKeywordFromField,
+                    ),
+                  if (controller.canAddMoreKeywords) ...[
+                    Padding(
+                      padding: EdgeInsets.only(top: 8.h),
+                      child: OutlinedButton(
+                        onPressed: _isAddingCustomKeyword
+                            ? _hideCustomKeywordInput
+                            : _showCustomKeywordInput,
+                        style: OutlinedButton.styleFrom(
+                          fixedSize: Size(double.maxFinite, 52.h),
+                          side:
+                              BorderSide(color: AppColors.primary, width: 1.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          backgroundColor:
+                              AppColors.primary.withValues(alpha: 0.05),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              _isAddingCustomKeyword
+                                  ? Icons.close
+                                  : Icons.add_circle_outline,
+                              size: 20.sp,
+                              color: AppColors.primary,
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              _isAddingCustomKeyword
+                                  ? 'Cancel'
+                                  : 'Add Another Keyword',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ] else

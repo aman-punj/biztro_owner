@@ -1,4 +1,5 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
+import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,6 +17,8 @@ class ScrollableOptionList extends StatefulWidget {
     required this.onTap,
     this.maxHeight = 220,
     this.multiSelect = true,
+    this.title,
+    this.titleIconPath,
   });
 
   final List<ScrollableOptionItem> items;
@@ -23,6 +26,8 @@ class ScrollableOptionList extends StatefulWidget {
   final void Function(ScrollableOptionItem item) onTap;
   final double maxHeight;
   final bool multiSelect;
+  final String? title;
+  final String? titleIconPath;
 
   @override
   State<ScrollableOptionList> createState() => _ScrollableOptionListState();
@@ -39,33 +44,78 @@ class _ScrollableOptionListState extends State<ScrollableOptionList> {
 
   @override
   Widget build(BuildContext context) {
-    return RawScrollbar(
-      controller: _scrollController,
-      thumbVisibility: true,
-      thickness: 3.w, // Thin scrollbar as per UI
-      radius: const Radius.circular(10),
-      thumbColor: AppColors.borderLight, // Matches the grey scroll track look
-      padding: EdgeInsets.only(right: 2.w), // Creates the "minor gap" from the edge
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: widget.maxHeight.h),
-        child: ListView.separated(
-          controller: _scrollController,
-          shrinkWrap: true,
-          padding: EdgeInsets.only(right: 12.w), // Spacing between cards and scrollbar
-          physics: const ClampingScrollPhysics(),
-          itemCount: widget.items.length,
-          // No divider between cards in the new UI style
-          separatorBuilder: (_, __) => SizedBox(height: 8.h),
-          itemBuilder: (context, index) {
-            final item = widget.items[index];
-            final isSelected = widget.selectedIds.contains(item.id);
-            return _OptionRow(
-              item: item,
-              isSelected: isSelected,
-              onTap: () => widget.onTap(item),
-            );
-          },
-        ),
+    final hasHeader = (widget.title?.trim().isNotEmpty ?? false);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTokens.cardBackground,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppTokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (hasHeader)
+            Padding(
+              padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 8.h),
+              child: Row(
+                children: [
+                  if (widget.titleIconPath?.trim().isNotEmpty ?? false) ...[
+                    AppImage(
+                      path: widget.titleIconPath!,
+                      width: 14.w,
+                      height: 14.w,
+                      showLoading: false,
+                    ),
+                    SizedBox(width: 6.w),
+                  ],
+                  Expanded(
+                    child: Text(
+                      widget.title!.trim(),
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppTokens.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          RawScrollbar(
+            controller: _scrollController,
+            thumbVisibility: true,
+            thickness: 3.w,
+            radius: const Radius.circular(10),
+            thumbColor: AppTokens.border,
+            padding: EdgeInsets.only(right: 2.w),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: widget.maxHeight.h),
+              child: ListView.separated(
+                controller: _scrollController,
+                shrinkWrap: true,
+                padding: EdgeInsets.fromLTRB(
+                  12.w,
+                  hasHeader ? 0 : 12.h,
+                  12.w,
+                  12.h,
+                ),
+                physics: const ClampingScrollPhysics(),
+                itemCount: widget.items.length,
+                separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                itemBuilder: (context, index) {
+                  final item = widget.items[index];
+                  final isSelected = widget.selectedIds.contains(item.id);
+                  return _OptionRow(
+                    item: item,
+                    isSelected: isSelected,
+                    onTap: () => widget.onTap(item),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -91,14 +141,12 @@ class _OptionRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.r),
         child: Container(
           decoration: BoxDecoration(
-            // Blue tint for selected, white/transparent for unselected
             color: isSelected
-                ? AppColors.primary.withValues(alpha: 0.05)
+                ? AppTokens.brandPrimary.withValues(alpha: 0.05)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10.r),
-            // Border changes color based on selection
             border: Border.all(
-              color: isSelected ? AppColors.primary : AppColors.borderLight,
+              color: isSelected ? AppTokens.brandPrimary : AppTokens.border,
               width: 1.2,
             ),
           ),
@@ -111,24 +159,25 @@ class _OptionRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.textPrimaryLight,
+                    color: AppTokens.textPrimary,
                   ),
                 ),
               ),
-              // The circular check indicator
               Container(
                 width: 20.w,
                 height: 20.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected ? AppColors.primary : Colors.transparent,
+                  color:
+                      isSelected ? AppTokens.brandPrimary : Colors.transparent,
                   border: Border.all(
-                    color: isSelected ? AppColors.primary : AppColors.borderLight,
+                    color:
+                        isSelected ? AppTokens.brandPrimary : AppTokens.border,
                     width: 1.5,
                   ),
                 ),
                 child: isSelected
-                    ? Icon(Icons.check, size: 12.sp, color: Colors.white)
+                    ? Icon(Icons.check, size: 12.sp, color: AppTokens.white)
                     : null,
               ),
             ],
