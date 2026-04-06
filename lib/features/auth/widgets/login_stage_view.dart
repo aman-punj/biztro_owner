@@ -15,7 +15,7 @@ class LoginStageView extends GetView<AuthController> {
     return Column(
       children: [
         AppTextField(
-          hint: 'Mobile No.',
+          title: 'Mobile No.',
           keyboardType: TextInputType.number,
           prefixIcon: Icon(Icons.person_outline_rounded, size: 14.sp),
           initialValue: controller.mobile.value,
@@ -24,7 +24,7 @@ class LoginStageView extends GetView<AuthController> {
         SizedBox(height: 20.h),
         Obx(
           () => AppTextField(
-            hint: 'Password',
+            title: 'Password',
             obscureText: controller.isPasswordHidden.value,
             prefixIcon: Icon(Icons.lock_outline_rounded, size: 14.sp),
             suffixIcon: IconButton(

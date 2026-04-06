@@ -12,10 +12,14 @@ class AppPageShell extends StatelessWidget {
     this.onHelp,
     this.onYoutube,
     this.showBack = true,
-    this.headerHeight = 140,  
-    this.overlapAmount = 40, 
+    this.headerHeight = 140,
+    this.overlapAmount = 40,
     this.headerImage,
     this.headerColor = AppTokens.brandPrimary,
+    this.useFloatingSurface = true,
+    this.contentHorizontalMargin = 26,
+    this.contentTopRadius = 25,
+    this.contentBackgroundColor = AppTokens.cardBackground,
   });
 
   final String title;
@@ -28,6 +32,10 @@ class AppPageShell extends StatelessWidget {
   final double overlapAmount;
   final Widget? headerImage;
   final Color headerColor;
+  final bool useFloatingSurface;
+  final double contentHorizontalMargin;
+  final double contentTopRadius;
+  final Color contentBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +83,12 @@ class AppPageShell extends StatelessWidget {
                           width: 36.w,
                           height: 36.w,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: AppTokens.white.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.arrow_back,
-                            color: Colors.white,
+                            color: AppTokens.textOnBrand,
                             size: 20.sp,
                           ),
                         ),
@@ -93,7 +101,7 @@ class AppPageShell extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 22.sp,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppTokens.textOnBrand,
                     ),
                   ),
 
@@ -110,31 +118,40 @@ class AppPageShell extends StatelessWidget {
             ),
           ),
 
-          // Content Card (The White Body)
           Positioned(
             top: contentTop,
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal:
-                      26), // To ensure content doesn't get hidden under header
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(25),
-                ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: useFloatingSurface ? contentHorizontalMargin.w : 0,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(25.r),
-                ),
-                child: child,
-              ),
+              child: _buildContentShell(),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContentShell() {
+    if (!useFloatingSurface) {
+      return child;
+    }
+
+    final borderRadius = BorderRadius.vertical(
+      top: Radius.circular(contentTopRadius.r),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: contentBackgroundColor,
+        borderRadius: borderRadius,
+      ),
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: child,
       ),
     );
   }
@@ -158,7 +175,7 @@ class _HeaderActions extends StatelessWidget {
               'Help',
               style: TextStyle(
                 fontSize: 14.sp,
-                color: Colors.white,
+                color: AppTokens.textOnBrand,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -169,8 +186,8 @@ class _HeaderActions extends StatelessWidget {
           GestureDetector(
             onTap: onYoutube,
             child: Icon(
-              Icons.play_circle_fill, // Filled icon to match brand logo look
-              color: Colors.redAccent,
+              Icons.play_circle_fill,
+              color: AppTokens.textOnBrand,
               size: 24.sp,
             ),
           ),

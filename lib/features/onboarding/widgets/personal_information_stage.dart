@@ -179,13 +179,13 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
               children: [
                 AppTextField(
                   controller: _nameController,
-                  hint: 'Full Name',
+                  title: 'Full Name',
                   onChanged: (value) => controller.p3FullName.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _emailController,
-                  hint: 'Email',
+                  title: 'Email',
                   onChanged: (value) => controller.p3Email.value = value,
                 ),
                 SizedBox(height: 12.h),
@@ -194,7 +194,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                     Expanded(
                       child: AppTextField(
                         controller: _mobileController,
-                        hint: 'Mobile No.',
+                        title: 'Mobile No.',
                         keyboardType: TextInputType.phone,
                         onChanged: (value) => controller.p3Mobile.value = value,
                       ),
@@ -203,7 +203,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                     Expanded(
                       child: AppTextField(
                         controller: _whatsAppController,
-                        hint: 'WhatsApp No.',
+                        title: 'WhatsApp No.',
                         keyboardType: TextInputType.phone,
                         onChanged: (value) =>
                             controller.p3WhatsApp.value = value,
@@ -214,7 +214,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _landlineController,
-                  hint: 'Landline (Optional)',
+                  title: 'Landline (Optional)',
                   keyboardType: TextInputType.phone,
                   onChanged: (value) => controller.p3Landline.value = value,
                 ),
@@ -233,14 +233,14 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
               children: [
                 AppTextField(
                   controller: _businessEmailController,
-                  hint: 'Business Email',
+                  title: 'Business Email',
                   onChanged: (value) =>
                       controller.p3BusinessEmail.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _businessWhatsAppController,
-                  hint: 'Business WhatsApp',
+                  title: 'Business WhatsApp',
                   keyboardType: TextInputType.phone,
                   onChanged: (value) =>
                       controller.p3BusinessWhatsApp.value = value,
@@ -248,7 +248,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _businessLandlineController,
-                  hint: 'Business Landline (Optional)',
+                  title: 'Business Landline (Optional)',
                   keyboardType: TextInputType.phone,
                   onChanged: (value) =>
                       controller.p3BusinessLandline.value = value,
@@ -268,25 +268,25 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
               children: [
                 AppTextField(
                   controller: _addressController,
-                  hint: 'Building/Shop No.',
+                  title: 'Building/Shop No.',
                   onChanged: (value) => controller.p3Address.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _streetController,
-                  hint: 'Street Name',
+                  title: 'Street Name',
                   onChanged: (value) => controller.p3StreetNo.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _landmarkController,
-                  hint: 'Landmark',
+                  title: 'Landmark',
                   onChanged: (value) => controller.p3Landmark.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _pincodeController,
-                  hint: 'Pincode',
+                  title: 'Pincode',
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     controller.onPincodeChanged(value);
@@ -298,7 +298,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                     Expanded(
                       child: AppTextField(
                         controller: _stateController,
-                        hint: 'State',
+                        title: 'State',
                         readOnly: true,
                         suffixIcon: _loadingSuffix(),
                       ),
@@ -307,7 +307,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                     Expanded(
                       child: AppTextField(
                         controller: _cityController,
-                        hint: 'City',
+                        title: 'City',
                         readOnly: true,
                         suffixIcon: _loadingSuffix(),
                       ),
@@ -321,7 +321,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                     child: Obx(
                       () => AppTextField(
                         controller: _areaController,
-                        hint: controller.p3AreaList.isEmpty
+                        title: controller.p3AreaList.isEmpty
                             ? 'Enter pincode first'
                             : 'Select Area',
                         readOnly: true,

@@ -16,14 +16,14 @@ class RegisterStageView extends GetView<AuthController> {
     return Column(
       children: [
         AppTextField(
-          hint: 'Business Name',
+          title: 'Business Name',
           prefixIcon: Icon(Icons.storefront_outlined, size: 14.sp),
           initialValue: controller.businessName.value,
           onChanged: controller.onBusinessNameChanged,
         ),
         SizedBox(height: 8.h),
         AppTextField(
-          hint: 'Mobile No.',
+          title: 'Mobile No.',
           keyboardType: TextInputType.phone,
           prefixIcon: Icon(Icons.phone_android_rounded, size: 14.sp),
           initialValue: controller.mobile.value,
@@ -31,7 +31,7 @@ class RegisterStageView extends GetView<AuthController> {
         ),
         SizedBox(height: 8.h),
         AppTextField(
-          hint: 'Email ID',
+          title: 'Email ID',
           keyboardType: TextInputType.emailAddress,
           prefixIcon: Icon(Icons.mail_outline_rounded, size: 14.sp),
           initialValue: controller.email.value,
@@ -40,7 +40,7 @@ class RegisterStageView extends GetView<AuthController> {
         SizedBox(height: 8.h),
         Obx(
           () => AppTextField(
-            hint: 'Password',
+            title: 'Password',
             obscureText: controller.isPasswordHidden.value,
             prefixIcon: Icon(Icons.lock_outline_rounded, size: 14.sp),
             suffixIcon: IconButton(
@@ -59,7 +59,7 @@ class RegisterStageView extends GetView<AuthController> {
         SizedBox(height: 8.h),
         Obx(
           () => AppTextField(
-            hint: 'Confirm Password',
+            title: 'Confirm Password',
             obscureText: controller.isConfirmPasswordHidden.value,
             prefixIcon: Icon(Icons.lock_outline_rounded, size: 14.sp),
             suffixIcon: IconButton(

@@ -1,13 +1,13 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
-import 'package:bizrato_owner/core/theme/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({
-    required this.hint,
+    required this.title, // Renamed hint to title for clarity
     super.key,
+    this.hintText,
     this.initialValue,
     this.onChanged,
     this.prefixIcon,
@@ -27,7 +27,8 @@ class AppTextField extends StatelessWidget {
     this.autofocus = false,
   });
 
-  final String hint;
+  final String title;
+  final String? hintText;
   final String? initialValue;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
@@ -48,36 +49,72 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height ?? AppDimensions.inputHeight,
-      child: TextFormField(
-        controller: controller,
-        focusNode: focusNode,
-        textInputAction: textInputAction,
-        autofocus: autofocus,
-        initialValue: controller == null ? initialValue : null,
-        onChanged: onChanged,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        textAlign: textAlign,
-        maxLength: maxLength,
-        inputFormatters: inputFormatters,
-        readOnly: readOnly,
-        onFieldSubmitted: onSubmitted,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: AppColors.textFieldBackground,
-          counterText: '',
-          hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // External Title
+        Padding(
+          padding: EdgeInsets.only(left: 2.w, bottom: 6.h),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.black.withOpacity(0.8),
+            ),
           ),
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
         ),
-      ),
+
+        // Input Box
+        SizedBox(
+          height: height ?? 48.h, // Reduced height to match screenshot
+          child: TextFormField(
+            controller: controller,
+            focusNode: focusNode,
+            textInputAction: textInputAction,
+            autofocus: autofocus,
+            initialValue: controller == null ? initialValue : null,
+            onChanged: onChanged,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            textAlign: textAlign,
+            maxLength: maxLength,
+            inputFormatters: inputFormatters,
+            readOnly: readOnly,
+            onFieldSubmitted: onSubmitted,
+            maxLines: maxLines,
+            style: TextStyle(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w400, // Medium weight for the value
+              color: Colors.black,
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.textFieldBackground,
+              counterText: '',
+              hintText: hintText,
+              hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
+              // Smaller padding for a more compact look
+              contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              prefixIcon: prefixIcon,
+              suffixIcon: suffixIcon,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r), // Slightly smaller radius
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

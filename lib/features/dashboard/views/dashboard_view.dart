@@ -286,7 +286,6 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-
     return SliverAppBar(
       backgroundColor: AppColors.white,
       // ✅ Title bar (pinned) = WHITE
@@ -310,7 +309,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                 padding: const EdgeInsets.all(4.0),
                 child: Icon(
                   Icons.menu,
-                  color: AppColors.textPrimaryLight, // ✅ Dark on white
+                  color: AppColors.textPrimaryLight,
                   size: 24.sp,
                 ),
               ),

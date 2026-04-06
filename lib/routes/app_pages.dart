@@ -15,6 +15,12 @@ import 'package:bizrato_owner/features/onboarding/views/onboarding_view.dart';
 import 'package:bizrato_owner/features/splash/views/splash_view.dart';
 import 'package:bizrato_owner/features/trusted_shield/controllers/trusted_shield_binding.dart';
 import 'package:bizrato_owner/features/trusted_shield/views/trusted_shield_view.dart';
+import 'package:bizrato_owner/features/course/bindings/course_binding.dart';
+import 'package:bizrato_owner/features/course/views/course_details_view.dart';
+import 'package:bizrato_owner/features/course/views/course_list_view.dart';
+import 'package:bizrato_owner/features/festival/bindings/festival_binding.dart';
+import 'package:bizrato_owner/features/festival/views/festival_details_view.dart';
+import 'package:bizrato_owner/features/festival/views/festival_list_view.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
@@ -65,6 +71,24 @@ class AppPages {
       name: AppRoutes.editLocationInfo,
       page: EditLocationInfoView.new,
       binding: EditLocationInfoBinding(),
+    ),
+    GetPage<FestivalListView>(
+      name: AppRoutes.festivals,
+      page: FestivalListView.new,
+      binding: FestivalBinding(),
+    ),
+    GetPage<FestivalDetailsView>(
+      name: AppRoutes.festivalDetails,
+      page: FestivalDetailsView.new,
+    ),
+    GetPage<CourseListView>(
+      name: AppRoutes.courses,
+      page: CourseListView.new,
+      binding: CourseBinding(),
+    ),
+    GetPage<CourseDetailsView>(
+      name: AppRoutes.courseDetails,
+      page: CourseDetailsView.new,
     ),
   ];
 }

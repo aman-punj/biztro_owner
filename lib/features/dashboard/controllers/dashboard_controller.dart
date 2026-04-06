@@ -1,7 +1,7 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/network/api_client.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/utils/formatters.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -82,13 +82,12 @@ class DashboardController extends GetxController {
   final xLabels = <String>[].obs; // Labels like 'Books', 'Clothing'
 
   final legendCategories = <LeadAnalyticsCategory>[
-    // Chart palette — intentional, not theme colors
-    const LeadAnalyticsCategory(label: 'Books', color: Color(0xFFFF6B35)),
-    const LeadAnalyticsCategory(label: 'Clothing', color: Color(0xFF2196F3)),
-    const LeadAnalyticsCategory(label: 'Electronics', color: Color(0xFF0D47A1)),
-    const LeadAnalyticsCategory(label: 'Garden', color: Color(0xFF90CAF9)),
-    const LeadAnalyticsCategory(label: 'Sorts', color: Color(0xFFC2185B)),
-    const LeadAnalyticsCategory(label: 'Fashion', color: Color(0xFF00BCD4)),
+    const LeadAnalyticsCategory(label: 'Books', color: AppTokens.brandAccent),
+    const LeadAnalyticsCategory(label: 'Clothing', color: AppTokens.brandPrimary),
+    const LeadAnalyticsCategory(label: 'Electronics', color: AppTokens.brandPrimaryDark),
+    const LeadAnalyticsCategory(label: 'Garden', color: AppTokens.info),
+    const LeadAnalyticsCategory(label: 'Sorts', color: AppTokens.online),
+    const LeadAnalyticsCategory(label: 'Fashion', color: AppTokens.star),
   ].obs;
 
   final quickActions = <Map<String, String>>[
@@ -137,25 +136,25 @@ class DashboardController extends GetxController {
               label: 'Business Leads',
               value: AppFormatters.formatCount(stats.enquiryCount),
               iconPath: AppAssets.statHotLeads,
-              iconBg: AppColors.insightIconBlue,
+              iconBg: AppTokens.insightIconBlue,
             ),
             BusinessInsightStat(
               label: 'Total Clicks',
               value: AppFormatters.formatCount(stats.totalClickCount),
               iconPath: AppAssets.statTotalLeads,
-              iconBg: AppColors.insightIconPeach,
+              iconBg: AppTokens.insightIconPeach,
             ),
             BusinessInsightStat(
               label: 'Add Calls',
               value: AppFormatters.formatCount(stats.contactCount),
               iconPath: AppAssets.statAddCode,
-              iconBg: AppColors.insightIconLavender,
+              iconBg: AppTokens.insightIconLavender,
             ),
             BusinessInsightStat(
               label: 'Total Views',
               value: AppFormatters.formatCount(stats.viewCount),
               iconPath: AppAssets.statTotalViews,
-              iconBg: AppColors.insightIconMint,
+              iconBg: AppTokens.insightIconMint,
             ),
           ]);
         }

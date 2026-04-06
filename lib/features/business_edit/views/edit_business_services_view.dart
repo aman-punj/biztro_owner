@@ -170,7 +170,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                       children: [
                         AppTextField(
                           controller: _businessNameController,
-                          hint: 'Business Name',
+                          title: 'Business Name',
                           readOnly: true,
                           suffixIcon: Icon(
                             Icons.lock_outline,
@@ -181,7 +181,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                         SizedBox(height: 12.h),
                         AppTextField(
                           controller: _websiteController,
-                          hint: 'Website (Optional)',
+                          title: 'Website (Optional)',
                           keyboardType: TextInputType.url,
                           onChanged: (value) =>
                               controller.page2Website.value = value,
@@ -189,14 +189,14 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                         SizedBox(height: 12.h),
                         AppTextField(
                           controller: _famousForController,
-                          hint: 'Famous For/Speciality',
+                          title: 'Famous For/Speciality',
                           onChanged: (value) =>
                               controller.page2FamousFor.value = value,
                         ),
                         SizedBox(height: 12.h),
                         AppTextField(
                           controller: _estbYearController,
-                          hint: 'Establishment Year',
+                          title: 'Establishment Year',
                           keyboardType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly,
@@ -207,7 +207,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                         SizedBox(height: 12.h),
                         AppTextField(
                           controller: _businessEmailController,
-                          hint: 'Business Email (Optional)',
+                          title: 'Business Email (Optional)',
                           keyboardType: TextInputType.emailAddress,
                           onChanged: (value) =>
                               controller.page2BusinessEmail.value = value,
@@ -215,7 +215,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                         SizedBox(height: 12.h),
                         AppTextField(
                           controller: _businessWhatsAppController,
-                          hint: 'Business WhatsApp (Optional)',
+                          title: 'Business WhatsApp (Optional)',
                           keyboardType: TextInputType.phone,
                           onChanged: (value) =>
                               controller.page2BusinessWhatsApp.value = value,
@@ -223,7 +223,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                         SizedBox(height: 12.h),
                         AppTextField(
                           controller: _businessLandlineController,
-                          hint: 'Business Landline (Optional)',
+                          title: 'Business Landline (Optional)',
                           keyboardType: TextInputType.phone,
                           onChanged: (value) =>
                               controller.page2BusinessLandline.value = value,
@@ -231,7 +231,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  // SizedBox(height: 16.h),
                   OnboardingSectionCard(
                     title: 'SERVICES OFFERED',
                     child: Obx(
@@ -244,7 +244,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  // SizedBox(height: 16.h),
                   OnboardingSectionCard(
                     title: 'FACILITIES',
                     child: Obx(
@@ -257,14 +257,13 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 24.h),
-                  Obx(
-                    () => PrimaryButton(
+                  SafeArea(child: Obx(
+                        () => PrimaryButton(
                       label: 'SAVE & CONTINUE',
                       isLoading: controller.isSaving.value,
                       onPressed: controller.saveAndUpdate,
                     ),
-                  ),
+                  )),
                 ],
               ),
             );

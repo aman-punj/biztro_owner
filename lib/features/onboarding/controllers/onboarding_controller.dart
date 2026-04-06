@@ -776,8 +776,7 @@ class OnboardingController extends GetxController {
         return;
       }
 
-      await Get.find<AuthStorage>().saveProfileStep(3);
-      // Replace AppRoutes.dashboard with your actual home route constant if different.
+      await _authStorage.saveProfileStep(AuthStorage.completedProfileStep);
       Get.offAllNamed(AppRoutes.dashboard);
     } finally {
       isSavingContact.value = false;

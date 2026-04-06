@@ -20,11 +20,11 @@ class AuthController extends GetxController {
   final isConfirmPasswordHidden = true.obs;
   final rememberMe = false.obs;
 
-  final email = 'apsingh.amanpreet@gmail.com'.obs;
-  final password = 'aman@12345'.obs;
-  final businessName = 'Aman Business'.obs;
-  final confirmPassword = 'aman@12345'.obs;
-  final mobile = '930932537'.obs;
+  final email = ''.obs;
+  final password = ''.obs;
+  final businessName = ''.obs;
+  final confirmPassword = ''.obs;
+  final mobile = ''.obs;
   final otp = List<String>.filled(4, '').obs;
 
   final isSubmitting = false.obs;
@@ -241,7 +241,8 @@ class AuthController extends GetxController {
         ));
 
     if (!success) return;
-    Get.offNamed(AppRoutes.dashboard);
+    setStage(AuthStage.login);
+    _setInfo('Verification completed. Please sign in to continue.');
   }
 
   Future<bool> _perform(

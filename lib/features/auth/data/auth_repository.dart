@@ -51,7 +51,6 @@ class AuthRepository {
     final user = UserModel.fromJson(userPayload);
     await Future.wait([
       authStorage.saveToken(token),
-      authStorage.setLoggedIn(true),
       authStorage.saveMerchantId(user.merchantId),
       authStorage.saveProfileStep(user.businessProfileStep),
       authStorage.saveUserJson(jsonEncode(user.toJson())),

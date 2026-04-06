@@ -45,12 +45,14 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
     final args = Get.arguments;
     if (args is Map<String, dynamic>) {
       final direct = args['businessName']?.toString();
-      final merchantId = args['User']['MerchantId']?.toString();
+      final userPayload = args['User'] ?? args['user'];
+      final merchantId = userPayload is Map<String, dynamic>
+          ? userPayload['MerchantId']?.toString()
+          : null;
 
       controller.setMerchantId(merchantId ?? '');
       if (direct != null && direct.isNotEmpty) return direct;
 
-      final userPayload = args['User'] ?? args['user'];
       if (userPayload is Map<String, dynamic>) {
         final outlet = userPayload['OutletName']?.toString();
 
@@ -159,7 +161,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
               children: [
                 AppTextField(
                   controller: _searchController,
-                  hint: 'e.g. Sweets, Restaurant...',
+                  title: 'e.g. Sweets, Restaurant...',
                   readOnly: controller.isCategoryRestored.value,
                   prefixIcon: Icon(
                     Icons.search,
@@ -411,7 +413,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                     (keyword) => Padding(
                       padding: EdgeInsets.only(bottom: 8.h),
                       child: AppTextField(
-                        hint: 'Keyword',
+                        title: 'Keyword',
                         initialValue: keyword,
                         readOnly: true,
                         suffixIcon: IconButton(
@@ -426,7 +428,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                   ),
                   if (controller.canAddMoreKeywords) ...[
                     AppTextField(
-                      hint: 'Enter keyword...',
+                      title: 'Enter keyword...',
                       controller: _customKeywordController,
                       onSubmitted: (_) => _addCustomKeywordFromField(),
                       suffixIcon: IconButton(

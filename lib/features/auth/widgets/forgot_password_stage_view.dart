@@ -15,7 +15,7 @@ class ForgotPasswordStageView extends GetView<AuthController> {
     return Column(
       children: [
         AppTextField(
-          hint: 'Email ID/Mobile No.',
+          title: 'Email ID/Mobile No.',
           keyboardType: TextInputType.emailAddress,
           prefixIcon: Icon(Icons.person_outline_rounded, size: 14.sp),
           initialValue: controller.email.value,

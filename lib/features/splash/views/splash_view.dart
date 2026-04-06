@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bizrato_owner/core/constants/app_assets.dart';
+import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
@@ -39,8 +40,23 @@ class _SplashViewState extends State<SplashView>
 
     _navigationTimer = Timer(
       const Duration(milliseconds: 2400),
-      () => Get.offNamed(AppRoutes.login),
+      _handleStartupNavigation,
     );
+  }
+
+  void _handleStartupNavigation() {
+    final authStorage = Get.find<AuthStorage>();
+    if (authStorage.isLoggedIn) {
+      Get.offNamed(AppRoutes.dashboard);
+      return;
+    }
+
+    if (authStorage.hasActiveSession) {
+      Get.offNamed(AppRoutes.onboarding);
+      return;
+    }
+
+    Get.offNamed(AppRoutes.login);
   }
 
   @override

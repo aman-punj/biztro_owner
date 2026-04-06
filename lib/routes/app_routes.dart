@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
-import 'package:flutter/material.dart'; // For Material widgets
 
 @Preview(name: 'My Sample Text')
 Widget mySampleText() {
@@ -18,4 +18,8 @@ class AppRoutes {
   static const editBusinessDetails = '/edit-business-details';
   static const editBusinessServices = '/edit-business-services';
   static const editLocationInfo = '/edit-location-info';
+  static const festivals = '/festivals';
+  static const festivalDetails = '/festival-details';
+  static const courses = '/courses';
+  static const courseDetails = '/course-details';
 }

@@ -21,4 +21,5 @@ class AppAssets {
   static const statTotalViews = 'assets/icons/total_views.png';
   static const youtubeRedIcon = 'assets/icons/youtube_red_icon.svg';
   static const logoutRedIcon = 'assets/icons/logout_red_icon.svg';
+  static const sparkleIcon = 'assets/icons/sparkling_icon.svg';
 }

@@ -146,7 +146,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                         children: [
                           AppTextField(
                             controller: _searchController,
-                            hint: 'e.g. Sweets, Restaurant...',
+                            title: 'e.g. Sweets, Restaurant...',
                             readOnly: controller.isCategoryRestored.value,
                             prefixIcon: Icon(
                               Icons.search,
@@ -187,7 +187,6 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.h),
                   Obx(
                     () => AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
@@ -200,14 +199,13 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                           : const SizedBox.shrink(),
                     ),
                   ),
-                  SizedBox(height: 16.h),
-                  Obx(
-                    () => PrimaryButton(
+                  SafeArea(child: Obx(
+                        () => PrimaryButton(
                       label: 'SAVE & CONTINUE',
                       isLoading: controller.isSaving.value,
                       onPressed: controller.saveAndUpdate,
                     ),
-                  ),
+                  )),
                 ],
               ),
             );
@@ -406,7 +404,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                     (keyword) => Padding(
                       padding: EdgeInsets.only(bottom: 8.h),
                       child: AppTextField(
-                        hint: 'Keyword',
+                        title: 'Keyword',
                         initialValue: keyword,
                         readOnly: true,
                         suffixIcon: IconButton(
@@ -423,7 +421,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                   ),
                   if (controller.canAddMoreKeywords) ...[
                     AppTextField(
-                      hint: 'Enter keyword...',
+                      title: 'Enter keyword...',
                       controller: _customKeywordController,
                       onSubmitted: (_) => _addCustomKeywordFromField(),
                       suffixIcon: IconButton(

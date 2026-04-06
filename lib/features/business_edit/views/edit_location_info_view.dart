@@ -94,29 +94,36 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
               children: [
                 OnboardingSectionCard(
                   title: 'Location Information',
+                  titleIcon:  Icon(
+                    Icons.add_location_rounded,
+                    size: 18.sp,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.primary,
+                  ),
                   child: Column(
                     children: [
                       AppTextField(
                         controller: _addressController,
-                        hint: 'Building / Shop No.',
+                        title: 'Building / Shop No.',
                         onChanged: (value) => controller.address.value = value,
                       ),
                       SizedBox(height: 12.h),
                       AppTextField(
                         controller: _streetController,
-                        hint: 'Street Name',
+                        title: 'Street Name',
                         onChanged: (value) => controller.streetNo.value = value,
                       ),
                       SizedBox(height: 12.h),
                       AppTextField(
                         controller: _landmarkController,
-                        hint: 'Landmark',
+                        title: 'Landmark',
                         onChanged: (value) => controller.landmark.value = value,
                       ),
                       SizedBox(height: 12.h),
                       AppTextField(
                         controller: _pincodeController,
-                        hint: 'Pincode',
+                        title: 'Pincode',
                         keyboardType: TextInputType.number,
                         onChanged: controller.onPincodeChanged,
                         suffixIcon: Obx(
@@ -136,7 +143,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                           Expanded(
                             child: AppTextField(
                               controller: _stateController,
-                              hint: 'State',
+                              title: 'State',
                               readOnly: true,
                             ),
                           ),
@@ -144,7 +151,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                           Expanded(
                             child: AppTextField(
                               controller: _cityController,
-                              hint: 'City',
+                              title: 'City',
                               readOnly: true,
                             ),
                           ),
@@ -157,7 +164,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                           child: Obx(
                             () => AppTextField(
                               controller: _areaController,
-                              hint: controller.areaList.isEmpty
+                              title: controller.areaList.isEmpty
                                   ? 'Enter pincode first'
                                   : 'Select Area',
                               readOnly: true,

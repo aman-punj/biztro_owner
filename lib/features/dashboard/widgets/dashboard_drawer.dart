@@ -79,12 +79,18 @@ class DashboardDrawer extends StatelessWidget {
                 _DrawerItem(
                   icon: Icons.school,
                   text: 'Course',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.courses);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.celebration,
                   text: 'Festival',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.festivals);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.people,

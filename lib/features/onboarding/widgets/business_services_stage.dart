@@ -188,25 +188,25 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
               children: [
                 AppTextField(
                   controller: _businessNameController,
-                  hint: 'Business Name',
+                  title: 'Business Name',
                   onChanged: (value) => controller.page2BusinessName.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _websiteController,
-                  hint: 'Website/Optional',
+                  title: 'Website/Optional',
                   onChanged: (value) => controller.page2Website.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _famousForController,
-                  hint: 'Famous For',
+                  title: 'Famous For',
                   onChanged: (value) => controller.page2FamousFor.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _estbYearController,
-                  hint: 'Establishment Year',
+                  title: 'Establishment Year',
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
