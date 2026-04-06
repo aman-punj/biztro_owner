@@ -37,7 +37,7 @@ class MessagesView extends GetView<MessagesController> {
               () => Text(
                 '${controller.filteredConversations.length} Conversations',
                 style: TextStyle(
-                  color: AppColors.white.withOpacity(0.8),
+                  color: AppColors.white.withValues(alpha: 0.8),
                   fontSize: 9.sp,
                 ),
               ),
@@ -50,7 +50,7 @@ class MessagesView extends GetView<MessagesController> {
             onPressed: () {},
             icon: CircleAvatar(
               radius: 14.r,
-              backgroundColor: AppColors.white.withOpacity(0.2),
+              backgroundColor: AppColors.white.withValues(alpha: 0.2),
               child: Icon(
                 Icons.person_outline,
                 size: 16.sp,
@@ -69,7 +69,7 @@ class MessagesView extends GetView<MessagesController> {
               color: AppColors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),

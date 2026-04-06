@@ -103,7 +103,7 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
         color: AppColors.white,
         boxShadow: [
           BoxShadow(
-            color: AppColors.surfaceDark.withOpacity(0.06),
+            color: AppColors.surfaceDark.withValues(alpha: 0.06),
             offset: const Offset(0, -2),
             blurRadius: 10,
           ),
@@ -293,7 +293,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
       pinned: true,
       elevation: 0,
       scrolledUnderElevation: 0,
-      shadowColor: AppColors.surfaceDark.withOpacity(0.10),
+      shadowColor: AppColors.surfaceDark.withValues(alpha: 0.10),
       automaticallyImplyLeading: false,
       surfaceTintColor: Colors.transparent,
 
@@ -355,7 +355,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                     Text(
                       'Welcome to Haldiram Restaurant',
                       style: TextStyle(
-                        color: AppColors.white.withOpacity(0.88),
+                        color: AppColors.white.withValues(alpha: 0.88),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -370,7 +370,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.surfaceDark.withOpacity(0.08),
+                            color: AppColors.surfaceDark.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),

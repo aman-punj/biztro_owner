@@ -1,5 +1,6 @@
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -45,92 +46,94 @@ class AppPageShell extends StatelessWidget {
     final headerTotalHeight = headerHeight.h + topPadding;
     final contentTop = headerTotalHeight - safeOverlap;
 
-    return Scaffold(
-      backgroundColor: AppTokens.screenBackground,
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        children: [
-          // Blue Header Background
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: headerTotalHeight,
-            child: CustomPaint(
-              painter: _AppHeaderPainter(color: headerColor),
-              child: Container(),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: AppTokens.screenBackground,
+        resizeToAvoidBottomInset: true,
+        body: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: headerTotalHeight,
+              child: CustomPaint(
+                painter: _AppHeaderPainter(color: headerColor),
+                child: Container(),
+              ),
             ),
-          ),
-
-          // Header Content (Back, Title, Help/YT)
-          Positioned(
-            top: topPadding,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 100.h, // Fixed height for the navigation area
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Back Button (Left)
-                  if (showBack)
-                    Positioned(
-                      left: 0,
-                      child: GestureDetector(
-                        onTap: onBack ?? Get.back,
-                        child: Container(
-                          width: 36.w,
-                          height: 36.w,
-                          decoration: BoxDecoration(
-                            color: AppTokens.white.withOpacity(0.2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: AppTokens.textOnBrand,
-                            size: 20.sp,
+            Positioned(
+              top: topPadding,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 100.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (showBack)
+                      Positioned(
+                        left: 0,
+                        child: GestureDetector(
+                          onTap: onBack ?? Get.back,
+                          child: Container(
+                            width: 36.w,
+                            height: 36.w,
+                            decoration: BoxDecoration(
+                              color: AppTokens.white.withValues(alpha: 0.2),
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppTokens.white.withValues(alpha: 0.2),
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: AppTokens.textOnBrand,
+                              size: 20.sp,
+                            ),
                           ),
                         ),
                       ),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppTokens.textOnBrand,
+                      ),
                     ),
-
-                  // Title (Center)
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppTokens.textOnBrand,
+                    Positioned(
+                      right: 0,
+                      child: _HeaderActions(
+                        onHelp: onHelp,
+                        onYoutube: onYoutube,
+                      ),
                     ),
-                  ),
-
-                  // Actions (Right)
-                  Positioned(
-                    right: 0,
-                    child: _HeaderActions(
-                      onHelp: onHelp,
-                      onYoutube: onYoutube,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-
-          Positioned(
-            top: contentTop,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: useFloatingSurface ? contentHorizontalMargin.w : 0,
+            Positioned(
+              top: contentTop,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: useFloatingSurface ? contentHorizontalMargin.w : 0,
+                ),
+                child: _buildContentShell(),
               ),
-              child: _buildContentShell(),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

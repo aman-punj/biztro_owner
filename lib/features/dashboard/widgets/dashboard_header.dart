@@ -43,7 +43,7 @@ class DashboardHeader extends GetView<DashboardController> {
           Text(
             'Welcome to Haldiram',
             style: TextStyle(
-              color: AppColors.white.withOpacity(0.85),
+              color: AppColors.white.withValues(alpha: 0.85),
               fontSize: 11.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -53,7 +53,7 @@ class DashboardHeader extends GetView<DashboardController> {
           Container(
             padding: EdgeInsets.all(10.r),
             decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(0.14),
+              color: AppColors.white.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Obx(
@@ -65,7 +65,7 @@ class DashboardHeader extends GetView<DashboardController> {
                     child: Container(
                       width: 54.w,
                       height: 54.w,
-                      color: AppColors.white.withOpacity(0.2),
+                      color: AppColors.white.withValues(alpha: 0.2),
                       child: Icon(
                         Icons.storefront_outlined,
                         color: AppColors.white,
@@ -90,7 +90,7 @@ class DashboardHeader extends GetView<DashboardController> {
                         Text(
                           controller.businessType.value,
                           style: TextStyle(
-                            color: AppColors.white.withOpacity(0.75),
+                            color: AppColors.white.withValues(alpha: 0.75),
                             fontSize: 10.sp,
                           ),
                         ),
@@ -137,7 +137,7 @@ class _NotifIcon extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: AppColors.white.withOpacity(0.18),
+        color: AppColors.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Icon(icon, color: AppColors.white, size: 18.sp),

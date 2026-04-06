@@ -89,10 +89,10 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                   Container(
                     padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
-                        color: AppColors.primary.withOpacity(0.2),
+                        color: AppColors.primary.withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
@@ -101,7 +101,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                           width: 40.w,
                           height: 40.w,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Icon(
@@ -233,7 +233,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
         border: Border.all(color: AppColors.borderLight),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textSecondaryLight.withOpacity(0.1),
+            color: AppColors.textSecondaryLight.withValues(alpha: 0.1),
             blurRadius: 10,
           ),
         ],
@@ -410,7 +410,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                         suffixIcon: IconButton(
                           icon: Icon(
                             Icons.delete_outline,
-                            color: AppColors.error.withOpacity(0.5),
+                            color: AppColors.error.withValues(alpha: 0.5),
                             size: 20.sp,
                           ),
                           onPressed: () =>

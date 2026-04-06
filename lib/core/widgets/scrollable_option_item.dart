@@ -93,7 +93,7 @@ class _OptionRow extends StatelessWidget {
           decoration: BoxDecoration(
             // Blue tint for selected, white/transparent for unselected
             color: isSelected
-                ? AppColors.primary.withOpacity(0.05)
+                ? AppColors.primary.withValues(alpha: 0.05)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10.r),
             // Border changes color based on selection

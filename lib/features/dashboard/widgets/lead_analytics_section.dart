@@ -15,7 +15,7 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.borderLight.withOpacity(0.5)),
+        border: Border.all(color: AppColors.borderLight.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,11 +90,11 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
         drawVerticalLine: true,
         horizontalInterval: 10,
         getDrawingHorizontalLine: (value) => FlLine(
-          color: Colors.grey.withOpacity(0.15),
+          color: Colors.grey.withValues(alpha: 0.15),
           strokeWidth: 1,
         ),
         getDrawingVerticalLine: (value) => FlLine(
-          color: Colors.grey.withOpacity(0.15),
+          color: Colors.grey.withValues(alpha: 0.15),
           strokeWidth: 1,
         ),
       ),
@@ -149,7 +149,7 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
           // Ensure your controller provides points matching the bar heights
           spots: controller.lineSpots,
           isCurved: false,
-          color: Colors.grey.withOpacity(0.5),
+          color: Colors.grey.withValues(alpha: 0.5),
           barWidth: 1,
           isStrokeCapRound: true,
           dotData: const FlDotData(show: false), // Hide dots to keep it clean

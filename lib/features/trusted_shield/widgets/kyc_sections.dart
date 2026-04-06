@@ -154,7 +154,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     border: Border.all(
                       color: controller.isFaceDetected.value
                           ? AppColors.onlineIndicator
-                          : AppColors.white.withOpacity(0.4),
+                          : AppColors.white.withValues(alpha: 0.4),
                       width: 2.5,
                     ),
                   ),
@@ -163,7 +163,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                   Icon(
                     Icons.person_outline_rounded,
                     size: 80.sp,
-                    color: AppColors.white.withOpacity(0.3),
+                    color: AppColors.white.withValues(alpha: 0.3),
                   ),
                 ],
                 if (controller.isScanning.value) ...[
@@ -173,7 +173,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     right: 0,
                     child: LinearProgressIndicator(
                       value: controller.scanProgress.value,
-                      backgroundColor: AppColors.white.withOpacity(0.2),
+                      backgroundColor: AppColors.white.withValues(alpha: 0.2),
                       color: AppColors.onlineIndicator,
                       minHeight: 3,
                     ),
@@ -201,7 +201,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                       Text(
                         'Facial Recognition',
                         style: TextStyle(
-                          color: AppColors.white.withOpacity(0.7),
+                          color: AppColors.white.withValues(alpha: 0.7),
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w500,
                         ),
@@ -339,7 +339,7 @@ class _UploadBlock extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: hasFile
-              ? AppColors.primary.withOpacity(0.05)
+              ? AppColors.primary.withValues(alpha: 0.05)
               : AppColors.textFieldBackground,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
@@ -421,7 +421,7 @@ class _PhotoUploadBox extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: hasFile
-              ? AppColors.primary.withOpacity(0.05)
+              ? AppColors.primary.withValues(alpha: 0.05)
               : AppColors.textFieldBackground,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(

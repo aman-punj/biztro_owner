@@ -16,7 +16,7 @@ class UpgradeBannerCard extends StatelessWidget {
         border: Border.all(color: AppColors.profileCardBorder, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -57,7 +57,7 @@ class UpgradeBannerCard extends StatelessWidget {
           Icon(
             Icons.rocket_launch_outlined,
             size: 60.sp,
-            color: AppColors.profileIndicator.withOpacity(0.35),
+            color: AppColors.profileIndicator.withValues(alpha: 0.35),
           ),
         ],
       ),

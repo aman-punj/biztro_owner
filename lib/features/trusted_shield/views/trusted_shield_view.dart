@@ -38,7 +38,7 @@ class TrustedShieldView extends GetView<TrustedShieldController> {
             Text(
               'Verify identity to unlock pro features',
               style: TextStyle(
-                color: AppColors.white.withOpacity(0.8),
+                color: AppColors.white.withValues(alpha: 0.8),
                 fontSize: 9.sp,
               ),
             ),
@@ -95,7 +95,7 @@ class _SubmitBar extends GetView<TrustedShieldController> {
         color: AppColors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.07),
+            color: Colors.black.withValues(alpha: 0.07),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),

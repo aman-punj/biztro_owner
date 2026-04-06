@@ -145,7 +145,7 @@ class DashboardDrawer extends StatelessWidget {
             backgroundImage: const NetworkImage(
               'https://i.pravatar.cc/150?img=11',
             ),
-            backgroundColor: AppColors.white.withOpacity(0.2),
+            backgroundColor: AppColors.white.withValues(alpha: 0.2),
           ),
           SizedBox(width: 14.w),
           Expanded(
@@ -164,7 +164,7 @@ class DashboardDrawer extends StatelessWidget {
                 Text(
                   'Business Partner',
                   style: TextStyle(
-                    color: AppColors.white.withOpacity(0.9),
+                    color: AppColors.white.withValues(alpha: 0.9),
                     fontSize: 10.sp,
                   ),
                 ),

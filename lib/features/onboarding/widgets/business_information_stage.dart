@@ -116,7 +116,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                   width: 40.w,
                   height: 40.w,
                   decoration: BoxDecoration(
-                    color: AppColors.textSecondaryLight.withOpacity(0.2),
+                    color: AppColors.textSecondaryLight.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(Icons.storefront,
@@ -248,7 +248,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
         border: Border.all(color: AppColors.borderLight),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textSecondaryLight.withOpacity(0.1),
+            color: AppColors.textSecondaryLight.withValues(alpha: 0.1),
             blurRadius: 10,
           ),
         ],
@@ -418,7 +418,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                         readOnly: true,
                         suffixIcon: IconButton(
                           icon: Icon(Icons.delete_outline,
-                              color: AppColors.error.withOpacity(0.5),
+                              color: AppColors.error.withValues(alpha: 0.5),
                               size: 20.sp),
                           onPressed: () =>
                               controller.removeCustomKeyword(keyword),
