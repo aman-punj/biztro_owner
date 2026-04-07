@@ -1,5 +1,5 @@
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/features/auth/data/auth_repository.dart';
 import 'package:bizrato_owner/features/auth/data/models/login_request.dart';

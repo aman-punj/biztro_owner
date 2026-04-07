@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,7 +13,7 @@ class FestivalDownloadService {
   static const MethodChannel _channel = MethodChannel(
     'bizrato_owner/festival_gallery',
   );
-  final AppToastService _notificationService = Get.find<AppToastService>();
+  final AppToastService _toastService = Get.find<AppToastService>();
 
   Future<File?> saveAndOpenImage({
     required List<int> bytes,
@@ -26,15 +26,15 @@ class FestivalDownloadService {
           fileName: fileName,
         );
         if (savedUri == null || savedUri.isEmpty) {
-          _notificationService.error('Unable to save the image to gallery.');
+          _toastService.error('Unable to save the image to gallery.');
           return null;
         }
 
-        _notificationService.success('Image saved successfully.');
+        _toastService.success('Image saved successfully.');
 
         final opened = await _openAndroidImageUri(savedUri);
         if (!opened) {
-          _notificationService.info(
+          _toastService.info(
             'Image saved to gallery, but could not open it automatically.',
           );
         }
@@ -48,16 +48,16 @@ class FestivalDownloadService {
         return null;
       }
 
-      _notificationService.success('Image saved successfully.');
+      _toastService.success('Image saved successfully.');
 
       final opened = await _openInSystemViewer(file);
       if (!opened) {
-        _notificationService.info('Image saved locally, but could not open the gallery app.');
+        _toastService.info('Image saved locally, but could not open the gallery app.');
       }
 
       return file;
     } catch (_) {
-      _notificationService.error('Unable to download the festival image right now.');
+      _toastService.error('Unable to download the festival image right now.');
       return null;
     }
   }

@@ -137,6 +137,10 @@ class ApiClient extends GetxService {
       return AppErrors.noInternet;
     }
 
+    if (_isConnectionIssue(error)) {
+      return AppErrors.noInternet;
+    }
+
     if (error.type == DioExceptionType.connectionTimeout ||
         error.type == DioExceptionType.sendTimeout ||
         error.type == DioExceptionType.receiveTimeout) {
@@ -149,6 +153,19 @@ class ApiClient extends GetxService {
     }
 
     return error.response?.statusMessage ?? error.message ?? AppErrors.unknown;
+  }
+
+  bool _isConnectionIssue(DioException error) {
+    final errorType = error.type;
+    final message = (error.message ?? '').toLowerCase();
+
+    return errorType == DioExceptionType.connectionError ||
+        message.contains('socketexception') ||
+        message.contains('connection error') ||
+        message.contains('failed host lookup') ||
+        message.contains('network is unreachable') ||
+        message.contains('network unreachable') ||
+        message.contains('connection refused');
   }
 
   bool _isNoInternet(DioException error) {

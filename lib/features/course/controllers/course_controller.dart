@@ -1,5 +1,5 @@
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/features/course/data/models/course_model.dart';
 import 'package:bizrato_owner/features/course/data/repositories/course_repository.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
@@ -10,7 +10,7 @@ class CourseController extends GetxController {
   CourseController({required this.repository});
 
   final CourseRepository repository;
-  final AppToastService _notificationService =
+  final AppToastService _toastService =
       Get.find<AppToastService>();
 
   final isLoading = true.obs;
@@ -71,13 +71,13 @@ class CourseController extends GetxController {
       return;
     }
 
-    _notificationService.error(response.message);
+    _toastService.error(response.message);
   }
 
   Future<void> openYoutubeVideo(String url) async {
     final sanitizedUrl = url.trim();
     if (sanitizedUrl.isEmpty) {
-      _notificationService.error('Video link is unavailable.');
+      _toastService.error('Video link is unavailable.');
       return;
     }
 
@@ -87,7 +87,7 @@ class CourseController extends GetxController {
     );
 
     if (!opened) {
-      _notificationService.error('Unable to open the video link.');
+      _toastService.error('Unable to open the video link.');
     }
   }
 }

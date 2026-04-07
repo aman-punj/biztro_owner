@@ -1,6 +1,6 @@
 import 'package:bizrato_owner/core/network/app_response.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
@@ -18,7 +18,7 @@ class EditBusinessDetailsController extends GetxController {
 
   final OnboardingRepository repository;
   final AuthStorage _authStorage = Get.find<AuthStorage>();
-  final AppToastService _notificationService =
+  final AppToastService _toastService =
       Get.find<AppToastService>();
   final Debouncer _debouncer = Debouncer();
 
@@ -59,13 +59,13 @@ class EditBusinessDetailsController extends GetxController {
     try {
       final merchantId = _authStorage.merchantId;
       if (merchantId == null || merchantId == 0) {
-        _notificationService.error('Merchant ID is not available.');
+        _toastService.error('Merchant ID is not available.');
         return;
       }
 
       final response = await repository.getBusinessDetails(merchantId);
       if (!response.success || response.data?.result == null) {
-        _notificationService.error(response.message.isNotEmpty
+        _toastService.error(response.message.isNotEmpty
             ? response.message
             : 'Unable to load business details.');
         return;
@@ -115,7 +115,7 @@ class EditBusinessDetailsController extends GetxController {
     isSearching.value = false;
 
     if (!response.success) {
-      _notificationService.error(response.message);
+      _toastService.error(response.message);
       return;
     }
 
@@ -144,7 +144,7 @@ class EditBusinessDetailsController extends GetxController {
     isLoadingKeywords.value = false;
 
     if (!response.success) {
-      _notificationService.error(response.message);
+      _toastService.error(response.message);
       return;
     }
 
@@ -255,13 +255,13 @@ class EditBusinessDetailsController extends GetxController {
 
   Future<void> saveAndUpdate() async {
     if (selectedCategory.value == null) {
-      _notificationService.error('Please select a category.');
+      _toastService.error('Please select a category.');
       return;
     }
 
     final List<SelectedKeyword> keywordPayload = _selectedKeywordPayload();
     if (keywordPayload.isEmpty && customKeywords.isEmpty) {
-      _notificationService.error(
+      _toastService.error(
         'Please select at least one keyword or add your own.',
       );
       return;
@@ -269,7 +269,7 @@ class EditBusinessDetailsController extends GetxController {
 
     final merchantId = _authStorage.merchantId;
     if (merchantId == null || merchantId == 0) {
-      _notificationService.error('Merchant ID is unavailable.');
+      _toastService.error('Merchant ID is unavailable.');
       return;
     }
 

@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/storage/storage_service.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';

@@ -1,6 +1,6 @@
 import 'package:bizrato_owner/core/network/app_response.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';

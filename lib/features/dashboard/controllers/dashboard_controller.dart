@@ -136,7 +136,15 @@ class DashboardController extends GetxController {
         queryParameters: {'merchantId': merchantId},
       );
 
-      if (response.success && response.data is Map<String, dynamic>) {
+      if (!response.success) {
+        hasError.value = true;
+        errorMessage.value = response.message.isNotEmpty
+            ? response.message
+            : 'Failed to load dashboard data.';
+        return;
+      }
+
+      if (response.data is Map<String, dynamic>) {
         final payload = response.data as Map<String, dynamic>;
         final result = payload['Result'];
         if (result is Map<String, dynamic>) {
@@ -173,14 +181,20 @@ class DashboardController extends GetxController {
           ]);
         }
       } else {
-        throw Exception(response.message);
+        hasError.value = true;
+        errorMessage.value = response.message.isNotEmpty
+            ? response.message
+            : 'Failed to load dashboard data.';
+        return;
       }
 
 // 2. Load Chart Data (Matching the Image)
       _prepareChartData();
     } catch (e) {
       hasError.value = true;
-      errorMessage.value = 'Failed to load dashboard data.';
+      errorMessage.value = errorMessage.value.isNotEmpty
+          ? errorMessage.value
+          : 'Failed to load dashboard data.';
     } finally {
       isLoading.value = false;
     }

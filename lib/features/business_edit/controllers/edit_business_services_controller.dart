@@ -1,6 +1,6 @@
 import 'package:bizrato_owner/core/network/app_response.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_service_model.dart';
@@ -15,7 +15,7 @@ class EditBusinessServicesController extends GetxController {
 
   final OnboardingRepository repository;
   final AuthStorage _authStorage = Get.find<AuthStorage>();
-  final AppToastService _notificationService =
+  final AppToastService _toastService =
       Get.find<AppToastService>();
 
   final Rxn<BusinessServiceResult> businessServiceData =
@@ -48,13 +48,13 @@ class EditBusinessServicesController extends GetxController {
     try {
       final merchantId = _authStorage.merchantId;
       if (merchantId == null || merchantId == 0) {
-        _notificationService.error('Merchant ID is not available.');
+        _toastService.error('Merchant ID is not available.');
         return;
       }
 
       final response = await repository.getBusinessServiceData(merchantId);
       if (!response.success || response.data?.result == null) {
-        _notificationService.error(response.message.isNotEmpty
+        _toastService.error(response.message.isNotEmpty
             ? response.message
             : 'Unable to load business service data.');
         return;
@@ -97,7 +97,7 @@ class EditBusinessServicesController extends GetxController {
         facilitiesList.clear();
         selectedServiceIds.clear();
         selectedFacilityIds.clear();
-        _notificationService.error(response.message);
+        _toastService.error(response.message);
         return;
       }
 
@@ -159,18 +159,18 @@ class EditBusinessServicesController extends GetxController {
   Future<void> saveAndUpdate() async {
     final data = businessServiceData.value;
     if (data == null) {
-      _notificationService.error('Business service data is unavailable.');
+      _toastService.error('Business service data is unavailable.');
       return;
     }
 
     final merchantId = _authStorage.merchantId;
     if (merchantId == null || merchantId == 0) {
-      _notificationService.error('Merchant ID is unavailable.');
+      _toastService.error('Merchant ID is unavailable.');
       return;
     }
 
     if (data.categoryId <= 0 || data.subCategoryId <= 0) {
-      _notificationService.error('Category details are unavailable.');
+      _toastService.error('Category details are unavailable.');
       return;
     }
 

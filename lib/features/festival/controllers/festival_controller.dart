@@ -1,5 +1,5 @@
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/features/festival/data/models/festival_model.dart';
 import 'package:bizrato_owner/features/festival/data/repositories/festival_repository.dart';
@@ -15,7 +15,7 @@ class FestivalController extends GetxController {
 
   final FestivalRepository repository;
   final FestivalDownloadService downloadService;
-  final AppToastService _notificationService =
+  final AppToastService _toastService =
       Get.find<AppToastService>();
   final AuthStorage _authStorage = Get.find<AuthStorage>();
 
@@ -91,7 +91,7 @@ class FestivalController extends GetxController {
       return;
     }
 
-    _notificationService.error(response.message);
+    _toastService.error(response.message);
   }
 
   String buildImageUrl(String path) => repository.buildDownloadUrl(path);
@@ -117,7 +117,7 @@ class FestivalController extends GetxController {
     try {
       final response = await repository.downloadFestivalImage(post.postImageUrl);
       if (!response.success || response.data == null) {
-        _notificationService.error(response.message);
+        _toastService.error(response.message);
         return;
       }
 

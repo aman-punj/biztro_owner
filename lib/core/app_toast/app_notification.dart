@@ -1,7 +1,7 @@
-import 'package:bizrato_owner/core/notifications/app_toast_type.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_type.dart';
 
-class AppNotification {
-  const AppNotification({
+class AppToast {
+  const AppToast({
     required this.title,
     required this.message,
     required this.type,

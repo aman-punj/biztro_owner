@@ -29,6 +29,10 @@
 
 ## Imports
 - Use package imports not relative imports
+
+## Network Error Handling
+- ALWAYS normalize no-internet, failed-host-lookup, connection-refused, and timeout failures in ApiClient/AppErrors before controllers or views consume them
+- NEVER show raw DioException text in Festival, Course, Dashboard, Business Edit, or any other feature; use `response.message` or app-level toast/dialog messaging instead
 ```
 
 The more specific your rules, the less you clean up after Codex. Treat `AGENTS.md` like a senior dev's code review checklist that runs before every PR.

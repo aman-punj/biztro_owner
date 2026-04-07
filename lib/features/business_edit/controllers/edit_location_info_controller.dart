@@ -1,6 +1,6 @@
 import 'package:bizrato_owner/core/network/app_response.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
-import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
@@ -17,7 +17,7 @@ class EditLocationInfoController extends GetxController {
 
   final OnboardingRepository repository;
   final AuthStorage _authStorage = Get.find<AuthStorage>();
-  final AppToastService _notificationService =
+  final AppToastService _toastService =
       Get.find<AppToastService>();
   final Debouncer _debouncer = Debouncer();
 
@@ -62,14 +62,14 @@ class EditLocationInfoController extends GetxController {
     try {
       final merchantId = _authStorage.merchantId;
       if (merchantId == null || merchantId == 0) {
-        _notificationService.error('Merchant ID is not available.');
+        _toastService.error('Merchant ID is not available.');
         return;
       }
 
       final AppResponse<ContactInfoModel> response =
           await repository.getContactInfo(merchantId);
       if (!response.success || response.data?.result == null) {
-        _notificationService.error(response.message.isNotEmpty
+        _toastService.error(response.message.isNotEmpty
             ? response.message
             : 'Unable to load location information.');
         return;
@@ -205,13 +205,13 @@ class EditLocationInfoController extends GetxController {
   Future<void> saveAndUpdate() async {
     final merchantId = _authStorage.merchantId;
     if (merchantId == null || merchantId == 0) {
-      _notificationService.error('Merchant ID is unavailable.');
+      _toastService.error('Merchant ID is unavailable.');
       return;
     }
 
     final hasPincode = pincode.value.trim().isNotEmpty;
     if (hasPincode && selectedArea.value == null) {
-      _notificationService.error('Please select an area.');
+      _toastService.error('Please select an area.');
       return;
     }
 
