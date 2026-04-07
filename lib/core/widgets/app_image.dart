@@ -15,6 +15,7 @@ class AppImage extends StatelessWidget {
     this.showLoading = true,
     this.color,
     this.colorBlendMode,
+    this.httpHeaders,
   });
 
   final String path;
@@ -26,6 +27,7 @@ class AppImage extends StatelessWidget {
   final bool showLoading;
   final Color? color;
   final BlendMode? colorBlendMode;
+  final Map<String, String>? httpHeaders;
 
   bool get _isNetworkImage {
     final Uri? uri = Uri.tryParse(path);
@@ -45,6 +47,7 @@ class AppImage extends StatelessWidget {
     if (_isNetworkImage) {
       image = CachedNetworkImage(
         imageUrl: path,
+        httpHeaders: httpHeaders,
         width: width,
         height: height,
         fit: fit,

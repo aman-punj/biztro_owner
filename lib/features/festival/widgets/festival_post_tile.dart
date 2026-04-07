@@ -8,11 +8,13 @@ class FestivalPostTile extends StatelessWidget {
     super.key,
     required this.imageUrl,
     required this.onDownload,
+    this.imageHeaders,
     this.isDownloading = false,
   });
 
   final String imageUrl;
   final VoidCallback onDownload;
+  final Map<String, String>? imageHeaders;
   final bool isDownloading;
 
   @override
@@ -30,6 +32,7 @@ class FestivalPostTile extends StatelessWidget {
               padding: EdgeInsets.all(6.w),
               child: AppImage(
                 path: imageUrl,
+                httpHeaders: imageHeaders,
                 fit: BoxFit.cover,
                 borderRadius: BorderRadius.circular(10.r),
               ),

@@ -9,11 +9,13 @@ class FestivalCard extends StatelessWidget {
     super.key,
     required this.festival,
     required this.imageUrl,
+    this.imageHeaders,
     required this.onTap,
   });
 
   final FestivalModel festival;
   final String imageUrl;
+  final Map<String, String>? imageHeaders;
   final VoidCallback onTap;
 
   @override
@@ -35,6 +37,7 @@ class FestivalCard extends StatelessWidget {
             children: [
               AppImage(
                 path: imageUrl,
+                httpHeaders: imageHeaders,
                 width: double.infinity,
                 height: 102.h,
                 fit: BoxFit.cover,

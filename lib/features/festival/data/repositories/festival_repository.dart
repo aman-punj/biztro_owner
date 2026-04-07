@@ -51,6 +51,15 @@ class FestivalRepository {
     );
   }
 
+  Future<AppResponse<List<int>>> downloadFestivalImage(String imagePath) {
+    return apiClient.getBytes(
+      '/api/festivals/DownloadFestivalImage',
+      queryParameters: {
+        'imagePath': imagePath,
+      },
+    );
+  }
+
   String buildDownloadUrl(String imagePath) {
     return '${apiClient.baseUrl}/api/festivals/DownloadFestivalImage?imagePath=$imagePath';
   }

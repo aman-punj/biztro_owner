@@ -75,6 +75,46 @@ class ApiClient extends GetxService {
         ));
   }
 
+  Future<AppResponse<List<int>>> getBytes(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.get<List<int>>(
+        path,
+        queryParameters: queryParameters,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      final statusCode = response.statusCode ?? 0;
+      final success = statusCode >= 200 && statusCode < 300;
+      final bytes = response.data;
+
+      if (!success || bytes == null) {
+        return AppResponse<List<int>>.failure(
+          message: response.statusMessage ?? AppErrors.unknown,
+          statusCode: statusCode,
+          data: bytes,
+        );
+      }
+
+      return AppResponse<List<int>>(
+        success: true,
+        data: bytes,
+        message: response.statusMessage ?? '',
+        statusCode: statusCode,
+      );
+    } on DioException catch (error) {
+      return AppResponse<List<int>>.failure(
+        message: _messageFromDioException(error),
+        statusCode: error.response?.statusCode,
+        data: error.response?.data,
+      );
+    } catch (_) {
+      return AppResponse<List<int>>.failure(message: AppErrors.unknown);
+    }
+  }
+
   Future<AppResponse<dynamic>> _send(
     Future<Response<dynamic>> Function() request,
   ) async {
