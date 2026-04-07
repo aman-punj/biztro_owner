@@ -1,17 +1,13 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/core/constants/app_assets.dart';
-import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
-import 'package:bizrato_owner/core/widgets/app_text_field.dart';
-import 'package:bizrato_owner/core/widgets/primary_button.dart';
-import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_details_controller.dart';
+import 'package:bizrato_owner/features/business_edit/widgets/widgets.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/search_result_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/onboarding_section_card.dart';
+import 'package:bizrato_owner/features/onboarding/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
-import '../../../core/widgets/keyword_input_widget.dart';
 
 class EditBusinessDetailsView extends StatefulWidget {
   const EditBusinessDetailsView({super.key});
@@ -109,107 +105,60 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: Row(
+                BusinessEditHeader(
+                  businessName: controller.businessName,
+                  subtitle: 'Smart Keywords Selection',
+                ),
+                SizedBox(height: 16.h),
+                OnboardingSectionCard(
+                  title: 'CATEGORY SEARCH',
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 40.w,
-                          height: 40.w,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Icon(
-                            Icons.storefront,
-                            color: AppColors.primary,
+                        AppTextField(
+                          controller: _searchController,
+                          title: 'e.g. Sweets, Restaurant...',
+                          readOnly: controller.isCategoryRestored.value,
+                          prefixIcon: Icon(
+                            Icons.search,
                             size: 20.sp,
+                            color: AppTokens.textSecondary,
                           ),
+                          suffixIcon: controller.isCategoryRestored.value
+                              ? IconButton(
+                                  onPressed: controller.clearRestoredCategory,
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: 18.sp,
+                                    color: AppTokens.textSecondary,
+                                  ),
+                                )
+                              : controller.isSearching.value
+                                  ? SizedBox(
+                                      width: 18.w,
+                                      height: 18.w,
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
                         ),
-                        SizedBox(width: 12.w),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Obx(
-                              () => Text(
-                                controller.businessName.value.isNotEmpty
-                                    ? controller.businessName.value
-                                    : 'Business Name',
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              'Smart Keywords Selection',
-                              style: TextStyle(
-                                fontSize: 10.sp,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          switchInCurve: Curves.easeOut,
+                          switchOutCurve: Curves.easeIn,
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                          child: _buildSearchResults(),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 16.h),
-                  OnboardingSectionCard(
-                    title: 'CATEGORY SEARCH',
-                    child: Obx(
-                      () => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppTextField(
-                            controller: _searchController,
-                            title: 'e.g. Sweets, Restaurant...',
-                            readOnly: controller.isCategoryRestored.value,
-                            prefixIcon: Icon(
-                              Icons.search,
-                              size: 20.sp,
-                              color: AppColors.textSecondaryLight,
-                            ),
-                            suffixIcon: controller.isCategoryRestored.value
-                                ? IconButton(
-                                    onPressed: controller.clearRestoredCategory,
-                                    icon: Icon(
-                                      Icons.close,
-                                      size: 18.sp,
-                                      color: AppColors.textSecondaryLight,
-                                    ),
-                                  )
-                                : controller.isSearching.value
-                                    ? SizedBox(
-                                        width: 18.w,
-                                        height: 18.w,
-                                        child: const CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
-                                      )
-                                    : const SizedBox.shrink(),
-                          ),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 250),
-                            switchInCurve: Curves.easeOut,
-                            switchOutCurve: Curves.easeIn,
-                            transitionBuilder: (child, animation) =>
-                                FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            ),
-                            child: _buildSearchResults(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                ),
                   Obx(
                     () => AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
@@ -251,12 +200,12 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
       margin: EdgeInsets.only(top: 8.h),
       padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppTokens.white,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.borderLight),
+        border: Border.all(color: AppTokens.border),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textSecondaryLight.withValues(alpha: 0.1),
+            color: AppTokens.textSecondary.withValues(alpha: 0.1),
             blurRadius: 10,
           ),
         ],
@@ -268,7 +217,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
               height: 60.h,
               child: Center(
                 child: CircularProgressIndicator(
-                  color: AppColors.primary,
+                  color: AppTokens.brandPrimary,
                   strokeWidth: 2,
                 ),
               ),
@@ -284,7 +233,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: AppColors.textSecondaryLight,
+                          color: AppTokens.textSecondary,
                         ),
                       ),
                     )
@@ -293,7 +242,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                       shrinkWrap: true,
                       itemCount: controller.searchResults.length,
                       separatorBuilder: (_, __) =>
-                          Divider(color: AppColors.borderLight),
+                          Divider(color: AppTokens.border),
                       itemBuilder: (context, index) {
                         final result = controller.searchResults[index];
                         return ListTile(
@@ -303,7 +252,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                           ),
                           title: Text(
                             result.displayName,
-                            style: TextStyle(fontSize: 12.sp),
+                            style: TextStyle(fontSize: 12.sp, color: AppTokens.textPrimary),
                           ),
                           onTap: () => _handleCategoryTap(result),
                         );
@@ -325,7 +274,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
               height: 120.h,
               child: Center(
                 child: CircularProgressIndicator(
-                  color: AppColors.primary,
+                  color: AppTokens.brandPrimary,
                   strokeWidth: 2,
                 ),
               ),
@@ -347,7 +296,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                             height: 14.w,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: AppColors.primary,
+                              color: AppTokens.brandPrimary,
                             ),
                           ),
                           SizedBox(width: 8.w),
@@ -355,7 +304,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                             'Restoring your previous selections...',
                             style: TextStyle(
                               fontSize: 11.sp,
-                              color: AppColors.textSecondaryLight,
+                              color: AppTokens.textSecondary,
                             ),
                           ),
                         ],
@@ -404,7 +353,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                     style: TextStyle(
                       fontSize: 12.sp,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textSecondaryLight,
+                      color: AppTokens.textSecondary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -426,8 +375,8 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                       maxLines: 3,
                       actionIcon: Icons.check,
                       actionBackgroundColor:
-                          AppColors.primary.withValues(alpha: 0.12),
-                      actionIconColor: AppColors.primary,
+                          AppTokens.brandPrimary.withValues(alpha: 0.12),
+                      actionIconColor: AppTokens.brandPrimary,
                       onSubmitted: (_) => _addCustomKeywordFromField(),
                       onAction: _addCustomKeywordFromField,
                     ),
@@ -441,14 +390,14 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                         style: OutlinedButton.styleFrom(
                           fixedSize: Size(double.maxFinite, 52.h),
                           side: BorderSide(
-                            color: AppColors.primary,
+                            color: AppTokens.brandPrimary,
                             width: 1.5,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           backgroundColor:
-                              AppColors.primary.withValues(alpha: 0.05),
+                              AppTokens.brandPrimary.withValues(alpha: 0.05),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -458,7 +407,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                                   ? Icons.close
                                   : Icons.add_circle_outline,
                               size: 20.sp,
-                              color: AppColors.primary,
+                              color: AppTokens.brandPrimary,
                             ),
                             SizedBox(width: 8.w),
                             Text(
@@ -466,7 +415,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                                   ? 'Cancel'
                                   : 'Add Another Keyword',
                               style: TextStyle(
-                                color: AppColors.primary,
+                                color: AppTokens.brandPrimary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14.sp,
                               ),
@@ -481,7 +430,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                         'Max 5 keywords reached',
                         style: TextStyle(
                           fontSize: 11.sp,
-                          color: AppColors.error,
+                          color: AppTokens.error,
                         ),
                       ),
                     ),

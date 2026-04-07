@@ -1,12 +1,17 @@
 import 'package:bizrato_owner/features/festival/data/models/festival_model.dart';
 import 'package:bizrato_owner/features/festival/data/repositories/festival_repository.dart';
+import 'package:bizrato_owner/features/festival/services/festival_download_service.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 class FestivalController extends GetxController {
-  FestivalController({required this.repository});
+  FestivalController({
+    required this.repository,
+    required this.downloadService,
+  });
 
   final FestivalRepository repository;
+  final FestivalDownloadService downloadService;
 
   final isLoading = true.obs;
   final isDetailsLoading = false.obs;
@@ -17,6 +22,7 @@ class FestivalController extends GetxController {
   final festivals = <FestivalModel>[].obs;
   final festivalPosts = <FestivalPostModel>[].obs;
   final selectedFestival = Rxn<FestivalModel>();
+  final downloadingPostIds = <int>{}.obs;
 
   List<FestivalModel> get filteredFestivals {
     final query = searchQuery.value.trim().toLowerCase();
@@ -72,4 +78,21 @@ class FestivalController extends GetxController {
   }
 
   String buildImageUrl(String path) => repository.buildDownloadUrl(path);
+
+  Future<void> downloadFestivalPost(FestivalPostModel post) async {
+    if (downloadingPostIds.contains(post.postId)) {
+      return;
+    }
+
+    downloadingPostIds.add(post.postId);
+    try {
+      final imageUrl = buildImageUrl(post.postImageUrl);
+      await downloadService.downloadAndPreview(
+        imageUrl: imageUrl,
+        fileName: 'festival_${post.postId}.jpg',
+      );
+    } finally {
+      downloadingPostIds.remove(post.postId);
+    }
+  }
 }

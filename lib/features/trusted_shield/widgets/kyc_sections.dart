@@ -1,4 +1,5 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/trusted_shield/controllers/trusted_shield_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,25 +18,22 @@ class BusinessCredentialsSection extends GetView<TrustedShieldController> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Help', style: TextStyle(fontSize: 10.sp, color: AppColors.primary)),
+            Text('Help',
+                style: TextStyle(fontSize: 10.sp, color: AppTokens.brandPrimary)),
             SizedBox(width: 2.w),
-            Icon(Icons.help_outline, size: 12.sp, color: AppColors.error),
+            Icon(Icons.help_outline, size: 12.sp, color: AppTokens.info),
           ],
         ),
       ),
       children: [
-        TextFormField(
+        AppTextField(
+          title: 'Legal Business Name',
           onChanged: controller.onBusinessNameChanged,
-          decoration: const InputDecoration(
-            hintText: 'Enter Legal Business Name',
-          ),
         ),
         SizedBox(height: 10.h),
-        TextFormField(
+        AppTextField(
+          title: 'GST Number (Optional)',
           onChanged: controller.onGstNumberChanged,
-          decoration: const InputDecoration(
-            hintText: 'GST Number (Optional)',
-          ),
         ),
         SizedBox(height: 12.h),
         // GST certificate upload
@@ -49,9 +47,9 @@ class BusinessCredentialsSection extends GetView<TrustedShieldController> {
           ),
         ),
         SizedBox(height: 10.h),
-        TextFormField(
+        AppTextField(
+          title: 'Pan Number',
           onChanged: controller.onPanNumberChanged,
-          decoration: const InputDecoration(hintText: 'Pan Number'),
         ),
         SizedBox(height: 12.h),
         // Firm card upload
@@ -80,14 +78,11 @@ class AadhaarVerificationSection extends GetView<TrustedShieldController> {
       title: 'Aadhaar Verification',
       subtitle: 'Secure identity confirmation',
       children: [
-        TextFormField(
+        AppTextField(
+          title: 'Aadhaar Number (12 Digits)',
           onChanged: controller.onAadhaarNumberChanged,
           keyboardType: TextInputType.number,
           maxLength: 12,
-          decoration: const InputDecoration(
-            hintText: 'Aadhaar Number (12 Digits)',
-            counterText: '',
-          ),
         ),
         SizedBox(height: 14.h),
         Row(
@@ -137,7 +132,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
           () => Container(
             height: 220.h,
             decoration: BoxDecoration(
-              color: AppColors.livenessBackground,
+              color: AppTokens.livenessBackground,
               borderRadius: BorderRadius.circular(12.r),
             ),
             clipBehavior: Clip.hardEdge,
@@ -153,17 +148,18 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     borderRadius: BorderRadius.circular(80.r),
                     border: Border.all(
                       color: controller.isFaceDetected.value
-                          ? AppColors.onlineIndicator
-                          : AppColors.white.withValues(alpha: 0.4),
+                          ? AppTokens.online
+                          : AppTokens.white.withValues(alpha: 0.4),
                       width: 2.5,
                     ),
                   ),
                 ),
-                if (!controller.isScanning.value && !controller.isFaceDetected.value) ...[
+                if (!controller.isScanning.value &&
+                    !controller.isFaceDetected.value) ...[
                   Icon(
                     Icons.person_outline_rounded,
                     size: 80.sp,
-                    color: AppColors.white.withValues(alpha: 0.3),
+                    color: AppTokens.white.withValues(alpha: 0.3),
                   ),
                 ],
                 if (controller.isScanning.value) ...[
@@ -173,22 +169,27 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     right: 0,
                     child: LinearProgressIndicator(
                       value: controller.scanProgress.value,
-                      backgroundColor: AppColors.white.withValues(alpha: 0.2),
-                      color: AppColors.onlineIndicator,
+                      backgroundColor: AppTokens.white.withValues(alpha: 0.2),
+                      color: AppTokens.online,
                       minHeight: 3,
                     ),
                   ),
                 ],
-                if (controller.isFaceDetected.value && !controller.isScanning.value) ...[
+                if (controller.isFaceDetected.value &&
+                    !controller.isScanning.value) ...[
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(height: 60.h),
-                      Icon(Icons.check_circle, color: AppColors.onlineIndicator, size: 32.sp),
+                      Icon(Icons.check_circle,
+                          color: AppTokens.online, size: 32.sp),
                       SizedBox(height: 8.h),
                       Text(
                         'Face Verified!',
-                        style: TextStyle(color: AppColors.onlineIndicator, fontSize: 12.sp, fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                            color: AppTokens.online,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w700),
                       ),
                     ],
                   ),
@@ -201,7 +202,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                       Text(
                         'Facial Recognition',
                         style: TextStyle(
-                          color: AppColors.white.withValues(alpha: 0.7),
+                          color: AppTokens.white.withValues(alpha: 0.7),
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w500,
                         ),
@@ -223,7 +224,7 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
                     height: 14.w,
                     child: const CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppColors.white,
+                      color: AppTokens.white,
                     ),
                   )
                 : Icon(Icons.center_focus_strong_outlined, size: 16.sp),
@@ -265,7 +266,7 @@ class _KycCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14.r),
-        side: BorderSide(color: AppColors.borderLight, width: 1),
+        side: BorderSide(color: AppTokens.border, width: 1),
       ),
       child: Padding(
         padding: EdgeInsets.all(14.r),
@@ -275,7 +276,7 @@ class _KycCard extends StatelessWidget {
             Row(
               children: [
                 if (icon != null) ...[
-                  Icon(icon, size: 16.sp, color: AppColors.primary),
+                  Icon(icon, size: 16.sp, color: AppTokens.brandPrimary),
                   SizedBox(width: 6.w),
                 ],
                 Expanded(
@@ -287,14 +288,14 @@ class _KycCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimaryLight,
+                          color: AppTokens.textPrimary,
                         ),
                       ),
                       Text(
                         subtitle,
                         style: TextStyle(
                           fontSize: 9.sp,
-                          color: AppColors.textSecondaryLight,
+                          color: AppTokens.textSecondary,
                         ),
                       ),
                     ],
@@ -339,11 +340,11 @@ class _UploadBlock extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: hasFile
-              ? AppColors.primary.withValues(alpha: 0.05)
-              : AppColors.textFieldBackground,
+              ? AppTokens.brandPrimary.withValues(alpha: 0.05)
+              : AppTokens.inputBackground,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
-            color: hasFile ? AppColors.primary : AppColors.borderLight,
+            color: hasFile ? AppTokens.brandPrimary : AppTokens.border,
             width: hasFile ? 1.5 : 1,
           ),
         ),
@@ -352,7 +353,7 @@ class _UploadBlock extends StatelessWidget {
             Icon(
               hasFile ? Icons.check_circle_outline : icon,
               size: 20.sp,
-              color: hasFile ? AppColors.primary : AppColors.textSecondaryLight,
+              color: hasFile ? AppTokens.brandPrimary : AppTokens.textSecondary,
             ),
             SizedBox(width: 10.w),
             Expanded(
@@ -364,9 +365,7 @@ class _UploadBlock extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w600,
-                      color: hasFile
-                          ? AppColors.primary
-                          : AppColors.textPrimaryLight,
+                      color: hasFile ? AppTokens.brandPrimary : AppTokens.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -376,7 +375,7 @@ class _UploadBlock extends StatelessWidget {
                       subLabel,
                       style: TextStyle(
                         fontSize: 9.sp,
-                        color: AppColors.textSecondaryLight,
+                        color: AppTokens.textSecondary,
                       ),
                     ),
                   ],
@@ -387,7 +386,7 @@ class _UploadBlock extends StatelessWidget {
               Icon(
                 Icons.cloud_upload_outlined,
                 size: 18.sp,
-                color: AppColors.textSecondaryLight,
+                color: AppTokens.textSecondary,
               ),
           ],
         ),
@@ -421,11 +420,11 @@ class _PhotoUploadBox extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: hasFile
-              ? AppColors.primary.withValues(alpha: 0.05)
-              : AppColors.textFieldBackground,
+              ? AppTokens.brandPrimary.withValues(alpha: 0.05)
+              : AppTokens.inputBackground,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
-            color: hasFile ? AppColors.primary : AppColors.borderLight,
+            color: hasFile ? AppTokens.brandPrimary : AppTokens.border,
           ),
         ),
         child: Column(
@@ -433,7 +432,7 @@ class _PhotoUploadBox extends StatelessWidget {
             Icon(
               hasFile ? Icons.check_circle : icon,
               size: 24.sp,
-              color: hasFile ? AppColors.primary : AppColors.textSecondaryLight,
+              color: hasFile ? AppTokens.brandPrimary : AppTokens.textSecondary,
             ),
             SizedBox(height: 6.h),
             Text(
@@ -441,9 +440,7 @@ class _PhotoUploadBox extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w600,
-                color: hasFile
-                    ? AppColors.primary
-                    : AppColors.textSecondaryLight,
+                color: hasFile ? AppTokens.brandPrimary : AppTokens.textSecondary,
               ),
             ),
           ],

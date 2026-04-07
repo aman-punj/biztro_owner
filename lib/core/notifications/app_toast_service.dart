@@ -1,9 +1,9 @@
 import 'package:bizrato_owner/core/notifications/app_notification.dart';
-import 'package:bizrato_owner/core/notifications/notification_type.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_type.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class NotificationService {
+class AppToastService {
   // USAGE — call sites look like this forever, regardless of implementation:
   //
   // final notify = Get.find<NotificationService>();
@@ -53,24 +53,24 @@ class NotificationService {
   // Future swap point: replace _showGetSnackbar call with _showToast
   // if switching to another package. No call sites change.
 
-  _NotificationStyle _resolveStyle(NotificationType type) {
+  _NotificationStyle _resolveStyle(AppToastType type) {
     switch (type) {
-      case NotificationType.success:
+      case AppToastType.success:
         return _NotificationStyle(
           color: Colors.green.shade700,
           icon: Icons.check_circle_outline,
         );
-      case NotificationType.error:
+      case AppToastType.error:
         return _NotificationStyle(
           color: Colors.red.shade700,
           icon: Icons.error_outline,
         );
-      case NotificationType.warning:
+      case AppToastType.warning:
         return _NotificationStyle(
           color: Colors.orange.shade700,
           icon: Icons.warning_amber_outlined,
         );
-      case NotificationType.info:
+      case AppToastType.info:
         return _NotificationStyle(
           color: Colors.blue.shade700,
           icon: Icons.info_outline,

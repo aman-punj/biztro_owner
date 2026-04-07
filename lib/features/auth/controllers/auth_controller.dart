@@ -1,5 +1,5 @@
-import 'package:bizrato_owner/core/notifications/notification_service.dart';
-import 'package:bizrato_owner/core/notifications/notification_service_extension.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/features/auth/data/auth_repository.dart';
 import 'package:bizrato_owner/features/auth/data/models/login_request.dart';
@@ -279,7 +279,7 @@ class AuthController extends GetxController {
   void _setError(String message) {
     infoMessage.value = '';
     formError.value = message;
-    Get.find<NotificationService>().error(message);
+    Get.find<AppToastService>().error(message);
   }
 
   void _setInfo(String message) {

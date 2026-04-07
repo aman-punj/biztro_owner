@@ -1,10 +1,8 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
-import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
-import 'package:bizrato_owner/core/widgets/app_text_field.dart';
-import 'package:bizrato_owner/core/widgets/primary_button.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_location_info_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/onboarding_section_card.dart';
+import 'package:bizrato_owner/features/onboarding/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -94,12 +92,12 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
               children: [
                 OnboardingSectionCard(
                   title: 'Location Information',
-                  titleIcon:  Icon(
+                  titleIcon: Icon(
                     Icons.add_location_rounded,
                     size: 18.sp,
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? AppColors.textPrimaryDark
-                        : AppColors.primary,
+                        ? AppTokens.textPrimaryInverse
+                        : AppTokens.brandPrimary,
                   ),
                   child: Column(
                     children: [
@@ -178,7 +176,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                                   : Icon(
                                       Icons.keyboard_arrow_down,
                                       size: 20.sp,
-                                      color: AppColors.textSecondaryLight,
+                                      color: AppTokens.textSecondary,
                                     ),
                             ),
                           ),
@@ -210,7 +208,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
 
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: AppTokens.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),

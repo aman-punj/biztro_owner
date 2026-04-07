@@ -1,6 +1,5 @@
-import 'package:bizrato_owner/core/theme/app_tokens.dart';
-import 'package:bizrato_owner/core/theme/colors.dart';
-import 'package:bizrato_owner/core/widgets/app_image.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ class DashboardHeader extends GetView<DashboardController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primary,
+      color: AppTokens.brandPrimary,
       padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,7 +21,7 @@ class DashboardHeader extends GetView<DashboardController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.menu, color: AppColors.white, size: 22.sp),
+              Icon(Icons.menu, color: AppTokens.white, size: 22.sp),
               AppImage(
                 path: AppAssets.appTextLogo,
                 width: 90.w,
@@ -43,7 +42,7 @@ class DashboardHeader extends GetView<DashboardController> {
           Text(
             'Welcome to Haldiram',
             style: TextStyle(
-              color: AppColors.white.withValues(alpha: 0.85),
+              color: AppTokens.white.withValues(alpha: 0.85),
               fontSize: 11.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -53,7 +52,7 @@ class DashboardHeader extends GetView<DashboardController> {
           Container(
             padding: EdgeInsets.all(10.r),
             decoration: BoxDecoration(
-              color: AppColors.white.withValues(alpha: 0.14),
+              color: AppTokens.white.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Obx(
@@ -65,10 +64,10 @@ class DashboardHeader extends GetView<DashboardController> {
                     child: Container(
                       width: 54.w,
                       height: 54.w,
-                      color: AppColors.white.withValues(alpha: 0.2),
+                      color: AppTokens.white.withValues(alpha: 0.2),
                       child: Icon(
                         Icons.storefront_outlined,
-                        color: AppColors.white,
+                        color: AppTokens.white,
                         size: 28.sp,
                       ),
                     ),
@@ -81,7 +80,7 @@ class DashboardHeader extends GetView<DashboardController> {
                         Text(
                           controller.businessName.value,
                           style: TextStyle(
-                            color: AppColors.white,
+                            color: AppTokens.white,
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
                           ),
@@ -90,7 +89,7 @@ class DashboardHeader extends GetView<DashboardController> {
                         Text(
                           controller.businessType.value,
                           style: TextStyle(
-                            color: AppColors.white.withValues(alpha: 0.75),
+                            color: AppTokens.white.withValues(alpha: 0.75),
                             fontSize: 10.sp,
                           ),
                         ),
@@ -100,7 +99,7 @@ class DashboardHeader extends GetView<DashboardController> {
                             _StatBadge(
                               icon: Icons.star_rounded,
                               value: controller.totalClickCount.value,
-                              iconColor: AppColors.starYellow,
+                              iconColor: AppTokens.star,
                             ),
                             SizedBox(width: 8.w),
                             _StatBadge(
@@ -137,10 +136,10 @@ class _NotifIcon extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.18),
+        color: AppTokens.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: Icon(icon, color: AppColors.white, size: 18.sp),
+      child: Icon(icon, color: AppTokens.white, size: 18.sp),
     );
   }
 }
@@ -161,12 +160,12 @@ class _StatBadge extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 11.sp, color: iconColor ?? AppColors.white),
+        Icon(icon, size: 11.sp, color: iconColor ?? AppTokens.white),
         SizedBox(width: 2.w),
         Text(
           value,
           style: TextStyle(
-            color: AppColors.white,
+            color: AppTokens.white,
             fontSize: 10.sp,
             fontWeight: FontWeight.w600,
           ),

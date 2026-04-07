@@ -1,5 +1,5 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
-import 'package:bizrato_owner/core/widgets/app_image.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +21,7 @@ class BusinessInsightsSection extends GetView<DashboardController> {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimaryLight,
+                color: AppTokens.textPrimary,
               ),
             ),
             TextButton(
@@ -101,7 +101,7 @@ class _InsightStatCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryLight,
+                      color: AppTokens.textPrimary,
                     ),
                   ),
                   FittedBox(
@@ -109,7 +109,7 @@ class _InsightStatCard extends StatelessWidget {
                       stat.label,
                       style: TextStyle(
                         fontSize: 10.sp,
-                        color: AppColors.textSecondaryLight,
+                        color: AppTokens.textSecondary,
                       ),
                     ),
                   ),

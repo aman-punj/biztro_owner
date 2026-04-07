@@ -70,16 +70,31 @@ class CourseVideoTile extends StatelessWidget {
             onTap: onPlay,
             borderRadius: BorderRadius.circular(8.r),
             child: Container(
-              width: 42.w,
-              height: 42.w,
+              width: 52.w,
+              padding: EdgeInsets.symmetric(vertical: 6.h),
               decoration: BoxDecoration(
                 color: AppTokens.surface,
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(
-                Icons.play_arrow_rounded,
-                size: 20.sp,
-                color: AppTokens.textPrimary,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.play_arrow_rounded,
+                    size: 18.sp,
+                    color: AppTokens.textPrimary,
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    'Play',
+                    style: TextStyle(
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppTokens.textPrimary,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

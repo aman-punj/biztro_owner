@@ -1,6 +1,6 @@
 import 'package:bizrato_owner/core/network/app_response.dart';
-import 'package:bizrato_owner/core/notifications/notification_service.dart';
-import 'package:bizrato_owner/core/notifications/notification_service_extension.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
@@ -17,8 +17,8 @@ class EditLocationInfoController extends GetxController {
 
   final OnboardingRepository repository;
   final AuthStorage _authStorage = Get.find<AuthStorage>();
-  final NotificationService _notificationService =
-      Get.find<NotificationService>();
+  final AppToastService _notificationService =
+      Get.find<AppToastService>();
   final Debouncer _debouncer = Debouncer();
 
   final RxBool isLoadingPage = false.obs;

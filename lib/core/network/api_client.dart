@@ -5,8 +5,8 @@ import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 
-import 'app_errors.dart';
-import 'app_response.dart';
+import 'package:bizrato_owner/core/network/app_errors.dart';
+import 'package:bizrato_owner/core/network/app_response.dart';
 
 class ApiClient extends GetxService {
   ApiClient({
@@ -38,19 +38,19 @@ class ApiClient extends GetxService {
       },
       onResponse: (response, handler) => handler.next(response),
       onError: (error, handler) async {
-      if (error.response?.statusCode == 401) {
-        final authStorage = Get.find<AuthStorage>();
-        final hasToken = (authStorage.token?.isNotEmpty ?? false);
-        if (hasToken) {
-          await authStorage.clear();
-          // Future: attempt token refresh here before logout
-          await Get.find<LogoutService>().logout();
-          return;
+        if (error.response?.statusCode == 401) {
+          final authStorage = Get.find<AuthStorage>();
+          final hasToken = (authStorage.token?.isNotEmpty ?? false);
+          if (hasToken) {
+            await authStorage.clear();
+            // Future: attempt token refresh here before logout
+            await Get.find<LogoutService>().logout();
+            return;
+          }
         }
-      }
-      handler.next(error);
-    },
-  ));
+        handler.next(error);
+      },
+    ));
   }
 
   final String baseUrl;
@@ -108,13 +108,12 @@ class ApiClient extends GetxService {
       return serverMessage;
     }
 
-    return error.response?.statusMessage ??
-        error.message ??
-        AppErrors.unknown;
+    return error.response?.statusMessage ?? error.message ?? AppErrors.unknown;
   }
 
   bool _isNoInternet(DioException error) {
     final errorType = error.type;
-    return errorType == DioExceptionType.unknown && error.error is SocketException;
+    return errorType == DioExceptionType.unknown &&
+        error.error is SocketException;
   }
 }

@@ -135,5 +135,6 @@ class MessagesController extends GetxController {
 
   void onSearchChanged(String query) => searchQuery.value = query;
 
+  @override
   Future<void> refresh() => _loadConversations();
 }

@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class DashboardDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppTokens.white,
       child: Column(
         children: [
           _buildHeader(),
@@ -120,8 +120,8 @@ class DashboardDrawer extends StatelessWidget {
             child: _DrawerItem(
               icon: Icons.logout,
               text: 'Sign Out',
-              textColor: AppColors.error,
-              iconColor: AppColors.error,
+              textColor: AppTokens.error,
+              iconColor: AppTokens.error,
               onTap: () async {
                 await Get.find<LogoutService>().logout();
               },
@@ -136,7 +136,7 @@ class DashboardDrawer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(20.w, 54.h, 20.w, 24.h),
       decoration: const BoxDecoration(
-        color: AppColors.primary,
+        color: AppTokens.brandPrimary,
       ),
       child: Row(
         children: [
@@ -145,7 +145,7 @@ class DashboardDrawer extends StatelessWidget {
             backgroundImage: const NetworkImage(
               'https://i.pravatar.cc/150?img=11',
             ),
-            backgroundColor: AppColors.white.withValues(alpha: 0.2),
+            backgroundColor: AppTokens.white.withValues(alpha: 0.2),
           ),
           SizedBox(width: 14.w),
           Expanded(
@@ -155,7 +155,7 @@ class DashboardDrawer extends StatelessWidget {
                 Text(
                   "Singh Brother's",
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: AppTokens.white,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                   ),
@@ -164,7 +164,7 @@ class DashboardDrawer extends StatelessWidget {
                 Text(
                   'Business Partner',
                   style: TextStyle(
-                    color: AppColors.white.withValues(alpha: 0.9),
+                    color: AppTokens.white.withValues(alpha: 0.9),
                     fontSize: 10.sp,
                   ),
                 ),
@@ -203,7 +203,7 @@ class _DrawerItem extends StatelessWidget {
             Icon(
               icon,
               size: 20.sp,
-              color: iconColor ?? AppColors.textSecondaryLight,
+              color: iconColor ?? AppTokens.textSecondary,
             ),
             SizedBox(width: 16.w),
             Text(
@@ -211,7 +211,7 @@ class _DrawerItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
-                color: textColor ?? AppColors.surfaceDark,
+                color: textColor ?? AppTokens.surfaceInverse,
               ),
             ),
           ],

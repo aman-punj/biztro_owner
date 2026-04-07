@@ -1,4 +1,6 @@
+import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
+import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
 import 'package:bizrato_owner/core/widgets/app_shimmer.dart';
 import 'package:bizrato_owner/features/course/controllers/course_controller.dart';
@@ -34,16 +36,18 @@ class CourseListView extends GetView<CourseController> {
             SizedBox(height: 12.h),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Available for you',
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppTokens.textPrimary,
-                ),
-              ),
-            ),
-            SizedBox(height: 10.h),
+              child: Row(children: [
+                AppImage(path: AppAssets.sparkleIcon),
+                Text(
+                  'Available for you',
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppTokens.textPrimary,
+                  ),
+                )
+              ],),
+            ), 
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {

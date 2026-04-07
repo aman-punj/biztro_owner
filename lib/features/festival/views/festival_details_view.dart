@@ -109,6 +109,9 @@ class FestivalDetailsView extends GetView<FestivalController> {
                     final post = controller.festivalPosts[index];
                     return FestivalPostTile(
                       imageUrl: controller.buildImageUrl(post.postImageUrl),
+                      isDownloading:
+                          controller.downloadingPostIds.contains(post.postId),
+                      onDownload: () => controller.downloadFestivalPost(post),
                     );
                   },
                 ),

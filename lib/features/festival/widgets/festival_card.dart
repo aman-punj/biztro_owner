@@ -25,7 +25,7 @@ class FestivalCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.all(10.w),
+          padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 10.h),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(color: AppTokens.border),
@@ -36,22 +36,23 @@ class FestivalCard extends StatelessWidget {
               AppImage(
                 path: imageUrl,
                 width: double.infinity,
-                height: 122.h,
+                height: 102.h,
                 fit: BoxFit.cover,
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              SizedBox(height: 10.h),
+              SizedBox(height: 8.h),
               Text(
                 festival.festivalName,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
                   color: AppTokens.textPrimary,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 8.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -71,6 +72,7 @@ class FestivalCard extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: 4.h),
             ],
           ),
         ),

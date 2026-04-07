@@ -100,7 +100,7 @@ class FestivalListView extends GetView<FestivalController> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 0.8,
+                      childAspectRatio: 0.92,
                     ),
                     itemBuilder: (_, index) {
                       final item = festivals[index];

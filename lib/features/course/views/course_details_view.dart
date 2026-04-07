@@ -51,14 +51,13 @@ class CourseDetailsView extends GetView<CourseController> {
           return Column(
             children: [
               Text(
-                '${controller.courseVideos.length} Video Lectures',
+                '${controller.courseVideos.length} Video Lecture${controller.courseVideos.length == 1 ? '' : 's'}',
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: AppTokens.textSecondary,
                 ),
-              ),
-              SizedBox(height: 10.h),
+              ), 
               Expanded(
                 child: ListView.separated(
                   itemCount: controller.courseVideos.length,
@@ -68,9 +67,7 @@ class CourseDetailsView extends GetView<CourseController> {
                     return CourseVideoTile(
                       title: video.videoTitle,
                       index: index,
-                      onPlay: () {
-                        Get.snackbar('YouTube Link', video.youtubeLink);
-                      },
+                      onPlay: () => controller.openYoutubeVideo(video.youtubeLink),
                     );
                   },
                 ),

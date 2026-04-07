@@ -23,6 +23,8 @@ class AppTokens {
       AppColors.livenessBackground; // KYC/live camera surface
   static const Color selectionBackground =
       AppColors.optionSelectedBackground; // Selected option tile fill
+  static const Color secondaryButtonBackground =
+      AppColors.secondaryButtonBackground; // Secondary action/button background
   static const Color errorSurface =
       AppColors.errorSurfaceLight; // Error icon/background fill
 
@@ -53,6 +55,7 @@ class AppTokens {
   static const Color error = AppColors.error; // Error/destructive state
   static const Color online =
       AppColors.onlineIndicator; // Online/presence state
+  static const Color success = AppColors.success; // Success state color
   static const Color white = AppColors.white; // Pure white utility
 
   // Borders

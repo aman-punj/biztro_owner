@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,10 +13,10 @@ class ProfileCompletenessCard extends GetView<DashboardController> {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
-      color: AppColors.profileCardBackground,
+      color: AppTokens.profileBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.r),
-        side: BorderSide(color: AppColors.profileCardBorder, width: 1),
+        side: const BorderSide(color: AppTokens.profileBorder, width: 1),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
@@ -32,7 +32,7 @@ class ProfileCompletenessCard extends GetView<DashboardController> {
                       style: TextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimaryLight,
+                        color: AppTokens.textPrimary,
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -40,7 +40,7 @@ class ProfileCompletenessCard extends GetView<DashboardController> {
                       'Add Photos to Boost Visibility',
                       style: TextStyle(
                         fontSize: 10.sp,
-                        color: AppColors.textSecondaryLight,
+                        color: AppTokens.textSecondary,
                       ),
                     ),
                   ],
@@ -55,11 +55,11 @@ class ProfileCompletenessCard extends GetView<DashboardController> {
                   style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.profileIndicator,
+                    color: AppTokens.brandAccent,
                   ),
                 ),
-                progressColor: AppColors.profileIndicator,
-                backgroundColor: AppColors.profileCardBackground,
+                progressColor: AppTokens.brandAccent,
+                backgroundColor: AppTokens.profileBackground,
                 circularStrokeCap: CircularStrokeCap.round,
               ),
             ],

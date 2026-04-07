@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,8 +32,8 @@ class OnboardingStageIndicator extends StatelessWidget {
                 child: Container(
                   height: 1.5.h,
                   color: lineIndex < currentIndex
-                      ? AppColors.success
-                      : AppColors.borderLight,
+                      ? AppTokens.success
+                      : AppTokens.border,
                 ),
               );
             }
@@ -64,10 +64,10 @@ class OnboardingStageIndicator extends StatelessWidget {
                     fontWeight:
                     isActive ? FontWeight.w600 : FontWeight.w400,
                     color: isActive
-                        ? AppColors.primary
+                        ? AppTokens.brandPrimary
                         : isDone
-                        ? AppColors.success
-                        : AppColors.textSecondaryLight,
+                        ? AppTokens.success
+                        : AppTokens.textSecondary,
                   ),
                 ),
               );
@@ -89,31 +89,31 @@ class OnboardingStageIndicator extends StatelessWidget {
       height: 32.w,
       decoration: BoxDecoration(
         color: isDone
-            ? AppColors.success
+            ? AppTokens.success
             : isActive
-            ? AppColors.primary
-            : AppColors.surfaceLight,
+            ? AppTokens.brandPrimary
+            : AppTokens.surface,
         shape: BoxShape.circle,
         border: Border.all(
           color: isDone
-              ? AppColors.success
+              ? AppTokens.success
               : isActive
-              ? AppColors.primary
-              : AppColors.borderLight,
+              ? AppTokens.brandPrimary
+              : AppTokens.border,
           width: 1,
         ),
       ),
       child: Center(
         child: isDone
-            ? Icon(Icons.check, size: 14.sp, color: AppColors.white)
+            ? Icon(Icons.check, size: 14.sp, color: AppTokens.white)
             : Text(
           '${index + 1}',
           style: TextStyle(
             fontSize: 10.sp,
             fontWeight: FontWeight.w600,
             color: isActive
-                ? AppColors.white
-                : AppColors.textSecondaryLight,
+                ? AppTokens.white
+                : AppTokens.textSecondary,
           ),
         ),
       ),

@@ -1,9 +1,7 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../theme/app_tokens.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({
@@ -63,7 +61,7 @@ class AppTextField extends StatelessWidget {
             style: TextStyle(
               fontSize: 12.sp,
               fontWeight: FontWeight.w500,
-              color: Colors.black.withValues(alpha: 0.8),
+              color: AppTokens.textPrimary.withValues(alpha: 0.8),
             ),
           ),
         ),
@@ -89,11 +87,11 @@ class AppTextField extends StatelessWidget {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w400, // Medium weight for the value
-              color: Colors.black,
+              color: AppTokens.textPrimary,
             ),
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.textFieldBackground,
+              fillColor: AppTokens.inputBackground,
               counterText: '',
               hintText: hintText ?? title,
               hintStyle: TextStyle(

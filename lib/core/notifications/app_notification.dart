@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/notifications/notification_type.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_type.dart';
 
 class AppNotification {
   const AppNotification({
@@ -9,5 +9,5 @@ class AppNotification {
 
   final String title;
   final String message;
-  final NotificationType type;
+  final AppToastType type;
 }

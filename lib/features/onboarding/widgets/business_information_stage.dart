@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/keyword_input_widget.dart';
@@ -128,9 +128,9 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
           child: Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: AppColors.backgroundLight,
+              color: AppTokens.screenBackground,
               borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: AppColors.borderLight),
+              border: Border.all(color: AppTokens.border),
             ),
             child: Row(
               children: [
@@ -138,11 +138,11 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                   width: 40.w,
                   height: 40.w,
                   decoration: BoxDecoration(
-                    color: AppColors.textSecondaryLight.withValues(alpha: 0.2),
+                    color: AppTokens.textSecondary.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(Icons.storefront,
-                      color: AppColors.textSecondaryLight, size: 20.sp),
+                      color: AppTokens.textSecondary, size: 20.sp),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -164,7 +164,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                         'Id Verification Pending',
                         style: TextStyle(
                           fontSize: 10.sp,
-                          color: AppColors.textSecondaryLight,
+                          color: AppTokens.textSecondary,
                         ),
                       ),
                     ],
@@ -189,7 +189,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                   prefixIcon: Icon(
                     Icons.search,
                     size: 20.sp,
-                    color: AppColors.textSecondaryLight,
+                    color: AppTokens.textSecondary,
                   ),
                   suffixIcon: controller.isCategoryRestored.value
                       ? IconButton(
@@ -197,7 +197,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                           icon: Icon(
                             Icons.close,
                             size: 18.sp,
-                            color: AppColors.textSecondaryLight,
+                            color: AppTokens.textSecondary,
                           ),
                         )
                       : controller.isSearching.value
@@ -241,7 +241,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
         Obx(
           () => PrimaryButton(
             label: 'SAVE & CONTINUE',
-            isLoading: controller.isSaving.value,
+            isLoading: controller.isSearching.value || controller.isSaving.value,
             onPressed: controller.saveAndContinue,
           ),
         ),
@@ -266,12 +266,12 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
       margin: EdgeInsets.only(top: 8.h),
       padding: EdgeInsets.symmetric(vertical: 12.h),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppTokens.white,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.borderLight),
+        border: Border.all(color: AppTokens.border),
         boxShadow: [
           BoxShadow(
-            color: AppColors.textSecondaryLight.withValues(alpha: 0.1),
+            color: AppTokens.textSecondary.withValues(alpha: 0.1),
             blurRadius: 10,
           ),
         ],
@@ -283,7 +283,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
               height: 60.h,
               child: Center(
                 child: CircularProgressIndicator(
-                  color: AppColors.primary,
+                  color: AppTokens.brandPrimary,
                   strokeWidth: 2,
                 ),
               ),
@@ -299,7 +299,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: AppColors.textSecondaryLight,
+                          color: AppTokens.textSecondary,
                         ),
                       ),
                     )
@@ -308,7 +308,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                       shrinkWrap: true,
                       itemCount: controller.searchResults.length,
                       separatorBuilder: (_, __) =>
-                          Divider(color: AppColors.borderLight),
+                          Divider(color: AppTokens.border),
                       itemBuilder: (context, index) {
                         final result = controller.searchResults[index];
                         return ListTile(
@@ -338,7 +338,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
               height: 120.h,
               child: Center(
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: AppColors.primary),
+                    strokeWidth: 2, color: AppTokens.brandPrimary),
               ),
             );
           }
@@ -357,7 +357,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                           height: 14.w,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: AppColors.primary,
+                            color: AppTokens.brandPrimary,
                           ),
                         ),
                         SizedBox(width: 8.w),
@@ -365,7 +365,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                           'Restoring your previous selections...',
                           style: TextStyle(
                             fontSize: 11.sp,
-                            color: AppColors.textSecondaryLight,
+                            color: AppTokens.textSecondary,
                           ),
                         ),
                       ],
@@ -410,7 +410,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                 style: TextStyle(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondaryLight,
+                  color: AppTokens.textSecondary,
                 ),
               ),
               SizedBox(height: 8.h),
@@ -434,8 +434,8 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                       maxLines: 3,
                       actionIcon: Icons.check,
                       actionBackgroundColor:
-                          AppColors.primary.withValues(alpha: 0.12),
-                      actionIconColor: AppColors.primary,
+                          AppTokens.brandPrimary.withValues(alpha: 0.12),
+                      actionIconColor: AppTokens.brandPrimary,
                       onSubmitted: (_) => _addCustomKeywordFromField(),
                       onAction: _addCustomKeywordFromField,
                     ),
@@ -449,12 +449,12 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                         style: OutlinedButton.styleFrom(
                           fixedSize: Size(double.maxFinite, 52.h),
                           side:
-                              BorderSide(color: AppColors.primary, width: 1.5),
+                              BorderSide(color: AppTokens.brandPrimary, width: 1.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           backgroundColor:
-                              AppColors.primary.withValues(alpha: 0.05),
+                              AppTokens.brandPrimary.withValues(alpha: 0.05),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -464,7 +464,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                                   ? Icons.close
                                   : Icons.add_circle_outline,
                               size: 20.sp,
-                              color: AppColors.primary,
+                              color: AppTokens.brandPrimary,
                             ),
                             SizedBox(width: 8.w),
                             Text(
@@ -472,7 +472,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                                   ? 'Cancel'
                                   : 'Add Another Keyword',
                               style: TextStyle(
-                                color: AppColors.primary,
+                                color: AppTokens.brandPrimary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14.sp,
                               ),
@@ -488,7 +488,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                         'Max 5 keywords reached',
                         style: TextStyle(
                           fontSize: 10.sp,
-                          color: AppColors.error,
+                          color: AppTokens.error,
                         ),
                       ),
                     ),

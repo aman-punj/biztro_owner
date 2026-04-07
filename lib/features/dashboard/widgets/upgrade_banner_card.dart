@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,9 +11,9 @@ class UpgradeBannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.profileCardBackground,
+        color: AppTokens.profileBackground,
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: AppColors.profileCardBorder, width: 1),
+        border: Border.all(color: AppTokens.profileBorder, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -32,7 +32,7 @@ class UpgradeBannerCard extends StatelessWidget {
                 Text(
                   'Start selling on\nBizrato today',
                   style: TextStyle(
-                    color: AppColors.textPrimaryLight,
+                    color: AppTokens.textPrimary,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w800,
                     height: 1.3,
@@ -42,7 +42,7 @@ class UpgradeBannerCard extends StatelessWidget {
                 Text(
                   'List Your Business for free!',
                   style: TextStyle(
-                    color: AppColors.textSecondaryLight,
+                    color: AppTokens.textSecondary,
                     fontSize: 10.sp,
                   ),
                 ),
@@ -57,7 +57,7 @@ class UpgradeBannerCard extends StatelessWidget {
           Icon(
             Icons.rocket_launch_outlined,
             size: 60.sp,
-            color: AppColors.profileIndicator.withValues(alpha: 0.35),
+            color: AppTokens.brandAccent.withValues(alpha: 0.35),
           ),
         ],
       ),
@@ -80,13 +80,13 @@ class _UpgradeNowButton extends StatelessWidget {
           vertical: 6.h,
         ),
         decoration: BoxDecoration(
-          color: AppColors.profileIndicator,
+          color: AppTokens.brandAccent,
           borderRadius: BorderRadius.circular(6.r),
         ),
         child: Text(
           'Upgrade now',
           style: TextStyle(
-            color: AppColors.white,
+            color: AppTokens.white,
             fontSize: 10.sp,
             fontWeight: FontWeight.w700,
           ),

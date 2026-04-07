@@ -1,13 +1,8 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
-import 'package:bizrato_owner/core/theme/colors.dart';
-import 'package:bizrato_owner/core/widgets/app_image.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
-import 'package:bizrato_owner/features/dashboard/widgets/business_insights_section.dart';
-import 'package:bizrato_owner/features/dashboard/widgets/dashboard_drawer.dart';
-import 'package:bizrato_owner/features/dashboard/widgets/lead_analytics_section.dart';
-import 'package:bizrato_owner/features/dashboard/widgets/profile_completeness_card.dart';
-import 'package:bizrato_owner/features/dashboard/widgets/quick_actions_section.dart';
-import 'package:bizrato_owner/features/dashboard/widgets/upgrade_banner_card.dart';
+import 'package:bizrato_owner/features/dashboard/widgets/widgets.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +14,7 @@ class DashboardView extends GetView<DashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: AppTokens.screenBackground,
       drawer: const DashboardDrawer(),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -33,7 +28,7 @@ class DashboardView extends GetView<DashboardController> {
         }
         return RefreshIndicator(
           onRefresh: controller.refresh,
-          color: AppColors.primary,
+          color: AppTokens.brandPrimary,
           child: CustomScrollView(
             slivers: [
               const _DashboardSliverAppBar(),
@@ -71,7 +66,7 @@ class DashboardView extends GetView<DashboardController> {
       bottomNavigationBar: _DashboardBottomNav(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppTokens.brandPrimary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -100,10 +95,10 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppTokens.white,
         boxShadow: [
           BoxShadow(
-            color: AppColors.surfaceDark.withValues(alpha: 0.06),
+            color: AppTokens.surfaceInverse.withValues(alpha: 0.06),
             offset: const Offset(0, -2),
             blurRadius: 10,
           ),
@@ -188,7 +183,7 @@ class _NavItem extends StatelessWidget {
                 fit: BoxFit.contain,
                 showLoading: false,
                 color:
-                    selected ? AppColors.primary : AppColors.textSecondaryLight,
+                    selected ? AppTokens.brandPrimary : AppTokens.textSecondary,
               ),
               SizedBox(height: 2.h),
               Flexible(
@@ -200,8 +195,8 @@ class _NavItem extends StatelessWidget {
                     fontSize: 8.5.sp, // Slightly reduced for safety
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                     color: selected
-                        ? AppColors.primary
-                        : AppColors.textSecondaryLight,
+                        ? AppTokens.brandPrimary
+                        : AppTokens.textSecondary,
                   ),
                 ),
               ),
@@ -222,13 +217,13 @@ class _DashboardLoadingState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(color: AppColors.primary),
+          const CircularProgressIndicator(color: AppTokens.brandPrimary),
           SizedBox(height: 16.h),
           Text(
             'Loading your dashboard...',
             style: TextStyle(
               fontSize: 13.sp,
-              color: AppColors.textSecondaryLight,
+              color: AppTokens.textSecondary,
             ),
           ),
         ],
@@ -257,7 +252,7 @@ class _DashboardErrorState extends StatelessWidget {
             Icon(
               Icons.cloud_off_outlined,
               size: 48.sp,
-              color: AppColors.textSecondaryLight,
+              color: AppTokens.textSecondary,
             ),
             SizedBox(height: 16.h),
             Text(
@@ -265,7 +260,7 @@ class _DashboardErrorState extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13.sp,
-                color: AppColors.textSecondaryLight,
+                color: AppTokens.textSecondary,
               ),
             ),
             SizedBox(height: 20.h),
@@ -287,13 +282,13 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppTokens.white,
       // ✅ Title bar (pinned) = WHITE
       expandedHeight: 200.h,
       pinned: true,
       elevation: 0,
       scrolledUnderElevation: 0,
-      shadowColor: AppColors.surfaceDark.withValues(alpha: 0.10),
+      shadowColor: AppTokens.surfaceInverse.withValues(alpha: 0.10),
       automaticallyImplyLeading: false,
       surfaceTintColor: Colors.transparent,
 
@@ -309,7 +304,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                 padding: const EdgeInsets.all(4.0),
                 child: Icon(
                   Icons.menu,
-                  color: AppColors.textPrimaryLight,
+                  color: AppTokens.textPrimary,
                   size: 24.sp,
                 ),
               ),
@@ -338,14 +333,14 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
           children: [
             // ✅ White strip = same height as pinned title bar
             Container(
-              color: AppColors.white,
+              color: AppTokens.white,
               height: kToolbarHeight + MediaQuery.of(context).padding.top,
             ),
 
             // ✅ Blue section below the white title bar
             Expanded(
               child: Container(
-                color: AppColors.primary,
+                color: AppTokens.brandPrimary,
                 padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 12.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,7 +351,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                       () => Text(
                         'Welcome to ${controller.businessName.value}',
                         style: TextStyle(
-                          color: AppColors.white.withValues(alpha: 0.88),
+                          color: AppTokens.white.withValues(alpha: 0.88),
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w500,
                         ),
@@ -368,11 +363,11 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                     Container(
                       padding: EdgeInsets.all(10.r),
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: AppTokens.white,
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.surfaceDark.withValues(alpha: 0.08),
+                            color: AppTokens.surfaceInverse.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -386,7 +381,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                               child: Container(
                                 width: 56.w,
                                 height: 56.w,
-                                color: AppColors.backgroundLight,
+                                color: AppTokens.screenBackground,
                                 child: Center(
                                   child: AppImage(
                                     path: AppAssets.businessCardIcon,
@@ -406,7 +401,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                   Text(
                                     controller.businessName.value,
                                     style: TextStyle(
-                                      color: AppColors.textPrimaryLight,
+                                      color: AppTokens.textPrimary,
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -415,7 +410,7 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                   Text(
                                     controller.businessType.value,
                                     style: TextStyle(
-                                      color: AppColors.textSecondaryLight,
+                                      color: AppTokens.textSecondary,
                                       fontSize: 10.sp,
                                     ),
                                   ),
@@ -425,13 +420,13 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                       Icon(
                                         Icons.star_rounded,
                                         size: 13.sp,
-                                        color: AppColors.starYellow,
+                                        color: AppTokens.star,
                                       ),
                                       SizedBox(width: 2.w),
                                       Text(
                                         controller.totalClickCount.value,
                                         style: TextStyle(
-                                          color: AppColors.textPrimaryLight,
+                                          color: AppTokens.textPrimary,
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -439,12 +434,12 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                       SizedBox(width: 8.w),
                                       Icon(Icons.remove_red_eye_outlined,
                                           size: 13.sp,
-                                          color: AppColors.primary),
+                                          color: AppTokens.brandPrimary),
                                       SizedBox(width: 2.w),
                                       Text(
                                         controller.viewCount.value,
                                         style: TextStyle(
-                                          color: AppColors.textPrimaryLight,
+                                          color: AppTokens.textPrimary,
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -453,13 +448,13 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                                       Icon(
                                         Icons.favorite_rounded,
                                         size: 13.sp,
-                                        color: AppColors.error,
+                                        color: AppTokens.error,
                                       ),
                                       SizedBox(width: 2.w),
                                       Text(
                                         controller.likeCount.value,
                                         style: TextStyle(
-                                          color: AppColors.textPrimaryLight,
+                                          color: AppTokens.textPrimary,
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -494,11 +489,11 @@ class _AppBarIconButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: AppColors.backgroundLight, // ✅ Light grey on white
+        color: AppTokens.screenBackground, // ✅ Light grey on white
         borderRadius: BorderRadius.circular(8.r),
       ),
       child:
-          Icon(icon, color: AppColors.textPrimaryLight, size: 18.sp), // ✅ Dark
+          Icon(icon, color: AppTokens.textPrimary, size: 18.sp), // ✅ Dark
     );
   }
 }

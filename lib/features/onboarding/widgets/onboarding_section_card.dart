@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,7 +38,7 @@ class OnboardingSectionCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimaryLight,
+                    color: AppTokens.textPrimary,
                   ),
                 ),
               ],
@@ -47,7 +47,7 @@ class OnboardingSectionCard extends StatelessWidget {
             SizedBox(height: 4.h),
             Text(
               subtitle!,
-              style: TextStyle(fontSize: 10.sp, color: AppColors.textSecondaryLight),
+              style: TextStyle(fontSize: 10.sp, color: AppTokens.textSecondary),
             ),
           ],
           if (hasTitle || hasSubtitle) SizedBox(height: 12.h),

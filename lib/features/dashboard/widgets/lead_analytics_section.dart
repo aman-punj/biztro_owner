@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +13,9 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTokens.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.borderLight.withValues(alpha: 0.5)),
+        border: Border.all(color: AppTokens.border.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +25,7 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimaryLight,
+              color: AppTokens.textPrimary,
             ),
           ),
           SizedBox(height: 16.h),
@@ -71,7 +71,8 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
             SizedBox(width: 6.w),
             Text(
               cat.label,
-              style: TextStyle(fontSize: 11.sp, color: Colors.black87),
+              style: TextStyle(
+                  fontSize: 11.sp, color: AppTokens.textPrimary.withValues(alpha: 0.87)),
             ),
           ],
         );
@@ -90,11 +91,11 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
         drawVerticalLine: true,
         horizontalInterval: 10,
         getDrawingHorizontalLine: (value) => FlLine(
-          color: Colors.grey.withValues(alpha: 0.15),
+          color: AppTokens.textSecondary.withValues(alpha: 0.15),
           strokeWidth: 1,
         ),
         getDrawingVerticalLine: (value) => FlLine(
-          color: Colors.grey.withValues(alpha: 0.15),
+          color: AppTokens.textSecondary.withValues(alpha: 0.15),
           strokeWidth: 1,
         ),
       ),
@@ -110,7 +111,7 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
               // axisSide: meta.axisSide,
               meta: meta,
               child: Text(value.toInt().toString(),
-                  style: TextStyle(color: Colors.grey, fontSize: 10.sp)),
+                  style: TextStyle(color: AppTokens.textSecondary, fontSize: 10.sp)),
             ),
           ),
         ),
@@ -129,7 +130,7 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
                   angle: -0.7, // Slanted labels
                   child: Text(
                     controller.xLabels[index],
-                    style: TextStyle(color: Colors.grey, fontSize: 10.sp),
+                    style: TextStyle(color: AppTokens.textSecondary, fontSize: 10.sp),
                   ),
                 ),
               );
@@ -149,7 +150,7 @@ class LeadAnalyticsSection extends GetView<DashboardController> {
           // Ensure your controller provides points matching the bar heights
           spots: controller.lineSpots,
           isCurved: false,
-          color: Colors.grey.withValues(alpha: 0.5),
+          color: AppTokens.textSecondary.withValues(alpha: 0.5),
           barWidth: 1,
           isStrokeCapRound: true,
           dotData: const FlDotData(show: false), // Hide dots to keep it clean

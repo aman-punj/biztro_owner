@@ -1,14 +1,10 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
-import 'package:bizrato_owner/core/theme/app_tokens.dart';
-import 'package:bizrato_owner/core/theme/colors.dart';
-import 'package:bizrato_owner/core/widgets/app_image.dart';
-import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
-import 'package:bizrato_owner/core/widgets/app_text_field.dart';
-import 'package:bizrato_owner/core/widgets/primary_button.dart';
-import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_services_controller.dart';
+import 'package:bizrato_owner/features/business_edit/widgets/widgets.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/onboarding_section_card.dart';
+import 'package:bizrato_owner/features/onboarding/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -124,52 +120,24 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                  Obx(
-                    () {
-                      final data = controller.businessServiceData.value;
-                      if (data == null) {
-                        return const SizedBox.shrink();
-                      }
+                Obx(
+                  () {
+                    final data = controller.businessServiceData.value;
+                    if (data == null) {
+                      return const SizedBox.shrink();
+                    }
 
-                      return Container(
-                        width: double.infinity,
-                        margin: EdgeInsets.only(bottom: 16.h),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 14.w,
-                          vertical: 10.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppTokens.selectionBackground,
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: AppTokens.brandPrimary),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.category_outlined,
-                              size: 16.sp,
-                              color: AppTokens.brandPrimary,
-                            ),
-                            SizedBox(width: 8.w),
-                            Expanded(
-                              child: Text(
-                                data.displayName,
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: AppTokens.brandPrimary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  OnboardingSectionCard(
-                    title: 'BASIC INFO',
-                    child: Column(
-                      children: [
+                    return BusinessEditHeader(
+                      businessName: data.displayName.obs,
+                      subtitle: 'Basic Info & Services',
+                    );
+                  },
+                ),
+                SizedBox(height: 16.h),
+                OnboardingSectionCard(
+                  title: 'BASIC INFO',
+                  child: Column(
+                    children: [
                         AppTextField(
                           controller: _businessNameController,
                           title: 'Business Name',
@@ -177,7 +145,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                           suffixIcon: Icon(
                             Icons.lock_outline,
                             size: 16.sp,
-                            color: AppColors.textSecondaryLight,
+                            color: AppTokens.textSecondary,
                           ),
                         ),
                         SizedBox(height: 12.h),

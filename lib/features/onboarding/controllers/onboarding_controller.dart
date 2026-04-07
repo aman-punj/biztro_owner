@@ -1,6 +1,6 @@
 import 'package:bizrato_owner/core/network/app_response.dart';
-import 'package:bizrato_owner/core/notifications/notification_service.dart';
-import 'package:bizrato_owner/core/notifications/notification_service_extension.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
@@ -906,7 +906,7 @@ class OnboardingController extends GetxController {
       return;
     }
     if (index > _stageIndex.value) {
-      Get.find<NotificationService>().warning(
+      Get.find<AppToastService>().warning(
         'Please complete the current step first.',
       );
       return;
@@ -927,6 +927,6 @@ class OnboardingController extends GetxController {
       _authStorage.merchantId ?? _merchantIdOverride;
 
   void _notifyError(String message) {
-    Get.find<NotificationService>().error(message);
+    Get.find<AppToastService>().error(message);
   }
 }

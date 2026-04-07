@@ -1,7 +1,7 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
-import 'package:bizrato_owner/core/widgets/primary_button.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/trusted_shield/controllers/trusted_shield_controller.dart';
-import 'package:bizrato_owner/features/trusted_shield/widgets/kyc_sections.dart';
+import 'package:bizrato_owner/features/trusted_shield/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -12,17 +12,17 @@ class TrustedShieldView extends GetView<TrustedShieldController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: AppTokens.screenBackground,
       appBar: AppBar(
         leading: IconButton(
           onPressed: Get.back,
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             size: 18.sp,
-            color: AppColors.white,
+            color: AppTokens.white,
           ),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppTokens.brandPrimary,
         centerTitle: true,
         elevation: 0,
         title: Column(
@@ -30,7 +30,7 @@ class TrustedShieldView extends GetView<TrustedShieldController> {
             Text(
               'Trusted Shield',
               style: TextStyle(
-                color: AppColors.white,
+                color: AppTokens.white,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
               ),
@@ -38,7 +38,7 @@ class TrustedShieldView extends GetView<TrustedShieldController> {
             Text(
               'Verify identity to unlock pro features',
               style: TextStyle(
-                color: AppColors.white.withValues(alpha: 0.8),
+                color: AppTokens.white.withValues(alpha: 0.8),
                 fontSize: 9.sp,
               ),
             ),
@@ -72,7 +72,7 @@ class TrustedShieldView extends GetView<TrustedShieldController> {
                 '© 2026 Bizrato Biz Concepts Pvt. Ltd.',
                 style: TextStyle(
                   fontSize: 9.sp,
-                  color: AppColors.textSecondaryLight,
+                  color: AppTokens.textSecondary,
                 ),
               ),
             ),
@@ -92,7 +92,7 @@ class _SubmitBar extends GetView<TrustedShieldController> {
     return Container(
       padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppTokens.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.07),
@@ -148,13 +148,13 @@ class _Step extends StatelessWidget {
           height: 28.w,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: active ? AppColors.primary : AppColors.borderLight,
+            color: active ? AppTokens.brandPrimary : AppTokens.border,
           ),
           alignment: Alignment.center,
           child: Text(
             '$number',
             style: TextStyle(
-              color: active ? AppColors.white : AppColors.textSecondaryLight,
+              color: active ? AppTokens.white : AppTokens.textSecondary,
               fontSize: 11.sp,
               fontWeight: FontWeight.w700,
             ),
@@ -166,7 +166,7 @@ class _Step extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 8.sp,
-            color: active ? AppColors.primary : AppColors.textSecondaryLight,
+            color: active ? AppTokens.brandPrimary : AppTokens.textSecondary,
             fontWeight: active ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -182,7 +182,7 @@ class _StepDivider extends StatelessWidget {
       child: Container(
         height: 1.5,
         margin: EdgeInsets.only(bottom: 20.h),
-        color: AppColors.borderLight,
+        color: AppTokens.border,
       ),
     );
   }

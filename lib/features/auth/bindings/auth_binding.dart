@@ -1,8 +1,8 @@
 import 'package:bizrato_owner/core/network/api_client.dart';
 import 'package:get/get.dart';
 
-import '../controllers/auth_controller.dart';
-import '../data/auth_repository.dart';
+import 'package:bizrato_owner/features/auth/controllers/auth_controller.dart';
+import 'package:bizrato_owner/features/auth/data/auth_repository.dart';
 
 class AuthBinding extends Bindings {
   @override
@@ -12,6 +12,7 @@ class AuthBinding extends Bindings {
           apiClient: Get.find(),
           authStorage: Get.find(),
         ));
-    Get.lazyPut<AuthController>(() => AuthController(authRepository: Get.find()));
+    Get.lazyPut<AuthController>(
+        () => AuthController(authRepository: Get.find()));
   }
 }

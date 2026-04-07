@@ -1,6 +1,6 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_controller.dart';
-import 'package:bizrato_owner/features/messages/widgets/conversation_tile.dart';
+import 'package:bizrato_owner/features/messages/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,16 +11,16 @@ class MessagesView extends GetView<MessagesController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppTokens.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppTokens.brandPrimary,
         elevation: 0,
         leading: IconButton(
           onPressed: Get.back,
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             size: 18.sp,
-            color: AppColors.white,
+            color: AppTokens.white,
           ),
         ),
         title: Column(
@@ -28,7 +28,7 @@ class MessagesView extends GetView<MessagesController> {
             Text(
               'Messages',
               style: TextStyle(
-                color: AppColors.white,
+                color: AppTokens.white,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
               ),
@@ -37,7 +37,7 @@ class MessagesView extends GetView<MessagesController> {
               () => Text(
                 '${controller.filteredConversations.length} Conversations',
                 style: TextStyle(
-                  color: AppColors.white.withValues(alpha: 0.8),
+                  color: AppTokens.white.withValues(alpha: 0.8),
                   fontSize: 9.sp,
                 ),
               ),
@@ -50,11 +50,11 @@ class MessagesView extends GetView<MessagesController> {
             onPressed: () {},
             icon: CircleAvatar(
               radius: 14.r,
-              backgroundColor: AppColors.white.withValues(alpha: 0.2),
+              backgroundColor: AppTokens.white.withValues(alpha: 0.2),
               child: Icon(
                 Icons.person_outline,
                 size: 16.sp,
-                color: AppColors.white,
+                color: AppTokens.white,
               ),
             ),
           ),
@@ -66,7 +66,7 @@ class MessagesView extends GetView<MessagesController> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: AppTokens.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.05),
@@ -82,7 +82,7 @@ class MessagesView extends GetView<MessagesController> {
                 prefixIcon: Icon(
                   Icons.search,
                   size: 18.sp,
-                  color: AppColors.textSecondaryLight,
+                  color: AppTokens.textSecondary,
                 ),
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 14.w,
@@ -97,7 +97,7 @@ class MessagesView extends GetView<MessagesController> {
             child: Obx(() {
               if (controller.isLoading.value) {
                 return const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(color: AppTokens.brandPrimary),
                 );
               }
 
@@ -109,13 +109,13 @@ class MessagesView extends GetView<MessagesController> {
                       Icon(
                         Icons.wifi_off_outlined,
                         size: 40.sp,
-                        color: AppColors.textSecondaryLight,
+                        color: AppTokens.textSecondary,
                       ),
                       SizedBox(height: 12.h),
                       Text(
                         'Failed to load messages',
                         style: TextStyle(
-                          color: AppColors.textSecondaryLight,
+                          color: AppTokens.textSecondary,
                           fontSize: 13.sp,
                         ),
                       ),
@@ -139,13 +139,13 @@ class MessagesView extends GetView<MessagesController> {
                       Icon(
                         Icons.chat_bubble_outline,
                         size: 40.sp,
-                        color: AppColors.textSecondaryLight,
+                        color: AppTokens.textSecondary,
                       ),
                       SizedBox(height: 12.h),
                       Text(
                         'No conversations found',
                         style: TextStyle(
-                          color: AppColors.textSecondaryLight,
+                          color: AppTokens.textSecondary,
                           fontSize: 13.sp,
                         ),
                       ),
@@ -156,13 +156,13 @@ class MessagesView extends GetView<MessagesController> {
 
               return RefreshIndicator(
                 onRefresh: controller.refresh,
-                color: AppColors.primary,
+                color: AppTokens.brandPrimary,
                 child: ListView.separated(
                   itemCount: conversations.length,
                   separatorBuilder: (_, __) => Divider(
                     height: 1,
                     indent: 66.w,
-                    color: AppColors.borderLight,
+                    color: AppTokens.border,
                   ),
                   itemBuilder: (context, index) {
                     return ConversationTile(model: conversations[index]);

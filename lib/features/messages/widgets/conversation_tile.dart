@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +9,8 @@ class ConversationTile extends StatelessWidget {
   final ConversationModel model;
 
   Color get _avatarColor {
-    return AppColors.avatarPalette[model.id.hashCode % AppColors.avatarPalette.length];
+    return AppTokens
+        .avatarPalette[model.id.hashCode % AppTokens.avatarPalette.length];
   }
 
   @override
@@ -30,7 +31,7 @@ class ConversationTile extends StatelessWidget {
                   child: Text(
                     model.avatarInitials,
                     style: TextStyle(
-                      color: AppColors.white,
+                      color: AppTokens.white,
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w700,
                     ),
@@ -40,15 +41,15 @@ class ConversationTile extends StatelessWidget {
                   Positioned(
                     right: 0,
                     bottom: 0,
-                        child: Container(
-                          width: 10.r,
-                          height: 10.r,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.onlineIndicator,
-                            border: Border.all(color: AppColors.white, width: 1.5),
-                          ),
-                        ),
+                    child: Container(
+                      width: 10.r,
+                      height: 10.r,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppTokens.online,
+                        border: Border.all(color: AppTokens.white, width: 1.5),
+                      ),
+                    ),
                   ),
               ],
             ),
@@ -68,7 +69,7 @@ class ConversationTile extends StatelessWidget {
                             fontWeight: model.unreadCount > 0
                                 ? FontWeight.w700
                                 : FontWeight.w600,
-                            color: AppColors.textPrimaryLight,
+                            color: AppTokens.textPrimary,
                           ),
                         ),
                       ),
@@ -76,7 +77,7 @@ class ConversationTile extends StatelessWidget {
                         model.time,
                         style: TextStyle(
                           fontSize: 9.sp,
-                          color: AppColors.textSecondaryLight,
+                          color: AppTokens.textSecondary,
                         ),
                       ),
                     ],
@@ -90,8 +91,8 @@ class ConversationTile extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 10.sp,
                             color: model.unreadCount > 0
-                                ? AppColors.textPrimaryLight
-                                : AppColors.textSecondaryLight,
+                                ? AppTokens.textPrimary
+                                : AppTokens.textSecondary,
                             fontWeight: model.unreadCount > 0
                                 ? FontWeight.w500
                                 : FontWeight.w400,
@@ -106,13 +107,13 @@ class ConversationTile extends StatelessWidget {
                             vertical: 2.h,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: AppTokens.brandPrimary,
                             borderRadius: BorderRadius.circular(20.r),
                           ),
-                            child: Text(
-                              '${model.unreadCount}',
-                              style: TextStyle(
-                                color: AppColors.white,
+                          child: Text(
+                            '${model.unreadCount}',
+                            style: TextStyle(
+                              color: AppTokens.white,
                               fontSize: 9.sp,
                               fontWeight: FontWeight.w700,
                             ),

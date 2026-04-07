@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
@@ -143,7 +143,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
           child: Center(
             child: CircularProgressIndicator(
               strokeWidth: 2.w,
-              color: AppColors.primary,
+              color: AppTokens.brandPrimary,
             ),
           ),
         );
@@ -157,13 +157,13 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
           //   icon: Icon(
           //     Icons.arrow_back_ios,
           //     size: 14.sp,
-          //     color: AppColors.primary,
+          //     color: AppTokens.brandPrimary,
           //   ),
           //   label: Text(
           //     'Back',
           //     style: TextStyle(
           //       fontSize: 13.sp,
-          //       color: AppColors.primary,
+          //       color: AppTokens.brandPrimary,
           //     ),
           //   ),
           // ),
@@ -173,7 +173,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
             titleIcon: Icon(
               Icons.person_outline,
               size: 16.sp,
-              color: AppColors.primary,
+              color: AppTokens.brandPrimary,
             ),
             child: Column(
               children: [
@@ -227,7 +227,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
             titleIcon: Icon(
               Icons.business_center_outlined,
               size: 16.sp,
-              color: AppColors.primary,
+              color: AppTokens.brandPrimary,
             ),
             child: Column(
               children: [
@@ -262,7 +262,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
             titleIcon: Icon(
               Icons.location_on_outlined,
               size: 16.sp,
-              color: AppColors.primary,
+              color: AppTokens.brandPrimary,
             ),
             child: Column(
               children: [
@@ -331,13 +331,13 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                                 height: 14.w,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.w,
-                                  color: AppColors.primary,
+                                  color: AppTokens.brandPrimary,
                                 ),
                               )
                             : Icon(
                                 Icons.keyboard_arrow_down,
                                 size: 20.sp,
-                                color: AppColors.textSecondaryLight,
+                                color: AppTokens.textSecondary,
                               ),
                       ),
                     ),
@@ -371,7 +371,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
               height: 14.w,
               child: CircularProgressIndicator(
                 strokeWidth: 2.w,
-                color: AppColors.primary,
+                color: AppTokens.brandPrimary,
               ),
             )
           : const SizedBox.shrink(),
@@ -386,7 +386,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
     Get.bottomSheet(
       Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppTokens.white,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(16.r),
           ),
@@ -405,7 +405,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
               ),
             ),
             Divider(
-              color: AppColors.borderLight,
+              color: AppTokens.border,
               height: 0.h,
             ),
             Obx(
@@ -415,7 +415,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                   shrinkWrap: true,
                   itemCount: controller.p3AreaList.length,
                   separatorBuilder: (_, __) => Divider(
-                    color: AppColors.borderLight,
+                    color: AppTokens.border,
                     height: 0.h,
                   ),
                   itemBuilder: (_, i) {
@@ -429,7 +429,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                           controller.p3SelectedArea.value?.areaId == area.areaId
                               ? Icon(
                                   Icons.check,
-                                  color: AppColors.primary,
+                                  color: AppTokens.brandPrimary,
                                   size: 18.sp,
                                 )
                               : null,

@@ -93,8 +93,10 @@ class DashboardController extends GetxController {
 
   final legendCategories = <LeadAnalyticsCategory>[
     const LeadAnalyticsCategory(label: 'Books', color: AppTokens.brandAccent),
-    const LeadAnalyticsCategory(label: 'Clothing', color: AppTokens.brandPrimary),
-    const LeadAnalyticsCategory(label: 'Electronics', color: AppTokens.brandPrimaryDark),
+    const LeadAnalyticsCategory(
+        label: 'Clothing', color: AppTokens.brandPrimary),
+    const LeadAnalyticsCategory(
+        label: 'Electronics', color: AppTokens.brandPrimaryDark),
     const LeadAnalyticsCategory(label: 'Garden', color: AppTokens.info),
     const LeadAnalyticsCategory(label: 'Sorts', color: AppTokens.online),
     const LeadAnalyticsCategory(label: 'Fashion', color: AppTokens.star),
@@ -243,5 +245,6 @@ class DashboardController extends GetxController {
     barGroups.assignAll(groups);
   }
 
+  @override
   Future<void> refresh() => _loadDashboard();
 }

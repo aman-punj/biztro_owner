@@ -34,6 +34,7 @@ class AppColors {
   static const Color insightIconLavender = Color(0xFFF3E5F5);
   static const Color insightIconMint = Color(0xFFE8F5E9);
   static const Color optionSelectedBackground = Color(0xFFEFF5FF);
+  static const Color secondaryButtonBackground = Color(0xFFE8F2FF);
   static const Color errorSurfaceLight = Color(0xFFFFF1F3);
   static const Color errorBorderLight = Color(0xFFF8D0D0);
   static const Color starYellow = Color(0xFFFBB13C);

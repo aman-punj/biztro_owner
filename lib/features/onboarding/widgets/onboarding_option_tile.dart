@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_checkbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +25,10 @@ class OnboardingOptionTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.optionSelectedBackground : AppColors.white,
+          color: isSelected ? AppTokens.selectionBackground : AppTokens.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.borderLight,
+            color: isSelected ? AppTokens.brandPrimary : AppTokens.border,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -40,7 +40,7 @@ class OnboardingOptionTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected ? AppColors.textPrimaryLight : AppColors.textSecondaryLight,
+                  color: isSelected ? AppTokens.textPrimary : AppTokens.textSecondary,
                 ),
               ),
             ),
@@ -54,9 +54,9 @@ class OnboardingOptionTile extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(
                     width: 1.5,
-                    color: isSelected ? AppColors.primary : AppColors.borderLight,
+                    color: isSelected ? AppTokens.brandPrimary : AppTokens.border,
                   ),
-                  color: AppColors.white,
+                  color: AppTokens.white,
                 ),
                 child: isSelected
                     ? Center(
@@ -64,7 +64,7 @@ class OnboardingOptionTile extends StatelessWidget {
                           width: 10.w,
                           height: 10.w,
                           decoration: const BoxDecoration(
-                            color: AppColors.primary,
+                            color: AppTokens.brandPrimary,
                             shape: BoxShape.circle,
                           ),
                         ),

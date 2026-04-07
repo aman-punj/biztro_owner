@@ -61,7 +61,6 @@ class AppImage extends StatelessWidget {
         ),
       );
     } else if (_isSvg) {
-      final BlendMode? svgColorMode = color != null ? (colorBlendMode ?? BlendMode.srcIn) : null;
       image = SvgPicture.asset(
         path,
         width: width,
@@ -74,11 +73,13 @@ class AppImage extends StatelessWidget {
                   height: height,
                 )
             : null,
-        color: color,
-        colorBlendMode: svgColorMode ?? BlendMode.srcIn ,
+        colorFilter: color != null
+            ? ColorFilter.mode(color!, colorBlendMode ?? BlendMode.srcIn)
+            : null,
       );
     } else {
-      final BlendMode? imageColorMode = color != null ? (colorBlendMode ?? BlendMode.srcIn) : null;
+      final BlendMode? imageColorMode =
+          color != null ? (colorBlendMode ?? BlendMode.srcIn) : null;
       image = Image.asset(
         path,
         width: width,

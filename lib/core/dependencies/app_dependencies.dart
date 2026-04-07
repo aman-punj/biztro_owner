@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/notifications/notification_service.dart';
+import 'package:bizrato_owner/core/notifications/app_toast_service.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/storage/storage_service.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
@@ -22,7 +22,7 @@ class AppDependencies {
 
     Get.put<AuthStorage>(AuthStorage(storageService), permanent: true);
     Get.put<LogoutService>(LogoutService(Get.find<AuthStorage>()), permanent: true);
-    Get.put<NotificationService>(NotificationService(), permanent: true);
+    Get.put<AppToastService>(AppToastService(), permanent: true);
 
     _initialized = true;
   }

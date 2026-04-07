@@ -7,9 +7,13 @@ class FestivalPostTile extends StatelessWidget {
   const FestivalPostTile({
     super.key,
     required this.imageUrl,
+    required this.onDownload,
+    this.isDownloading = false,
   });
 
   final String imageUrl;
+  final VoidCallback onDownload;
+  final bool isDownloading;
 
   @override
   Widget build(BuildContext context) {
@@ -34,18 +38,29 @@ class FestivalPostTile extends StatelessWidget {
           Positioned(
             top: 10.h,
             right: 10.w,
-            child: Container(
-              width: 26.w,
-              height: 26.w,
-              decoration: BoxDecoration(
-                color: AppTokens.cardBackground,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppTokens.border),
-              ),
-              child: Icon(
-                Icons.arrow_downward,
-                size: 14.sp,
-                color: AppTokens.brandPrimary,
+            child: GestureDetector(
+              onTap: isDownloading ? null : onDownload,
+              child: Container(
+                width: 30.w,
+                height: 30.w,
+                decoration: BoxDecoration(
+                  color: AppTokens.cardBackground,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppTokens.border),
+                ),
+                child: isDownloading
+                    ? Padding(
+                        padding: EdgeInsets.all(7.w),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.w,
+                          color: AppTokens.brandPrimary,
+                        ),
+                      )
+                    : Icon(
+                        Icons.arrow_downward,
+                        size: 15.sp,
+                        color: AppTokens.brandPrimary,
+                      ),
               ),
             ),
           ),
