@@ -14,10 +14,13 @@ class AppRoutes {
   static const onboarding = '/onboarding';
   static const dashboard = '/dashboard';
   static const trustedShield = '/trusted-shield';
+  static const liveIdentityVerification = '/live-identity-verification';
   static const messages = '/messages';
   static const editBusinessDetails = '/edit-business-details';
   static const editBusinessServices = '/edit-business-services';
   static const editLocationInfo = '/edit-location-info';
+  static const editTimingPayment = '/edit-timing-payment';
+  static const editSocialMediaLinks = '/edit-social-media-links';
   static const festivals = '/festivals';
   static const festivalDetails = '/festival-details';
   static const courses = '/courses';

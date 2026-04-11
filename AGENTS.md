@@ -33,6 +33,17 @@
 ## Network Error Handling
 - ALWAYS normalize no-internet, failed-host-lookup, connection-refused, and timeout failures in ApiClient/AppErrors before controllers or views consume them
 - NEVER show raw DioException text in Festival, Course, Dashboard, Business Edit, or any other feature; use `response.message` or app-level toast/dialog messaging instead
+
+## Server Image Preview
+- For image previews backed by our server, follow the `lib/features/festival/views/festival_list_view.dart` pattern
+- ALWAYS build the image URL in the controller with `buildImageUrl(...)`
+- ALWAYS provide authenticated image headers from the controller with `buildImageHeaders()`
+- Pass both `imageUrl` and `imageHeaders` into the widget that renders the preview instead of hardcoding URLs or fetching images directly in the view
+
+## Business Edit UI
+- ALWAYS wrap bottom action rows like Discard/Save in `SafeArea` so they stay above Android system navigation bars
+- For social or settings link forms, use `AppImage` with asset paths declared in `AppAssets` instead of raw `Icon(...)` widgets when design-provided PNG/SVG assets are expected
+- For stacked link inputs, place each field inside its own rounded background container to match the existing business-edit card treatment
 ```
 
 The more specific your rules, the less you clean up after Codex. Treat `AGENTS.md` like a senior dev's code review checklist that runs before every PR.

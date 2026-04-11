@@ -7,13 +7,19 @@ import 'package:bizrato_owner/features/messages/views/messages_view.dart';
 import 'package:bizrato_owner/features/business_edit/bindings/edit_business_details_binding.dart';
 import 'package:bizrato_owner/features/business_edit/bindings/edit_business_services_binding.dart';
 import 'package:bizrato_owner/features/business_edit/bindings/edit_location_info_binding.dart';
+import 'package:bizrato_owner/features/business_edit/bindings/edit_social_media_links_binding.dart';
+import 'package:bizrato_owner/features/business_edit/bindings/edit_timing_payment_binding.dart';
 import 'package:bizrato_owner/features/business_edit/views/edit_business_details_view.dart';
 import 'package:bizrato_owner/features/business_edit/views/edit_business_services_view.dart';
 import 'package:bizrato_owner/features/business_edit/views/edit_location_info_view.dart';
+import 'package:bizrato_owner/features/business_edit/views/edit_social_media_links_view.dart';
+import 'package:bizrato_owner/features/business_edit/views/edit_timing_payment_view.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_binding.dart';
 import 'package:bizrato_owner/features/onboarding/views/onboarding_view.dart';
 import 'package:bizrato_owner/features/splash/views/splash_view.dart';
 import 'package:bizrato_owner/features/trusted_shield/controllers/trusted_shield_binding.dart';
+import 'package:bizrato_owner/features/trusted_shield/bindings/live_identity_verification_binding.dart';
+import 'package:bizrato_owner/features/trusted_shield/views/live_identity_verification_view.dart';
 import 'package:bizrato_owner/features/trusted_shield/views/trusted_shield_view.dart';
 import 'package:bizrato_owner/features/course/bindings/course_binding.dart';
 import 'package:bizrato_owner/features/course/views/course_details_view.dart';
@@ -52,6 +58,11 @@ class AppPages {
       page: TrustedShieldView.new,
       binding: TrustedShieldBinding(),
     ),
+    GetPage<LiveIdentityVerificationView>(
+      name: AppRoutes.liveIdentityVerification,
+      page: LiveIdentityVerificationView.new,
+      binding: LiveIdentityVerificationBinding(),
+    ),
     GetPage<MessagesView>(
       name: AppRoutes.messages,
       page: MessagesView.new,
@@ -71,6 +82,16 @@ class AppPages {
       name: AppRoutes.editLocationInfo,
       page: EditLocationInfoView.new,
       binding: EditLocationInfoBinding(),
+    ),
+    GetPage<EditTimingPaymentView>(
+      name: AppRoutes.editTimingPayment,
+      page: EditTimingPaymentView.new,
+      binding: EditTimingPaymentBinding(),
+    ),
+    GetPage<EditSocialMediaLinksView>(
+      name: AppRoutes.editSocialMediaLinks,
+      page: EditSocialMediaLinksView.new,
+      binding: EditSocialMediaLinksBinding(),
     ),
     GetPage<FestivalListView>(
       name: AppRoutes.festivals,

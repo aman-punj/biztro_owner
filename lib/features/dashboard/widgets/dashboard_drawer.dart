@@ -69,12 +69,18 @@ class DashboardDrawer extends StatelessWidget {
                 _DrawerItem(
                   icon: Icons.access_time_filled,
                   text: 'Timing Info',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.editTimingPayment);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.share,
                   text: 'Social Media Link',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.editSocialMediaLinks);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.school,

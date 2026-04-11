@@ -1,12 +1,30 @@
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
+import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class QuickActionsSection extends GetView<DashboardController> {
   const QuickActionsSection({super.key});
+
+  void _handleQuickActionTap(String label) {
+    switch (label.toLowerCase().replaceAll('\n', ' ').trim()) {
+      case 'business details':
+        Get.toNamed(AppRoutes.editBusinessDetails);
+        break;
+      case 'timing & details':
+        Get.toNamed(AppRoutes.editTimingPayment);
+        break;
+      case 'location info':
+        Get.toNamed(AppRoutes.editLocationInfo);
+        break;
+      case 'social links':
+        Get.toNamed(AppRoutes.editSocialMediaLinks);
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +61,7 @@ class QuickActionsSection extends GetView<DashboardController> {
               return _QuickActionTile(
                 label: action['label'] as String,
                 iconPath: action['icon'] as String,
+                onTap: () => _handleQuickActionTap(action['label'] as String),
               );
             }).toList(),
           ),
@@ -56,50 +75,55 @@ class _QuickActionTile extends StatelessWidget {
   const _QuickActionTile({
     required this.label,
     required this.iconPath,
+    required this.onTap,
   });
 
   final String label;
   final String iconPath;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 70.w,
-          height: 70.h,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(12.r),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 70.w,
+            height: 70.h,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Center(
+              child: AppImage(
+                path: iconPath,
+                width: 45.w,
+                height: 45.w,
+                fit: BoxFit.contain,
+                showLoading: false,
               ),
-            ],
-          ),
-          child: Center(
-            child: AppImage(
-              path: iconPath,
-              width: 45.w,
-              height: 45.w,
-              fit: BoxFit.contain,
-              showLoading: false,
             ),
           ),
-        ),
-        SizedBox(height: 6.h),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 9.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimaryLight,
+          SizedBox(height: 6.h),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 9.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimaryLight,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

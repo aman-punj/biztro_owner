@@ -25,4 +25,13 @@ class AppAssets {
   static const deleteRedIcon = 'assets/icons/delete_red_icon.svg';
   static const flashIcon = 'assets/icons/flash_icon.svg';
   static const businessIcon = 'assets/icons/business_icon.svg';
+  static const socialFacebookIcon = 'assets/icons/facebook.svg';
+  static const socialTwitterIcon = 'assets/icons/twitter.svg';
+  static const socialInstagramIcon = 'assets/icons/instagram.svg';
+  static const socialLinkedinIcon = 'assets/icons/linkedin.svg';
+  static const socialJustdialIcon = 'assets/icons/justdial.svg';
+  static const socialIndiamartIcon = 'assets/icons/indiamart.svg';
+  static const socialWebsiteIcon = 'assets/icons/website.svg';
+  static const socialYoutubeIcon = 'assets/icons/youtube.svg';
+
 }

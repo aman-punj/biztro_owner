@@ -25,6 +25,7 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.textInputAction,
     this.autofocus = false,
+    this.errorText,
   });
 
   final String title;
@@ -46,6 +47,7 @@ class AppTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final TextInputAction? textInputAction;
   final bool autofocus;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +95,7 @@ class AppTextField extends StatelessWidget {
               filled: true,
               fillColor: AppTokens.inputBackground,
               counterText: '',
+              errorText: errorText?.trim().isEmpty ?? true ? null : errorText,
               hintText: hintText ?? title,
               hintStyle: TextStyle(
                 fontSize: 14.sp,
@@ -109,11 +112,23 @@ class AppTextField extends StatelessWidget {
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
-                borderSide: BorderSide.none,
+                borderSide: errorText?.trim().isEmpty ?? true
+                    ? BorderSide.none
+                    : BorderSide(color: AppTokens.error, width: 1.w),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
-                borderSide: BorderSide.none,
+                borderSide: errorText?.trim().isEmpty ?? true
+                    ? BorderSide.none
+                    : BorderSide(color: AppTokens.error, width: 1.w),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: AppTokens.error, width: 1.w),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: AppTokens.error, width: 1.w),
               ),
             ),
           ),

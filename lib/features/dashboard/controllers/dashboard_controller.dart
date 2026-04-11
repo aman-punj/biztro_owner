@@ -4,6 +4,7 @@ import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/utils/formatters.dart';
 import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
+import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -70,7 +71,7 @@ class DashboardController extends GetxController {
 
   final ApiClient apiClient;
   final AuthStorage authStorage;
-  final OnboardingRepository onboardingRepository;
+  final OnboardingRepository onboardingRepository; 
 
   final isLoading = true.obs;
   final hasError = false.obs;
@@ -81,6 +82,7 @@ class DashboardController extends GetxController {
   final totalClickCount = '0'.obs;
   final viewCount = '0'.obs;
   final likeCount = '0'.obs;
+  final businessStep = 3.obs;
   final profileCompletionPercent = 0.60.obs;
   final profileCompletionLabel = '60%'.obs;
 
@@ -112,6 +114,37 @@ class DashboardController extends GetxController {
     {'label': 'Social\nLinks', 'icon': AppAssets.quickActionSocialLinks},
   ].obs;
 
+  bool get shouldShowProfileCompletion => businessStep.value < 5;
+
+  String get profileCompletionSubtitle {
+    switch (businessStep.value) {
+      case 3:
+        return 'Complete Trusted Shield verification';
+      case 4:
+        return 'Add Photos to Boost Visibility';
+      default:
+        return 'Complete your business profile';
+    }
+  }
+
+  void openProfileCompletion() {
+    if (!shouldShowProfileCompletion) {
+      return;
+    }
+
+    switch (businessStep.value) {
+      case 3:
+        Get.toNamed(AppRoutes.trustedShield);
+        break;
+      case 4:
+        Get.toNamed(AppRoutes.editTimingPayment);
+        break;
+      default:
+        Get.toNamed(AppRoutes.onboarding);
+        break;
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -122,8 +155,6 @@ class DashboardController extends GetxController {
     isLoading.value = true;
     hasError.value = false;
     try {
-      await Future<void>.delayed(const Duration(milliseconds: 1200));
-
       final merchantId = authStorage.merchantId;
       if (merchantId == null || merchantId == 0) {
         throw Exception('Merchant ID is not available');
@@ -211,11 +242,21 @@ class DashboardController extends GetxController {
       businessName.value = result.businessName.trim();
     }
 
+    businessStep.value = result.businessStep;
+    _applyProfileCompletion(result.businessStep);
+
     final parts = <String>[
       if (result.displayName.trim().isNotEmpty) result.displayName.trim(),
       // if (result.businessEmailId.trim().isNotEmpty) result.businessEmailId.trim(),
     ];
     businessType.value = parts.join(' • ');
+  }
+
+  void _applyProfileCompletion(int step) {
+    final normalizedStep = step.clamp(0, 5);
+    final percent = (normalizedStep * 0.20).clamp(0.0, 1.0);
+    profileCompletionPercent.value = percent;
+    profileCompletionLabel.value = (percent * 100).round().toString() + '%';
   }
 
   void _prepareChartData() {

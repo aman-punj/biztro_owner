@@ -1,5 +1,7 @@
 import 'package:bizrato_owner/core/network/api_client.dart';
 import 'package:bizrato_owner/core/network/app_response.dart';
+import 'package:bizrato_owner/features/business_edit/data/models/save_social_media_request.dart';
+import 'package:bizrato_owner/features/business_edit/data/models/social_media_links_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_details_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_service_model.dart';
@@ -323,6 +325,72 @@ class OnboardingRepository {
   ) async {
     final response = await apiClient.post(
       '/api/auth/savecontactdetails',
+      data: request.toJson(),
+    );
+
+    if (!response.success) {
+      return AppResponse<void>(
+        success: false,
+        message: response.message,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return AppResponse<void>(
+      success: true,
+      message: response.message,
+      statusCode: response.statusCode,
+    );
+  }
+
+  Future<AppResponse<SocialMediaLinksModel>> getSocialMediaLinks(
+    int merchantId,
+  ) async {
+    final response = await apiClient.get(
+      '/api/socialmedia/socialmedialinks',
+      queryParameters: {'MerchantId': merchantId},
+    );
+
+    if (!response.success) {
+      return AppResponse<SocialMediaLinksModel>.failure(
+        message: response.message,
+        statusCode: response.statusCode,
+        data: response.data,
+      );
+    }
+
+    if (response.data is! Map) {
+      return AppResponse<SocialMediaLinksModel>.failure(
+        message: 'Social media links are unavailable.',
+        statusCode: response.statusCode,
+        data: response.data,
+      );
+    }
+
+    final model = SocialMediaLinksModel.fromJson(_forceMap(response.data as Map));
+    if (!model.success) {
+      return AppResponse<SocialMediaLinksModel>.failure(
+        message: model.message.isNotEmpty
+            ? model.message
+            : 'Social media links are unavailable.',
+        statusCode: response.statusCode,
+        data: model,
+      );
+    }
+
+    return AppResponse<SocialMediaLinksModel>(
+      success: true,
+      message: model.message.isNotEmpty ? model.message : response.message,
+      data: model,
+      statusCode: response.statusCode,
+    );
+  }
+
+  Future<AppResponse<void>> saveSocialMedia(
+    SaveSocialMediaRequest request,
+  ) async {
+    final response = await apiClient.post(
+      '/api/socialmedia/SaveSocialMedia',
       data: request.toJson(),
     );
 

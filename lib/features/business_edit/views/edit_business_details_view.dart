@@ -4,7 +4,6 @@ import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_details_controller.dart';
 import 'package:bizrato_owner/features/business_edit/widgets/widgets.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/search_result_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

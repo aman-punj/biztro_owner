@@ -6,6 +6,7 @@ class FestivalRepository {
   FestivalRepository({required this.apiClient});
 
   final ApiClient apiClient;
+  static const String _imageHost = 'https://mybizimages.in';
 
   Future<AppResponse<List<FestivalModel>>> getFestivals() async {
     final response = await apiClient.get('/api/festivals/GetFestivals');
@@ -61,7 +62,18 @@ class FestivalRepository {
   }
 
   String buildDownloadUrl(String imagePath) {
-    return '${apiClient.baseUrl}/api/festivals/DownloadFestivalImage?imagePath=$imagePath';
+    final normalizedPath = imagePath.trim();
+    if (normalizedPath.isEmpty) {
+      return '';
+    }
+
+    final uri = Uri.tryParse(normalizedPath);
+    if (uri != null && uri.hasScheme) {
+      return normalizedPath;
+    }
+
+    final sanitizedPath = normalizedPath.replaceFirst(RegExp(r'^/+'), '');
+    return '$_imageHost/$sanitizedPath';
   }
 
   List<Map<String, dynamic>> _extractResult(Map<String, dynamic> payload) {

@@ -9,6 +9,7 @@ export 'app_text_field.dart';
 export 'custom_app_bar.dart';
 export 'edit_page_app_bar.dart';
 export 'keyword_input_widget.dart';
+export 'onboarding_section_card.dart';
 export 'primary_button.dart';
 export 'scrollable_option_item.dart';
 export 'section_title.dart';

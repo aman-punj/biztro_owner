@@ -1,6 +1,5 @@
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
-import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/features/festival/data/models/festival_model.dart';
 import 'package:bizrato_owner/features/festival/data/repositories/festival_repository.dart';
 import 'package:bizrato_owner/features/festival/services/festival_download_service.dart';
@@ -17,7 +16,6 @@ class FestivalController extends GetxController {
   final FestivalDownloadService downloadService;
   final AppToastService _toastService =
       Get.find<AppToastService>();
-  final AuthStorage _authStorage = Get.find<AuthStorage>();
 
   final isLoading = true.obs;
   final isDetailsLoading = false.obs;
@@ -96,16 +94,7 @@ class FestivalController extends GetxController {
 
   String buildImageUrl(String path) => repository.buildDownloadUrl(path);
 
-  Map<String, String>? buildImageHeaders() {
-    final token = _authStorage.token;
-    if (token == null || token.isEmpty) {
-      return null;
-    }
-
-    return <String, String>{
-      'Authorization': 'Bearer $token',
-    };
-  }
+  Map<String, String>? buildImageHeaders() => null;
 
   Future<void> downloadFestivalPost(FestivalPostModel post) async {
     if (downloadingPostIds.contains(post.postId)) {

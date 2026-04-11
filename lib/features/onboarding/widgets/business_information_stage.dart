@@ -1,13 +1,13 @@
-import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/constants/app_assets.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/keyword_input_widget.dart';
+import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/search_result_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/onboarding_section_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -31,7 +31,8 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(text: controller.searchQuery.value);
+    _searchController =
+        TextEditingController(text: controller.searchQuery.value);
     _customKeywordController = TextEditingController();
     _searchListener = () => controller.onSearchChanged(_searchController.text);
     _searchController.addListener(_searchListener);
@@ -241,7 +242,8 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
         Obx(
           () => PrimaryButton(
             label: 'SAVE & CONTINUE',
-            isLoading: controller.isSearching.value || controller.isSaving.value,
+            isLoading:
+                controller.isSearching.value || controller.isSaving.value,
             onPressed: controller.saveAndContinue,
           ),
         ),
@@ -343,9 +345,9 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
             );
           }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Obx(() {
                 if (controller.isRestoringKeywords.value) {
                   return Padding(
@@ -448,8 +450,8 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                             : _showCustomKeywordInput,
                         style: OutlinedButton.styleFrom(
                           fixedSize: Size(double.maxFinite, 52.h),
-                          side:
-                              BorderSide(color: AppTokens.brandPrimary, width: 1.5),
+                          side: BorderSide(
+                              color: AppTokens.brandPrimary, width: 1.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
                           ),

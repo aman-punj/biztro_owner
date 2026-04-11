@@ -1,11 +1,11 @@
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
+import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/onboarding_section_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,7 +42,8 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
     super.initState();
     _businessNameController =
         TextEditingController(text: controller.page2BusinessName.value);
-    _websiteController = TextEditingController(text: controller.page2Website.value);
+    _websiteController =
+        TextEditingController(text: controller.page2Website.value);
     _famousForController =
         TextEditingController(text: controller.page2FamousFor.value);
     _estbYearController =
@@ -189,7 +190,8 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                 AppTextField(
                   controller: _businessNameController,
                   title: 'Business Name',
-                  onChanged: (value) => controller.page2BusinessName.value = value,
+                  onChanged: (value) =>
+                      controller.page2BusinessName.value = value,
                 ),
                 SizedBox(height: 12.h),
                 AppTextField(

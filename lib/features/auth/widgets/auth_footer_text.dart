@@ -7,13 +7,13 @@ class AuthFooterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return Center(child: Text(
       '© 2026 Bizrato Biz Concepts Pvt. Ltd.',
       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: AppColors.textSecondaryLight,
-            fontSize: 9.sp,
-          ),
+        color: AppColors.textSecondaryLight,
+        fontSize: 9.sp,
+      ),
       textAlign: TextAlign.center,
-    );
+    ),);
   }
 }

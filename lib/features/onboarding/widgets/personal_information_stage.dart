@@ -1,10 +1,10 @@
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
+import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/onboarding_section_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

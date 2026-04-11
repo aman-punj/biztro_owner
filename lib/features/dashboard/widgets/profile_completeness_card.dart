@@ -10,62 +10,69 @@ class ProfileCompletenessCard extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      color: AppTokens.profileBackground,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        side: const BorderSide(color: AppTokens.profileBorder, width: 1),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-        child: Obx(
-          () => Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Profile ${controller.profileCompletionLabel.value} Complete',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppTokens.textPrimary,
+    return Obx(() {
+      if (!controller.shouldShowProfileCompletion) {
+        return const SizedBox.shrink();
+      }
+
+      return GestureDetector(
+        onTap: controller.openProfileCompletion,
+        child: Card(
+          margin: EdgeInsets.zero,
+          elevation: 0,
+          color: AppTokens.profileBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.r),
+            side: BorderSide(color: AppTokens.profileBorder, width: 1.w),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Profile ${controller.profileCompletionLabel.value} Complete',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppTokens.textPrimary,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      'Add Photos to Boost Visibility',
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        color: AppTokens.textSecondary,
+                      SizedBox(height: 4.h),
+                      Text(
+                        controller.profileCompletionSubtitle,
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: AppTokens.textSecondary,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              CircularPercentIndicator(
-                radius: 28.r,
-                lineWidth: 5.w,
-                percent: controller.profileCompletionPercent.value,
-                center: Text(
-                  controller.profileCompletionLabel.value,
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w800,
-                    color: AppTokens.brandAccent,
+                    ],
                   ),
                 ),
-                progressColor: AppTokens.brandAccent,
-                backgroundColor: AppTokens.profileBackground,
-                circularStrokeCap: CircularStrokeCap.round,
-              ),
-            ],
+                CircularPercentIndicator(
+                  radius: 28.r,
+                  lineWidth: 5.w,
+                  percent: controller.profileCompletionPercent.value,
+                  center: Text(
+                    controller.profileCompletionLabel.value,
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w800,
+                      color: AppTokens.brandAccent,
+                    ),
+                  ),
+                  progressColor: AppTokens.brandAccent,
+                  backgroundColor: AppTokens.profileBackground,
+                  circularStrokeCap: CircularStrokeCap.round,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
