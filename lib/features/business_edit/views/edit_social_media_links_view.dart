@@ -136,7 +136,7 @@ class _EditSocialMediaLinksViewState extends State<EditSocialMediaLinksView> {
                           label: 'Facebook URL',
                           controller: _facebookController,
                           iconPath: AppAssets.socialFacebookIcon,
-                          hint: 'https://facebook.com/acmesolutions',
+                          hint: 'https://facebook.com/your_username',
                           errorText: controller.facebookUrlError.value,
                           onChanged: (value) =>
                               controller.facebookUrl.value = value,
@@ -148,7 +148,7 @@ class _EditSocialMediaLinksViewState extends State<EditSocialMediaLinksView> {
                           label: 'Twitter URL',
                           controller: _twitterController,
                           iconPath: AppAssets.socialTwitterIcon,
-                          hint: 'https://twitter.com/acme_solutions',
+                          hint: 'https://twitter.com/your_username',
                           errorText: controller.twitterUrlError.value,
                           onChanged: (value) =>
                               controller.twitterUrl.value = value,
@@ -160,7 +160,7 @@ class _EditSocialMediaLinksViewState extends State<EditSocialMediaLinksView> {
                           label: 'Instagram URL',
                           controller: _instagramController,
                           iconPath: AppAssets.socialInstagramIcon,
-                          hint: 'https://instagram.com/acmesolutions',
+                          hint: 'https://instagram.com/yourusername',
                           errorText: controller.instagramUrlError.value,
                           onChanged: (value) =>
                               controller.instagramUrl.value = value,
@@ -172,7 +172,7 @@ class _EditSocialMediaLinksViewState extends State<EditSocialMediaLinksView> {
                           label: 'Linkedin URL',
                           controller: _linkedinController,
                           iconPath: AppAssets.socialLinkedinIcon,
-                          hint: 'https://linkedin.com/company/acme-solutions',
+                          hint: 'https://linkedin.com/company/your_username',
                           errorText: controller.linkedinUrlError.value,
                           onChanged: (value) =>
                               controller.linkedinUrl.value = value,
@@ -208,7 +208,7 @@ class _EditSocialMediaLinksViewState extends State<EditSocialMediaLinksView> {
                           label: 'Website URL',
                           controller: _websiteController,
                           iconPath: AppAssets.socialWebsiteIcon,
-                          hint: 'https://www.acmesolutions.com',
+                          hint: 'https://www.your_username.com',
                           errorText: controller.websiteUrlError.value,
                           onChanged: (value) =>
                               controller.websiteUrl.value = value,
