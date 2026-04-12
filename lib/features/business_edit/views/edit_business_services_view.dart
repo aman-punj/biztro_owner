@@ -4,7 +4,6 @@ import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_services_controller.dart';
 import 'package:bizrato_owner/features/business_edit/widgets/widgets.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -138,110 +137,110 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                   title: 'BASIC INFO',
                   child: Column(
                     children: [
-                        AppTextField(
-                          controller: _businessNameController,
-                          title: 'Business Name',
-                          readOnly: true,
-                          suffixIcon: Icon(
-                            Icons.lock_outline,
-                            size: 16.sp,
-                            color: AppTokens.textSecondary,
-                          ),
+                      AppTextField(
+                        controller: _businessNameController,
+                        title: 'Business Name',
+                        readOnly: true,
+                        suffixIcon: Icon(
+                          Icons.lock_outline,
+                          size: 16.sp,
+                          color: AppTokens.textSecondary,
                         ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _websiteController,
-                          title: 'Website (Optional)',
-                          keyboardType: TextInputType.url,
-                          onChanged: (value) =>
-                              controller.page2Website.value = value,
-                        ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _famousForController,
-                          title: 'Famous For/Speciality',
-                          onChanged: (value) =>
-                              controller.page2FamousFor.value = value,
-                        ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _estbYearController,
-                          title: 'Establishment Year',
-                          keyboardType: TextInputType.number,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          onChanged: (value) =>
-                              controller.page2EstbYear.value = value,
-                        ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _businessEmailController,
-                          title: 'Business Email (Optional)',
-                          keyboardType: TextInputType.emailAddress,
-                          onChanged: (value) =>
-                              controller.page2BusinessEmail.value = value,
-                        ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _businessWhatsAppController,
-                          title: 'Business WhatsApp (Optional)',
-                          keyboardType: TextInputType.phone,
-                          onChanged: (value) =>
-                              controller.page2BusinessWhatsApp.value = value,
-                        ),
-                        SizedBox(height: 12.h),
-                        AppTextField(
-                          controller: _businessLandlineController,
-                          title: 'Business Landline (Optional)',
-                          keyboardType: TextInputType.phone,
-                          onChanged: (value) =>
-                              controller.page2BusinessLandline.value = value,
-                        ),
-                      ],
-                    ),
-                  ),
-                  // SizedBox(height: 16.h),
-                  OnboardingSectionCard(
-                    title: 'SERVICES OFFERED',
-                    titleIcon: AppImage(path: AppAssets.sparkleIcon),
-                    child: Obx(
-                      () => _buildServiceFacilityContent(
-                        items: controller.servicesOfferedList,
-                        isLoading: controller.isLoadingFacilities.value,
-                        selectedIds: controller.selectedServiceIds,
-                        onTap: controller.toggleService,
-                        emptyMessage: 'Services list will be available soon.',
                       ),
-                    ),
-                  ),
-                  // SizedBox(height: 16.h),
-                  OnboardingSectionCard(
-                    title: 'FACILITIES',
-
-                    titleIcon: AppImage(path: AppAssets.flashIcon),
-                    child: Obx(
-                      () => _buildServiceFacilityContent(
-                        items: controller.facilitiesList,
-                        isLoading: controller.isLoadingFacilities.value,
-                        selectedIds: controller.selectedFacilityIds,
-                        onTap: controller.toggleFacility,
-                        emptyMessage: 'Facilities list will be available soon.',
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _websiteController,
+                        title: 'Website (Optional)',
+                        keyboardType: TextInputType.url,
+                        onChanged: (value) =>
+                            controller.page2Website.value = value,
                       ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _famousForController,
+                        title: 'Famous For/Speciality',
+                        onChanged: (value) =>
+                            controller.page2FamousFor.value = value,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _estbYearController,
+                        title: 'Establishment Year',
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        onChanged: (value) =>
+                            controller.page2EstbYear.value = value,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _businessEmailController,
+                        title: 'Business Email (Optional)',
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (value) =>
+                            controller.page2BusinessEmail.value = value,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _businessWhatsAppController,
+                        title: 'Business WhatsApp (Optional)',
+                        keyboardType: TextInputType.phone,
+                        onChanged: (value) =>
+                            controller.page2BusinessWhatsApp.value = value,
+                      ),
+                      SizedBox(height: 12.h),
+                      AppTextField(
+                        controller: _businessLandlineController,
+                        title: 'Business Landline (Optional)',
+                        keyboardType: TextInputType.phone,
+                        onChanged: (value) =>
+                            controller.page2BusinessLandline.value = value,
+                      ),
+                    ],
+                  ),
+                ),
+                // SizedBox(height: 16.h),
+                OnboardingSectionCard(
+                  title: 'SERVICES OFFERED',
+                  titleIcon: AppImage(path: AppAssets.sparkleIcon),
+                  child: Obx(
+                    () => _buildServiceFacilityContent(
+                      items: controller.servicesOfferedList,
+                      isLoading: controller.isLoadingFacilities.value,
+                      selectedIds: controller.selectedServiceIds,
+                      onTap: controller.toggleService,
+                      emptyMessage: 'Services list will be available soon.',
                     ),
                   ),
-                  SafeArea(child: Obx(
-                        () => PrimaryButton(
-                      label: 'SAVE & CONTINUE',
-                      isLoading: controller.isSaving.value,
-                      onPressed: controller.saveAndUpdate,
+                ),
+                // SizedBox(height: 16.h),
+                OnboardingSectionCard(
+                  title: 'FACILITIES',
+                  titleIcon: AppImage(path: AppAssets.flashIcon),
+                  child: Obx(
+                    () => _buildServiceFacilityContent(
+                      items: controller.facilitiesList,
+                      isLoading: controller.isLoadingFacilities.value,
+                      selectedIds: controller.selectedFacilityIds,
+                      onTap: controller.toggleFacility,
+                      emptyMessage: 'Facilities list will be available soon.',
                     ),
-                  )),
-                ],
-              ),
-            );
-          },
-        ),
+                  ),
+                ),
+                SafeArea(
+                    child: Obx(
+                  () => PrimaryButton(
+                    label: 'SAVE & CONTINUE',
+                    isLoading: controller.isSaving.value,
+                    onPressed: controller.saveAndUpdate,
+                  ),
+                )),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -278,7 +277,6 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
     }
 
     return ScrollableOptionList(
-
       maxHeight: 220.h,
       title: emptyMessage == 'Services list will be available soon.'
           ? 'SERVICES OFFERED'

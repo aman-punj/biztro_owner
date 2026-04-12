@@ -107,6 +107,7 @@ class OnboardingController extends GetxController {
   int? _merchantIdOverride;
 
   bool get hasSelectedCategory => selectedCategory.value != null;
+
   bool get canAddMoreKeywords => customKeywords.length < 5;
 
   @override
@@ -506,17 +507,11 @@ class OnboardingController extends GetxController {
       final AppResponse<SavedKeywordsModel> response =
           await onboardingRepository.getSavedKeywords(merchantId);
       if (!response.success) {
-        print(
-          '[OnboardingController] Could not restore keywords: ${response.message}',
-        );
         return;
       }
 
       final savedKeywords = response.data;
       if (savedKeywords == null) {
-        print(
-          '[OnboardingController] Could not restore keywords: Saved keywords are unavailable.',
-        );
         return;
       }
 
@@ -534,10 +529,6 @@ class OnboardingController extends GetxController {
           customKeywords.add(keyword);
         }
       }
-
-      print(
-        '[OnboardingController] Restored ${ids.length} saved keywords',
-      );
     } finally {
       isRestoringKeywords.value = false;
     }
@@ -552,9 +543,6 @@ class OnboardingController extends GetxController {
     final AppResponse<BusinessDetailsModel> detailsResponse =
         await onboardingRepository.getBusinessDetails(merchantId);
     if (!detailsResponse.success || detailsResponse.data?.result == null) {
-      print(
-        '[OnboardingController] Could not restore category context: ${detailsResponse.message}',
-      );
       return;
     }
 
@@ -562,9 +550,6 @@ class OnboardingController extends GetxController {
     final String categoryId = details.encryptSubCategoryId.trim();
     final String displayName = details.displayName.trim();
     if (categoryId.isEmpty || displayName.isEmpty) {
-      print(
-        '[OnboardingController] Could not restore category context: Missing business details fields',
-      );
       return;
     }
 
@@ -583,9 +568,6 @@ class OnboardingController extends GetxController {
     final AppResponse<List<KeywordModel>> keywordResponse =
         await onboardingRepository.getKeywords(categoryId);
     if (!keywordResponse.success) {
-      print(
-        '[OnboardingController] Could not restore category context: ${keywordResponse.message}',
-      );
       return;
     }
 

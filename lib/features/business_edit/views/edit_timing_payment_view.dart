@@ -1,5 +1,4 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
-import 'package:bizrato_owner/core/widgets/app_checkbox.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_timing_payment_controller.dart';
 import 'package:bizrato_owner/features/business_edit/data/models/time_model.dart';

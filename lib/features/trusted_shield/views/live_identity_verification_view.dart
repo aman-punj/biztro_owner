@@ -1,10 +1,6 @@
-import 'package:bizrato_owner/core/constants/app_assets.dart';
-import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/theme/dimensions.dart';
-import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
-import 'package:bizrato_owner/features/auth/widgets/auth_logo_section.dart';
 import 'package:bizrato_owner/features/trusted_shield/controllers/live_identity_verification_controller.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +23,7 @@ class LiveIdentityVerificationView
             colors: [
               // AppTokens.white,
               AppTokens.brandPrimary,
-              AppTokens.brandPrimary.withOpacity(0.85),
+              AppTokens.brandPrimary.withValues(alpha: 0.85),
               // AppTokens.white,
               Colors.black,
             ],
@@ -56,8 +52,8 @@ class LiveIdentityVerificationView
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: AppColors.white,
-                                borderRadius:
-                                BorderRadius.circular(AppDimensions.cardRadius / 2),
+                                borderRadius: BorderRadius.circular(
+                                    AppDimensions.cardRadius / 2),
                               ),
                               child: const AuthBrandLogo(),
                             ),
@@ -77,7 +73,7 @@ class LiveIdentityVerificationView
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: AppTokens.white.withOpacity(0.7),
+                                color: AppTokens.white.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -87,7 +83,6 @@ class LiveIdentityVerificationView
                     ],
                   ),
                 ),
-
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -96,13 +91,12 @@ class LiveIdentityVerificationView
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24.r),
                           border: Border.all(
-                            color: AppTokens.brandPrimary.withOpacity(0.6),
+                            color: AppTokens.brandPrimary.withValues(alpha: 0.6),
                             width: 1.5,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                              AppTokens.brandPrimary.withOpacity(0.2),
+                              color: AppTokens.brandPrimary.withValues(alpha: 0.2),
                               blurRadius: 20,
                               spreadRadius: 2,
                             )
@@ -113,34 +107,28 @@ class LiveIdentityVerificationView
                           child: controller.isReady && activeCamera != null
                               ? CameraPreview(activeCamera)
                               : AspectRatio(
-                            aspectRatio: 3 / 4,
-                            child: _CameraFallback(
-                              isLoading:
-                              controller.isInitializing.value,
-                              message:
-                              controller.errorMessage.value,
-                              onRetry:
-                              controller.retryInitialization,
-                            ),
-                          ),
+                                  aspectRatio: 3 / 4,
+                                  child: _CameraFallback(
+                                    isLoading: controller.isInitializing.value,
+                                    message: controller.errorMessage.value,
+                                    onRetry: controller.retryInitialization,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
                   ),
                 ),
-
                 Padding(
-                  padding:
-                  EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 18.h),
+                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 18.h),
                   child: Column(
                     children: [
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(14.w),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
-                          borderRadius:
-                          BorderRadius.circular(16.r),
+                          color: Colors.white.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(16.r),
                         ),
                         child: Row(
                           children: [
@@ -258,8 +246,7 @@ class _CameraFallback extends StatelessWidget {
                   ),
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                 ),
                 child: Text(
@@ -297,7 +284,7 @@ class _TopIconButton extends StatelessWidget {
         width: 38.w,
         height: 38.w,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.12),
+          color: Colors.white.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Icon(

@@ -256,7 +256,7 @@ class DashboardController extends GetxController {
     final normalizedStep = step.clamp(0, 5);
     final percent = (normalizedStep * 0.20).clamp(0.0, 1.0);
     profileCompletionPercent.value = percent;
-    profileCompletionLabel.value = (percent * 100).round().toString() + '%';
+    profileCompletionLabel.value = '${(percent * 100).round()}%';
   }
 
   void _prepareChartData() {

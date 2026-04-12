@@ -2,7 +2,6 @@ import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_location_info_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
-import 'package:bizrato_owner/features/onboarding/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
