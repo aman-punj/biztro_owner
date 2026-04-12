@@ -12,6 +12,7 @@ class AppPageShell extends StatelessWidget {
     this.onBack,
     this.onHelp,
     this.onYoutube,
+    this.onFilter,
     this.showBack = true,
     this.headerHeight = 140,
     this.overlapAmount = 40,
@@ -29,6 +30,7 @@ class AppPageShell extends StatelessWidget {
   final VoidCallback? onBack;
   final VoidCallback? onHelp;
   final VoidCallback? onYoutube;
+  final VoidCallback? onFilter;
   final double headerHeight;
   final double overlapAmount;
   final Widget? headerImage;
@@ -114,6 +116,7 @@ class AppPageShell extends StatelessWidget {
                       child: _HeaderActions(
                         onHelp: onHelp,
                         onYoutube: onYoutube,
+                        onFilter: onFilter,
                       ),
                     ),
                   ],
@@ -161,10 +164,11 @@ class AppPageShell extends StatelessWidget {
 }
 
 class _HeaderActions extends StatelessWidget {
-  const _HeaderActions({this.onHelp, this.onYoutube});
+  const _HeaderActions({this.onHelp, this.onYoutube, this.onFilter});
 
   final VoidCallback? onHelp;
   final VoidCallback? onYoutube;
+  final VoidCallback? onFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -185,11 +189,22 @@ class _HeaderActions extends StatelessWidget {
           ),
           SizedBox(width: 6.w),
         ],
-        if (onYoutube != null)
+        if (onYoutube != null) ...[
           GestureDetector(
             onTap: onYoutube,
             child: Icon(
               Icons.play_circle_fill,
+              color: AppTokens.textOnBrand,
+              size: 24.sp,
+            ),
+          ),
+          SizedBox(width: 6.w),
+        ],
+        if (onFilter != null)
+          GestureDetector(
+            onTap: onFilter,
+            child: Icon(
+              Icons.filter_alt_outlined,
               color: AppTokens.textOnBrand,
               size: 24.sp,
             ),

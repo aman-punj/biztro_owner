@@ -18,6 +18,7 @@ class AppRoutes {
   static const messages = '/messages';
   static const editBusinessDetails = '/edit-business-details';
   static const editBusinessServices = '/edit-business-services';
+
   static const editLocationInfo = '/edit-location-info';
   static const editTimingPayment = '/edit-timing-payment';
   static const editSocialMediaLinks = '/edit-social-media-links';
@@ -25,4 +26,6 @@ class AppRoutes {
   static const festivalDetails = '/festival-details';
   static const courses = '/courses';
   static const courseDetails = '/course-details';
+  static const leads = '/leads';
+  static const feedback = '/feedback';
 }

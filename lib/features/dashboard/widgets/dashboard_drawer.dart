@@ -101,12 +101,18 @@ class DashboardDrawer extends StatelessWidget {
                 _DrawerItem(
                   icon: Icons.people,
                   text: 'Leads',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.leads);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.star,
                   text: 'Review & Rating',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.feedback);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.ad_units,

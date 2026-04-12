@@ -27,6 +27,10 @@ import 'package:bizrato_owner/features/course/views/course_list_view.dart';
 import 'package:bizrato_owner/features/festival/bindings/festival_binding.dart';
 import 'package:bizrato_owner/features/festival/views/festival_details_view.dart';
 import 'package:bizrato_owner/features/festival/views/festival_list_view.dart';
+import 'package:bizrato_owner/features/feedback/bindings/feedback_binding.dart';
+import 'package:bizrato_owner/features/feedback/views/feedback_view.dart';
+import 'package:bizrato_owner/features/leads/bindings/leads_binding.dart';
+import 'package:bizrato_owner/features/leads/views/leads_view.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
@@ -110,6 +114,16 @@ class AppPages {
     GetPage<CourseDetailsView>(
       name: AppRoutes.courseDetails,
       page: CourseDetailsView.new,
+    ),
+    GetPage<LeadsView>(
+      name: AppRoutes.leads,
+      page: LeadsView.new,
+      binding: LeadsBinding(),
+    ),
+    GetPage<FeedbackView>(
+      name: AppRoutes.feedback,
+      page: FeedbackView.new,
+      binding: FeedbackBinding(),
     ),
   ];
 }
