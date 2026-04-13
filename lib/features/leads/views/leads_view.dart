@@ -14,6 +14,7 @@ class LeadsView extends GetView<LeadsController> {
     return AppPageShell(
       title: 'Recent Leads',
       onFilter: () => _showFilterBottomSheet(context),
+      clipContent: false,
       child: Stack(
         children: [
           _buildLeadList(),

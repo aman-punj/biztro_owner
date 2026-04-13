@@ -22,6 +22,7 @@ class AppPageShell extends StatelessWidget {
     this.contentHorizontalMargin = 26,
     this.contentTopRadius = 25,
     this.contentBackgroundColor = AppTokens.cardBackground,
+    this.clipContent = true,
   });
 
   final String title;
@@ -39,6 +40,7 @@ class AppPageShell extends StatelessWidget {
   final double contentHorizontalMargin;
   final double contentTopRadius;
   final Color contentBackgroundColor;
+  final bool clipContent;
 
   @override
   Widget build(BuildContext context) {
@@ -155,10 +157,12 @@ class AppPageShell extends StatelessWidget {
         color: contentBackgroundColor,
         borderRadius: borderRadius,
       ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: child,
-      ),
+      child: clipContent
+          ? ClipRRect(
+              borderRadius: borderRadius,
+              child: child,
+            )
+          : child,
     );
   }
 }
