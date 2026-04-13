@@ -12,8 +12,8 @@ class ApiClient extends GetxService {
   ApiClient({
     Dio? dio,
     this.baseUrl = 'https://merchantapi.bizrato.com',
-    Duration connectTimeout = const Duration(seconds: 15),
-    Duration receiveTimeout = const Duration(seconds: 15),
+    Duration connectTimeout = const Duration(seconds: 30),
+    Duration receiveTimeout = const Duration(seconds: 30),
   }) : _dio = dio ??
             Dio(BaseOptions(
               baseUrl: baseUrl,

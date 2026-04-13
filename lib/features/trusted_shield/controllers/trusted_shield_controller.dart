@@ -6,6 +6,7 @@ import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/services/image_compression_service.dart';
 import 'package:bizrato_owner/features/trusted_shield/data/models/trusted_shield_kyc_model.dart';
 import 'package:bizrato_owner/features/trusted_shield/data/repositories/trusted_shield_repository.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
@@ -18,9 +19,13 @@ enum KycStep { credentials, aadhaar, liveness }
 enum KycDocumentType { gst, pan, aadhaarFront, aadhaarBack, live }
 
 class TrustedShieldController extends GetxController {
-  TrustedShieldController({required this.repository});
+  TrustedShieldController({
+    required this.repository,
+    required this.compressionService,
+  });
 
   final TrustedShieldRepository repository;
+  final ImageCompressionService compressionService;
   final AppToastService _toastService = Get.find<AppToastService>();
   final AuthStorage _authStorage = Get.find<AuthStorage>();
 
@@ -191,6 +196,36 @@ class TrustedShieldController extends GetxController {
     formRevision.value++;
   }
 
+  Future<void> _compressImagesIfNeeded() async {
+    final docs = {
+      'GST': (gstLocalPath, gstFileName),
+      'PAN': (panLocalPath, panImageFileName),
+      'Aadhaar Front': (aadhaarFrontLocalPath, aadhaarFrontFileName),
+      'Aadhaar Back': (aadhaarBackLocalPath, aadhaarBackFileName),
+    };
+
+    for (var entry in docs.entries) {
+      final pathRx = entry.value.$1;
+      final nameRx = entry.value.$2;
+      final path = pathRx.value;
+
+      if (path != null && path.isNotEmpty && isImageFile(path)) {
+        final file = File(path);
+        if (await compressionService.isOverSize(file)) {
+          loaderMessage.value =
+              '${entry.key} image is more than 1MB. Compressing... Please do not press back or exit.';
+          final compressedFile =
+              await compressionService.compressIfNeeded(file);
+          if (compressedFile != null) {
+            pathRx.value = compressedFile.path;
+            nameRx.value = _extractFileName(compressedFile.path);
+            formRevision.value++;
+          }
+        }
+      }
+    }
+  }
+
   Future<void> submitAll() async {
     final validationError = _validateForm();
     if (validationError != null) {
@@ -206,8 +241,11 @@ class TrustedShieldController extends GetxController {
     }
 
     isSubmitting.value = true;
-    loaderMessage.value = 'Saving KYC details...';
     hasError.value = false;
+
+    await _compressImagesIfNeeded();
+
+    loaderMessage.value = 'Saving KYC details...';
 
     final response = await repository.saveKyc(
       merchantId: merchantId.toString(),
