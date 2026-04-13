@@ -4,6 +4,8 @@ import 'package:bizrato_owner/features/dashboard/controllers/dashboard_binding.d
 import 'package:bizrato_owner/features/dashboard/views/dashboard_view.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_binding.dart';
 import 'package:bizrato_owner/features/messages/views/messages_view.dart';
+import 'package:bizrato_owner/features/messages/controllers/chat_room_binding.dart';
+import 'package:bizrato_owner/features/messages/views/chat_room_view.dart';
 import 'package:bizrato_owner/features/business_edit/bindings/edit_business_details_binding.dart';
 import 'package:bizrato_owner/features/business_edit/bindings/edit_business_services_binding.dart';
 import 'package:bizrato_owner/features/business_edit/bindings/edit_location_info_binding.dart';
@@ -71,6 +73,11 @@ class AppPages {
       name: AppRoutes.messages,
       page: MessagesView.new,
       binding: MessagesBinding(),
+    ),
+    GetPage<ChatRoomView>(
+      name: AppRoutes.chatRoom,
+      page: ChatRoomView.new,
+      binding: ChatRoomBinding(),
     ),
     GetPage<EditBusinessDetailsView>(
       name: AppRoutes.editBusinessDetails,

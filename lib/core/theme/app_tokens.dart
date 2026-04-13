@@ -21,6 +21,10 @@ class AppTokens {
       AppColors.profileCardBackground; // Business/profile summary background
   static const Color livenessBackground =
       AppColors.livenessBackground; // KYC/live camera surface
+  static const Color backgroundPrimary =
+      AppColors.white; // Primary content background (white)
+  static const Color backgroundSecondary =
+      AppColors.backgroundLight; // Secondary/muted background surface
   static const Color selectionBackground =
       AppColors.optionSelectedBackground; // Selected option tile fill
   static const Color secondaryButtonBackground =

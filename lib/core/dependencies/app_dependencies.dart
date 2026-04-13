@@ -3,6 +3,7 @@ import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/storage/storage_service.dart';
 import 'package:bizrato_owner/core/services/image_compression_service.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
+import 'package:bizrato_owner/core/services/chat_service.dart';
 import 'package:get/get.dart';
 
 class AppDependencies {
@@ -25,6 +26,11 @@ class AppDependencies {
     Get.put<LogoutService>(LogoutService(Get.find<AuthStorage>()), permanent: true);
     Get.put<AppToastService>(AppToastService(), permanent: true);
     Get.put<ImageCompressionService>(ImageCompressionServiceImpl(), permanent: true);
+    
+    Get.putAsync<ChatService>(
+      () => ChatService().init(),
+      permanent: true,
+    );
 
     _initialized = true;
   }

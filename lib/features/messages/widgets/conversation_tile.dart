@@ -1,7 +1,9 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_controller.dart';
+import 'package:bizrato_owner/features/messages/data/models/chat_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class ConversationTile extends StatelessWidget {
   const ConversationTile({required this.model, super.key});
@@ -16,7 +18,7 @@ class ConversationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () => Get.find<MessagesController>().goToChatRoom(model),
       borderRadius: BorderRadius.circular(10.r),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),

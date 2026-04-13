@@ -121,7 +121,7 @@ class MessagesView extends GetView<MessagesController> {
                       ),
                       SizedBox(height: 12.h),
                       ElevatedButton(
-                        onPressed: controller.refresh,
+                        onPressed: controller.refreshConversations,
                         child: const Text('Retry'),
                       ),
                     ],
@@ -155,7 +155,7 @@ class MessagesView extends GetView<MessagesController> {
               }
 
               return RefreshIndicator(
-                onRefresh: controller.refresh,
+                onRefresh: controller.refreshConversations,
                 color: AppTokens.brandPrimary,
                 child: ListView.separated(
                   itemCount: conversations.length,

@@ -16,6 +16,7 @@ class AppRoutes {
   static const trustedShield = '/trusted-shield';
   static const liveIdentityVerification = '/live-identity-verification';
   static const messages = '/messages';
+  static const chatRoom = '/chat-room';
   static const editBusinessDetails = '/edit-business-details';
   static const editBusinessServices = '/edit-business-services';
 
