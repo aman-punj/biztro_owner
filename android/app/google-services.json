@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "207735956138",
+    "project_id": "bizrato-merchent",
+    "storage_bucket": "bizrato-merchent.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207735956138:android:db8f638c89984a0d18e6d3",
+        "android_client_info": {
+          "package_name": "com.example.bizrato_owner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtTexeC1TJI7iHM9LYy7AfFrJ9-knC9qQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

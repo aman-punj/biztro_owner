@@ -1,3 +1,4 @@
+
 # AGENTS.md
 
 ## Color Usage Rules

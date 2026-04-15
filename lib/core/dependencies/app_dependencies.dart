@@ -1,9 +1,12 @@
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
+import 'package:bizrato_owner/core/network/api_client.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/storage/storage_service.dart';
 import 'package:bizrato_owner/core/services/image_compression_service.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:bizrato_owner/core/services/chat_service.dart';
+import 'package:bizrato_owner/core/services/notification_service.dart';
+import 'package:bizrato_owner/features/auth/data/repositories/device_repository.dart';
 import 'package:get/get.dart';
 
 class AppDependencies {
@@ -22,15 +25,27 @@ class AppDependencies {
       permanent: true,
     );
 
-    Get.put<AuthStorage>(AuthStorage(storageService), permanent: true);
-    Get.put<LogoutService>(LogoutService(Get.find<AuthStorage>()), permanent: true);
+    final authStorage = Get.put<AuthStorage>(AuthStorage(storageService), permanent: true);
+    Get.put<LogoutService>(LogoutService(authStorage), permanent: true);
     Get.put<AppToastService>(AppToastService(), permanent: true);
     Get.put<ImageCompressionService>(ImageCompressionServiceImpl(), permanent: true);
     
+    final apiClient = Get.put<ApiClient>(ApiClient(), permanent: true);
+    Get.put<DeviceRepository>(DeviceRepository(apiClient), permanent: true);
+
+    await Get.putAsync<NotificationService>(
+      () => NotificationService().init(),
+      permanent: true,
+    );
+
     Get.putAsync<ChatService>(
       () => ChatService().init(),
       permanent: true,
     );
+
+    if (authStorage.isLoggedIn) {
+      Get.find<NotificationService>().uploadToken();
+    }
 
     _initialized = true;
   }

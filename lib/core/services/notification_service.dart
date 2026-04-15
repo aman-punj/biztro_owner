@@ -1,0 +1,170 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:bizrato_owner/core/storage/auth_storage.dart';
+import 'package:bizrato_owner/features/auth/data/repositories/device_repository.dart';
+import 'package:bizrato_owner/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  log('Handling a background message: ${message.messageId}');
+}
+
+class NotificationService extends GetxService {
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+
+  static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
+    'high_importance_channel',
+    'High Importance Notifications',
+    description: 'This channel is used for important notifications.',
+    importance: Importance.max,
+  );
+
+  Future<NotificationService> init() async {
+    await _initializeFirebase();
+    await _initializeLocalNotifications();
+    await _requestPermissions();
+    _setupInteractions();
+    _listenToTokenRefresh();
+    return this;
+  }
+
+  Future<void> _initializeFirebase() async {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // Get initial message if the app was opened from a terminated state
+    RemoteMessage? initialMessage = await _fcm.getInitialMessage();
+    if (initialMessage != null) {
+      _handleNotificationClick(initialMessage.data);
+    }
+  }
+
+  Future<void> _initializeLocalNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await _localNotifications.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        if (response.payload != null) {
+          final Map<String, dynamic> data = jsonDecode(response.payload!);
+          _handleNotificationClick(data);
+        }
+      },
+    );
+
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(_channel);
+  }
+
+  Future<void> _requestPermissions() async {
+    if (Platform.isIOS) {
+      await _fcm.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+  }
+
+  void _setupInteractions() {
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      log('Foreground message received: ${message.notification?.title}');
+      _showLocalNotification(message);
+    });
+
+    // Handle background messages when app is opened via notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      log('Notification opened app from background: ${message.data}');
+      _handleNotificationClick(message.data);
+    });
+  }
+
+  Future<void> _showLocalNotification(RemoteMessage message) async {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      await _localNotifications.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _channel.id,
+            _channel.name,
+            channelDescription: _channel.description,
+            icon: android.smallIcon,
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+        ),
+        payload: jsonEncode(message.data),
+      );
+    }
+  }
+
+  void _handleNotificationClick(Map<String, dynamic> data) {
+    log('Notification clicked with data: $data');
+    final String? route = data['route'];
+    if (route != null && route.isNotEmpty) {
+      Get.toNamed(route, arguments: data);
+    }
+  }
+
+  void _listenToTokenRefresh() {
+    _fcm.onTokenRefresh.listen((newToken) {
+      log('FCM Token Refreshed: $newToken');
+      uploadToken(newToken);
+    });
+  }
+
+  Future<void> uploadToken([String? token]) async {
+    try {
+      final fcmToken = token ?? await _fcm.getToken();
+      if (fcmToken == null) return;
+
+      log('FCM Token: $fcmToken');
+
+      final authStorage = Get.find<AuthStorage>();
+      if (!authStorage.isLoggedIn) return;
+
+      final deviceRepo = Get.find<DeviceRepository>();
+      final response = await deviceRepo.updateDeviceToken(fcmToken: fcmToken);
+
+      if (response.success) {
+        log('Device token updated successfully');
+      } else {
+        log('Failed to update device token: ${response.message}');
+      }
+    } catch (e) {
+      log('Error uploading FCM token: $e');
+    }
+  }
+}

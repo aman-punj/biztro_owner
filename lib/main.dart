@@ -1,13 +1,16 @@
 import 'package:bizrato_owner/core/dependencies/app_dependencies.dart';
 import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/firebase_options.dart';
 import 'package:bizrato_owner/routes/app_pages.dart' show AppPages;
 import 'package:bizrato_owner/routes/app_routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AppDependencies.init();
   runApp(const BiztroOwnerApp());
 }

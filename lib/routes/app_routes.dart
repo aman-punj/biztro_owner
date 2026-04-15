@@ -29,4 +29,5 @@ class AppRoutes {
   static const courseDetails = '/course-details';
   static const leads = '/leads';
   static const feedback = '/feedback';
+  static const postAdvertisement = '/post-advertisement';
 }

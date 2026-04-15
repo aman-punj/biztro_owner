@@ -1,6 +1,7 @@
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/network/app_response.dart';
+import 'package:bizrato_owner/core/services/notification_service.dart';
 import 'package:bizrato_owner/features/auth/data/auth_repository.dart';
 import 'package:bizrato_owner/features/auth/data/models/login_request.dart';
 import 'package:bizrato_owner/features/auth/data/models/otp_verification_request.dart';
@@ -155,6 +156,8 @@ class AuthController extends GetxController {
       _setError('Login succeeded but user data is unavailable.');
       return;
     }
+
+    Get.find<NotificationService>().uploadToken();
 
     if (user.businessProfileStep >= 3) {
       Get.offAllNamed(AppRoutes.dashboard);

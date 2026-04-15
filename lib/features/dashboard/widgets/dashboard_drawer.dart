@@ -117,7 +117,10 @@ class DashboardDrawer extends StatelessWidget {
                 _DrawerItem(
                   icon: Icons.ad_units,
                   text: 'Advertisement',
-                  onTap: () {},
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed(AppRoutes.postAdvertisement);
+                  },
                 ),
                 _DrawerItem(
                   icon: Icons.headset_mic,

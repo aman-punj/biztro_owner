@@ -33,6 +33,8 @@ import 'package:bizrato_owner/features/feedback/bindings/feedback_binding.dart';
 import 'package:bizrato_owner/features/feedback/views/feedback_view.dart';
 import 'package:bizrato_owner/features/leads/bindings/leads_binding.dart';
 import 'package:bizrato_owner/features/leads/views/leads_view.dart';
+import 'package:bizrato_owner/features/advertisement/bindings/post_advertisement_binding.dart';
+import 'package:bizrato_owner/features/advertisement/views/post_advertisement_view.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
@@ -131,6 +133,11 @@ class AppPages {
       name: AppRoutes.feedback,
       page: FeedbackView.new,
       binding: FeedbackBinding(),
+    ),
+    GetPage<PostAdvertisementView>(
+      name: AppRoutes.postAdvertisement,
+      page: PostAdvertisementView.new,
+      binding: PostAdvertisementBinding(),
     ),
   ];
 }
