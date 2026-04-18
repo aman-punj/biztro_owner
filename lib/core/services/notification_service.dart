@@ -20,6 +20,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class NotificationService extends GetxService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  bool _isPermissionRequestInProgress = false;
+  bool _areInteractionsConfigured = false;
 
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
     'high_importance_channel',
@@ -31,7 +33,6 @@ class NotificationService extends GetxService {
   Future<NotificationService> init() async {
     await _initializeFirebase();
     await _initializeLocalNotifications();
-    await _requestPermissions();
     _setupInteractions();
     _listenToTokenRefresh();
     return this;
@@ -77,17 +78,45 @@ class NotificationService extends GetxService {
         ?.createNotificationChannel(_channel);
   }
 
-  Future<void> _requestPermissions() async {
-    if (Platform.isIOS) {
-      await _fcm.requestPermission(
+  Future<void> requestPermissionAndUploadToken() async {
+    final isAllowed = await requestPermission();
+    if (!isAllowed) return;
+
+    await uploadToken();
+  }
+
+  Future<bool> requestPermission() async {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return true;
+    }
+
+    if (_isPermissionRequestInProgress) {
+      return false;
+    }
+
+    _isPermissionRequestInProgress = true;
+    try {
+      final settings = await _fcm.requestPermission(
         alert: true,
         badge: true,
         sound: true,
       );
+
+      log('Notification permission status: ${settings.authorizationStatus}');
+      return settings.authorizationStatus == AuthorizationStatus.authorized ||
+          settings.authorizationStatus == AuthorizationStatus.provisional;
+    } catch (e) {
+      log('Error requesting notification permission: $e');
+      return false;
+    } finally {
+      _isPermissionRequestInProgress = false;
     }
   }
 
   void _setupInteractions() {
+    if (_areInteractionsConfigured) return;
+    _areInteractionsConfigured = true;
+
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('Foreground message received: ${message.notification?.title}');
@@ -105,7 +134,7 @@ class NotificationService extends GetxService {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
 
-    if (notification != null && android != null) {
+    if (notification != null) {
       await _localNotifications.show(
         notification.hashCode,
         notification.title,
@@ -115,7 +144,7 @@ class NotificationService extends GetxService {
             _channel.id,
             _channel.name,
             channelDescription: _channel.description,
-            icon: android.smallIcon,
+            icon: android?.smallIcon,
             importance: Importance.max,
             priority: Priority.high,
           ),
@@ -156,7 +185,10 @@ class NotificationService extends GetxService {
       if (!authStorage.isLoggedIn) return;
 
       final deviceRepo = Get.find<DeviceRepository>();
-      final response = await deviceRepo.updateDeviceToken(fcmToken: fcmToken);
+      final response = await deviceRepo.updateDeviceToken(
+        fcmToken: fcmToken,
+        deviceType: _deviceType,
+      );
 
       if (response.success) {
         log('Device token updated successfully');
@@ -166,5 +198,10 @@ class NotificationService extends GetxService {
     } catch (e) {
       log('Error uploading FCM token: $e');
     }
+  }
+
+  String get _deviceType {
+    if (Platform.isIOS) return 'ios';
+    return 'android';
   }
 }

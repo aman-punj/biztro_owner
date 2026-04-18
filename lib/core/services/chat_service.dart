@@ -31,12 +31,8 @@ class ChatService extends GetxService {
   Stream<ConnectionStatus> get onConnectionStatusChanged => _connectionStatusController.stream;
 
   static const _baseUrl = 'https://merchant.bizrato.com/signalr';
-  static const _hubName = 'chatHub'; // lowercase — SignalR 2 maps hub names to lowercase
+  static const _hubName = 'chatHub';
   static const _connectionData = '[{"name":"chatHub"}]';
-
-  // ─────────────────────────────────────────────
-  // Public API
-  // ─────────────────────────────────────────────
 
   Future<ChatService> init({required String businessId}) async {
     _businessId = businessId;
@@ -55,10 +51,6 @@ class ChatService extends GetxService {
 
   ConnectionStatus get connectionStatus =>
       isConnected ? ConnectionStatus.connected : ConnectionStatus.disconnected;
-
-  // ─────────────────────────────────────────────
-  // Connection
-  // ─────────────────────────────────────────────
 
   Future<void> _connect() async {
     if (_webSocket != null) return;

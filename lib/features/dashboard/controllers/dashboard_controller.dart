@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/network/api_client.dart';
+import 'package:bizrato_owner/core/services/notification_service.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/utils/formatters.dart';
@@ -148,6 +151,7 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    unawaited(Get.find<NotificationService>().requestPermissionAndUploadToken());
     _loadDashboard();
   }
 
@@ -160,6 +164,7 @@ class DashboardController extends GetxController {
         throw Exception('Merchant ID is not available');
       }
 
+      Get.find<NotificationService>().uploadToken();
       await _loadBusinessProfile(merchantId);
 
       final response = await apiClient.get(

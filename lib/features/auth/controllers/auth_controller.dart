@@ -157,9 +157,8 @@ class AuthController extends GetxController {
       return;
     }
 
-    Get.find<NotificationService>().uploadToken();
-
     if (user.businessProfileStep >= 3) {
+      await Get.find<NotificationService>().requestPermissionAndUploadToken();
       Get.offAllNamed(AppRoutes.dashboard);
       return;
     }
