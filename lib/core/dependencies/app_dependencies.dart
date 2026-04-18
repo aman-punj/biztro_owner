@@ -25,11 +25,13 @@ class AppDependencies {
       permanent: true,
     );
 
-    final authStorage = Get.put<AuthStorage>(AuthStorage(storageService), permanent: true);
+    final authStorage =
+        Get.put<AuthStorage>(AuthStorage(storageService), permanent: true);
     Get.put<LogoutService>(LogoutService(authStorage), permanent: true);
     Get.put<AppToastService>(AppToastService(), permanent: true);
-    Get.put<ImageCompressionService>(ImageCompressionServiceImpl(), permanent: true);
-    
+    Get.put<ImageCompressionService>(ImageCompressionServiceImpl(),
+        permanent: true);
+
     final apiClient = Get.put<ApiClient>(ApiClient(), permanent: true);
     Get.put<DeviceRepository>(DeviceRepository(apiClient), permanent: true);
 
@@ -38,10 +40,19 @@ class AppDependencies {
       permanent: true,
     );
 
-    Get.putAsync<ChatService>(
-      () => ChatService().init(),
-      permanent: true,
-    );
+    // Initialize ChatService with merchant ID if user is logged in
+    if (authStorage.merchantId != null && authStorage.merchantId! > 0) {
+      print('Initializing ChatService with merchant ID: ${authStorage.merchantId}');
+      await Get.putAsync<ChatService>(
+        () => ChatService().init(merchantId: authStorage.merchantId.toString()),
+        permanent: true,
+      );
+    } else {
+      await Get.putAsync<ChatService>(
+        () => ChatService().init(merchantId: 'temp'),
+        permanent: true,
+      );
+    }
 
     if (authStorage.isLoggedIn) {
       Get.find<NotificationService>().uploadToken();

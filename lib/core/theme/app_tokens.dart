@@ -57,6 +57,13 @@ class AppTokens {
 
   // States
   static const Color error = AppColors.error; // Error/destructive state
+  static const Color errorBackground =
+      AppColors.errorSurfaceLight; // Error background surface
+  static const Color errorText = AppColors.error; // Error text/icon color
+  static const Color warning = Color(0xFFD97706); // Warning state
+  static const Color warningBackground =
+      Color(0xFFFFF8E1); // Warning background surface
+  static const Color warningText = Color(0xFFB45309); // Warning text/icon color
   static const Color online =
       AppColors.onlineIndicator; // Online/presence state
   static const Color success = AppColors.success; // Success state color
