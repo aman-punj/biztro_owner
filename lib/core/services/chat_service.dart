@@ -14,7 +14,7 @@ class ChatService extends GetxService {
   Timer? _reconnectTimer;
   Timer? _keepAliveTimer;
 
-  String _merchantId = '';
+  String _businessId = '';
   String? _connectionToken;
   int _invokeId = 0;
 
@@ -38,8 +38,8 @@ class ChatService extends GetxService {
   // Public API
   // ─────────────────────────────────────────────
 
-  Future<ChatService> init({required String merchantId}) async {
-    _merchantId = "SI01266676";
+  Future<ChatService> init({required String businessId}) async {
+    _businessId = businessId;
     await _connect();
     return this;
   }
@@ -135,8 +135,8 @@ class ChatService extends GetxService {
       dev.log('SignalR connected ✅', name: 'ChatService');
 
       // Step 4: Join merchant group so server can push messages to us
-      if (_merchantId.isNotEmpty) {
-        await _joinGroup(_merchantId);
+      if (_businessId.isNotEmpty) {
+        await _joinGroup(_businessId);
       }
 
       _startKeepAlive();
@@ -247,7 +247,7 @@ class ChatService extends GetxService {
     if (toUserId.isEmpty) throw Exception('toUserId is empty');
     if (_webSocket == null) throw Exception('Not connected');
 
-    await _invoke('SendMessage', [toUserId, _merchantId, message, 'Merchant']);
+    await _invoke('SendMessage', [toUserId, _businessId, message, 'Merchant']);
     dev.log('SendMessage invoked → $toUserId', name: 'ChatService');
   }
 

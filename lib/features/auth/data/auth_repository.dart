@@ -52,6 +52,7 @@ class AuthRepository {
     await Future.wait([
       authStorage.saveToken(token),
       authStorage.saveMerchantId(user.merchantId),
+      authStorage.saveBusinessId(user.businessId),
       authStorage.saveProfileStep(user.businessProfileStep),
       authStorage.saveUserJson(jsonEncode(user.toJson())),
     ]);

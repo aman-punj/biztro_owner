@@ -25,6 +25,15 @@ class AuthStorage {
 
   int? get merchantId => _storage.getInt(StorageKeys.merchantId);
 
+  Future<bool> saveBusinessId(String? id) {
+    if (id == null || id.isEmpty) {
+      return Future.value(false);
+    }
+    return _storage.setString(StorageKeys.businessId, id);
+  }
+
+  String? get businessId => _storage.getString(StorageKeys.businessId);
+
   Future<void> saveProfileStep(int step) async {
     await _storage.setInt(StorageKeys.businessProfileStep, step);
     await setLoggedIn(step >= completedProfileStep);
