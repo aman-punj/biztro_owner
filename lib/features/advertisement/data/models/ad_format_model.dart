@@ -3,20 +3,26 @@ class AdFormatModel {
   final String name;
   final String value;
   final String description;
+  final String leadingText;
+  final String iconPath;
 
   AdFormatModel({
     required this.id,
     required this.name,
     required this.value,
     required this.description,
+    this.leadingText = '',
+    this.iconPath = '',
   });
 
   factory AdFormatModel.fromJson(Map<String, dynamic> json) {
     return AdFormatModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      value: json['value'] as String,
-      description: json['description'] as String,
+      id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      name: json['name']?.toString() ?? '',
+      value: json['value']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      leadingText: json['leadingText']?.toString() ?? '',
+      iconPath: json['iconPath']?.toString() ?? '',
     );
   }
 
@@ -26,6 +32,8 @@ class AdFormatModel {
       'name': name,
       'value': value,
       'description': description,
+      'leadingText': leadingText,
+      'iconPath': iconPath,
     };
   }
 }

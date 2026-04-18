@@ -33,5 +33,10 @@ class AppAssets {
   static const socialIndiamartIcon = 'assets/icons/indiamart.svg';
   static const socialWebsiteIcon = 'assets/icons/website.svg';
   static const socialYoutubeIcon = 'assets/icons/youtube.svg';
+  static const adLocationHome = navBarHomePage;
+  static const adLocationListing = quickActionLocationInfo;
+  static const adLocationFinal = businessCardIcon;
+  static const adFormatBanner = quickActionSocialLinks;
+  static const adFormatView = statTotalViews;
 
 }

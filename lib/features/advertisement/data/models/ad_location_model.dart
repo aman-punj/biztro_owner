@@ -2,18 +2,24 @@ class AdLocationModel {
   final int id;
   final String name;
   final String value;
+  final String subtitle;
+  final String iconPath;
 
   AdLocationModel({
     required this.id,
     required this.name,
     required this.value,
+    this.subtitle = '',
+    this.iconPath = '',
   });
 
   factory AdLocationModel.fromJson(Map<String, dynamic> json) {
     return AdLocationModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      value: json['value'] as String,
+      id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      name: json['name']?.toString() ?? '',
+      value: json['value']?.toString() ?? '',
+      subtitle: json['subtitle']?.toString() ?? '',
+      iconPath: json['iconPath']?.toString() ?? '',
     );
   }
 
@@ -22,6 +28,8 @@ class AdLocationModel {
       'id': id,
       'name': name,
       'value': value,
+      'subtitle': subtitle,
+      'iconPath': iconPath,
     };
   }
 }

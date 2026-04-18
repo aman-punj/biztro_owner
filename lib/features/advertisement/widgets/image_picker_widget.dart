@@ -24,7 +24,7 @@ class ImagePickerWidget extends StatelessWidget {
         height: 200.h,
         decoration: BoxDecoration(
           color: AppTokens.surface,
-          border: Border.all(color: AppTokens.border, width: 2),
+          border: Border.all(color: AppTokens.border, width: 2.w),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: imagePath == null
@@ -48,7 +48,7 @@ class ImagePickerWidget extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    'JPG or PNG. Recommended size: 1080x720 px',
+                    'JPG or PNG. Recommended size: 1080 by 450 pixels',
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: AppTokens.textSecondary,

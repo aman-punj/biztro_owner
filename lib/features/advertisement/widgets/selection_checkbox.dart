@@ -5,12 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SelectionCheckbox extends StatelessWidget {
   final String label;
   final bool isSelected;
+  final bool isMultiSelect;
   final VoidCallback onTap;
 
   const SelectionCheckbox({
     super.key,
     required this.label,
     required this.isSelected,
+    this.isMultiSelect = false,
     required this.onTap,
   });
 
@@ -27,6 +29,7 @@ class SelectionCheckbox extends StatelessWidget {
               : AppTokens.cardBackground,
           border: Border.all(
             color: isSelected ? AppTokens.brandPrimary : AppTokens.border,
+            width: 1.w,
           ),
           borderRadius: BorderRadius.circular(8.r),
         ),
@@ -36,10 +39,12 @@ class SelectionCheckbox extends StatelessWidget {
               width: 18.w,
               height: 18.h,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: isMultiSelect ? BoxShape.rectangle : BoxShape.circle,
+                borderRadius:
+                    isMultiSelect ? BorderRadius.circular(4.r) : null,
                 border: Border.all(
                   color: isSelected ? AppTokens.brandPrimary : AppTokens.border,
-                  width: 2,
+                  width: 2.w,
                 ),
                 color: isSelected ? AppTokens.brandPrimary : AppTokens.white,
               ),

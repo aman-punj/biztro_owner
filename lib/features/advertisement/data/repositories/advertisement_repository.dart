@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/network/api_client.dart';
 import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/features/advertisement/data/models/ad_category_model.dart';
@@ -23,24 +24,46 @@ class AdvertisementRepository {
   Future<AppResponse<AdMasterDataModel>> getMasterData() async {
     try {
       // 1. Hardcoded Locations and Formats (usually fixed in UI)
-      final locations = [
-        AdLocationModel(id: 1, name: 'Home Page', value: 'Home'),
-        AdLocationModel(id: 2, name: 'Listing Page', value: 'Listing'),
-        AdLocationModel(id: 3, name: 'Final Page', value: 'Final'),
+      var locations = [
+        AdLocationModel(
+          id: 1,
+          name: 'Home Page',
+          value: 'Home',
+          subtitle: 'Maximum visibility for all users',
+          iconPath: AppAssets.adLocationHome,
+        ),
+        AdLocationModel(
+          id: 2,
+          name: 'Listing Page',
+          value: 'Listing',
+          subtitle: 'Show ads in search result',
+          iconPath: AppAssets.adLocationListing,
+        ),
+        AdLocationModel(
+          id: 3,
+          name: 'Final Page',
+          value: 'Final',
+          subtitle: 'High intent lead conversion',
+          iconPath: AppAssets.adLocationFinal,
+        ),
       ];
 
-      final formats = [
+      var formats = [
         AdFormatModel(
           id: 1,
           name: 'Banner (Full size)',
           value: 'Banner',
-          description: 'Top position display',
+          description: '',
+          leadingText: 'Top position display',
+          iconPath: AppAssets.adFormatBanner,
         ),
         AdFormatModel(
           id: 2,
-          name: 'In-Between Listing',
+          name: 'View',
           value: 'InBetween',
-          description: 'Native look & feel',
+          description: 'Native look and feel',
+          leadingText: 'In between listing',
+          iconPath: AppAssets.adFormatView,
         ),
       ];
 
@@ -49,7 +72,7 @@ class AdvertisementRepository {
       // and onboarding uses pincode to get state, we use a common list or 
       // if the API provides a master list we should use that. 
       // For now, we'll keep a robust list that matches the system's expected State names.
-      final states = [
+      var states = [
         AdStateModel(id: 1, name: 'Andhra Pradesh'),
         AdStateModel(id: 2, name: 'Arunachal Pradesh'),
         AdStateModel(id: 3, name: 'Assam'),
@@ -88,22 +111,61 @@ class AdvertisementRepository {
         AdStateModel(id: 36, name: 'Puducherry'),
       ];
 
-      // 3. Fetch Categories from API (using the search endpoint with empty term or common categories)
-      final categoryResponse = await apiClient.get(
-        '/api/auth/search',
-        queryParameters: {'term': ''},
-      );
-
       List<AdCategoryModel> categories = [];
-      if (categoryResponse.success && categoryResponse.data is List) {
-        final list = categoryResponse.data as List;
-        categories = list.map((item) {
-          return AdCategoryModel(
-            id: int.tryParse(item['KeywordId']?.toString() ?? '0') ?? 0,
-            name: item['DisplayName']?.toString() ?? '',
-            value: item['DisplayName']?.toString() ?? '',
+      try {
+        final masterResponse = await apiClient.get(_masterDataEndpoint);
+        if (masterResponse.success &&
+            masterResponse.data is Map<String, dynamic>) {
+          final masterData = AdMasterDataModel.fromJson(
+            masterResponse.data as Map<String, dynamic>,
           );
-        }).toList();
+          if (masterData.locations.isNotEmpty) {
+            locations = masterData.locations;
+          }
+          if (masterData.formats.isNotEmpty) {
+            formats = masterData.formats;
+          }
+          if (masterData.states.isNotEmpty) {
+            states = masterData.states;
+          }
+          categories = masterData.categories;
+        }
+      } catch (_) {
+        categories = [];
+      }
+
+      // 3. Fetch Categories from API (using the search endpoint with empty term or common categories)
+      try {
+        if (categories.isEmpty) {
+          final categoryResponse = await apiClient.get(
+            '/api/auth/search',
+            queryParameters: {'term': ''},
+          );
+
+          if (categoryResponse.success && categoryResponse.data is List) {
+            final list = categoryResponse.data as List;
+            categories = list.whereType<Map<String, dynamic>>().map((item) {
+              return AdCategoryModel(
+                id: int.tryParse(item['KeywordId']?.toString() ?? '0') ?? 0,
+                name: item['DisplayName']?.toString() ?? '',
+                value: item['DisplayName']?.toString() ?? '',
+              );
+            }).toList();
+          }
+        }
+      } catch (_) {
+        categories = [];
+      }
+
+      if (categories.isEmpty) {
+        categories = [
+          AdCategoryModel(id: 1, name: 'SweetShop', value: 'SweetShop'),
+          AdCategoryModel(id: 2, name: 'Travel', value: 'Travel'),
+          AdCategoryModel(id: 3, name: 'Restaurant', value: 'Restaurant'),
+          AdCategoryModel(id: 4, name: 'Fashion', value: 'Fashion'),
+          AdCategoryModel(id: 5, name: 'Electronics', value: 'Electronics'),
+          AdCategoryModel(id: 6, name: 'Beauty Salon', value: 'Beauty Salon'),
+        ];
       }
 
       return AppResponse(
@@ -116,10 +178,10 @@ class AdvertisementRepository {
           categories: categories,
         ),
       );
-    } catch (e) {
+    } catch (_) {
       return AppResponse(
         success: false,
-        message: 'Failed to load master data: ${e.toString()}',
+        message: 'Failed to load advertisement data. Please try again.',
       );
     }
   }
@@ -143,27 +205,31 @@ class AdvertisementRepository {
         data: formData,
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.success) {
         return AppResponse(
           success: true,
           message: 'Advertisement posted successfully',
-          data: response.data as Map<String, dynamic>?,
+          data: response.data is Map<String, dynamic>
+              ? response.data as Map<String, dynamic>
+              : null,
         );
       }
 
       return AppResponse(
         success: false,
-        message: response.data['message'] ?? 'Failed to post advertisement',
+        message: response.message.isNotEmpty
+            ? response.message
+            : 'Failed to post advertisement',
       );
-    } on DioException catch (e) {
+    } on DioException catch (_) {
       return AppResponse(
         success: false,
-        message: e.message ?? 'Network error occurred',
+        message: 'Network error occurred. Please try again.',
       );
-    } catch (e) {
+    } catch (_) {
       return AppResponse(
         success: false,
-        message: 'An error occurred: ${e.toString()}',
+        message: 'Failed to post advertisement. Please try again.',
       );
     }
   }

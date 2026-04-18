@@ -1,6 +1,7 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/app_page_shell.dart';
+import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/secondary_button.dart';
-import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/advertisement/controllers/post_advertisement_controller.dart';
 import 'package:bizrato_owner/features/advertisement/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -14,169 +15,106 @@ class PostAdvertisementView extends GetView<PostAdvertisementController> {
   Widget build(BuildContext context) {
     return AppPageShell(
       title: 'Post New Advertisement',
-      child: Obx(
-        () {
-          if (controller.isLoadingPage.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      onBack: controller.previousStep,
+      useFloatingSurface: false,
+      child: Container(
+        color: AppTokens.cardBackground,
+        child: Obx(
+          () {
+            if (controller.isLoadingPage.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          return Column(
-            children: [
-              StepIndicator(
-                totalSteps: 5,
-                currentStep: controller.currentStep.value,
-              ),
-              Expanded(
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: PageController(
-                    initialPage: controller.currentStep.value,
-                  ),
-                  onPageChanged: (index) =>
-                      controller.currentStep.value = index,
-                  children: [
-                    _buildStep1(context),
-                    _buildStep2(context),
-                    _buildStep3(context),
-                    _buildStep4(context),
-                    _buildStep5(context),
-                  ],
+            return Column(
+              children: [
+                StepIndicator(
+                  totalSteps: PostAdvertisementController.totalSteps,
+                  currentStep: controller.currentStep.value,
                 ),
-              ),
-              SafeArea(
-                top: false,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
-                  child: Row(
+                Expanded(
+                  child: IndexedStack(
+                    index: controller.currentStep.value,
                     children: [
-                      if (controller.currentStep.value > 0)
-                        Expanded(
-                          child: SecondaryButton(
-                            label: 'BACK',
-                            onPressed: controller.previousStep,
-                          ),
-                        ),
-                      if (controller.currentStep.value > 0)
-                        SizedBox(width: 12.w),
-                      Expanded(
-                        child: PrimaryButton(
-                          label: controller.currentStep.value == 4
-                              ? 'SUBMIT AD'
-                              : 'CONTINUE',
-                          isLoading: controller.isSaving.value,
-                          onPressed: () {
-                            if (controller.currentStep.value == 0 &&
-                                !controller.isStep1Complete) {
-                              _showValidationError(
-                                  'Please complete all selections');
-                              return;
-                            }
-                            if (controller.currentStep.value == 1 &&
-                                !controller.isStep2Complete) {
-                              _showValidationError('Please select a category');
-                              return;
-                            }
-                            if (controller.currentStep.value == 2 &&
-                                !controller.isStep3Complete) {
-                              _showValidationError('Please select a state');
-                              return;
-                            }
-                            if (controller.currentStep.value == 3 &&
-                                !controller.isStep4Complete) {
-                              _showValidationError('Please select an image');
-                              return;
-                            }
-
-                            if (controller.currentStep.value == 4) {
-                              controller.submitAdvertisement();
-                            } else {
-                              controller.nextStep();
-                            }
-                          },
-                        ),
-                      ),
+                      _buildLocationStep(),
+                      _buildFormatStep(),
+                      _buildTargetLocationStep(),
+                      _buildCategoryStep(),
+                      _buildUploadStep(),
                     ],
                   ),
                 ),
+                _buildBottomActions(),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLocationStep() {
+    return _StepScrollView(
+      title: 'Select Ad Location',
+      subtitle: 'Choose Where do you want to display your ad',
+      child: Column(
+        children: controller.locations
+            .map(
+              (location) => OptionSelectionCard(
+                item: location,
+                title: location.name,
+                subtitle: location.subtitle.isEmpty ? null : location.subtitle,
+                iconPath: location.iconPath,
+                isSelected: controller.selectedLocation.value?.id == location.id,
+                onTap: () => controller.selectLocation(location),
               ),
-            ],
-          );
-        },
+            )
+            .toList(),
       ),
     );
   }
 
-  Widget _buildStep1(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+  Widget _buildFormatStep() {
+    return _StepScrollView(
+      title: 'Ad Format',
+      subtitle: 'Select the visual size of your ad',
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        children: controller.formats
+            .map(
+              (format) => OptionSelectionCard(
+                item: format,
+                title: format.name,
+                subtitle: format.description.isEmpty ? null : format.description,
+                leadingText: format.leadingText,
+                iconPath: format.iconPath,
+                isSelected: controller.selectedFormat.value?.id == format.id,
+                onTap: () => controller.selectFormat(format),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+
+  Widget _buildTargetLocationStep() {
+    final isMultiple = controller.locationType.value == 'Multiple';
+
+    return _StepScrollView(
+      title: 'Target Location',
+      subtitle: 'Pick the state where you want to show your ad',
+      child: Column(
         children: [
-          _buildSectionTitle('Select Ad Location'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription(
-              'Choose where your ad will be displayed on the app.'),
-          SizedBox(height: 16.h),
-          Obx(
-            () => Column(
-              children: controller.locations
-                  .map(
-                    (location) => OptionSelectionCard(
-                      item: location,
-                      title: location.name,
-                      isSelected:
-                          controller.selectedLocation.value?.id == location.id,
-                      onTap: () => controller.selectLocation(location),
-                    ),
-                  )
-                  .toList(),
-            ),
+          _buildModeSelector(
+            selectedValue: controller.locationType.value,
+            onChanged: controller.setLocationType,
           ),
-          SizedBox(height: 24.h),
-          _buildSectionTitle('Ad Format'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription('Select the format of your advertisement.'),
-          SizedBox(height: 16.h),
-          Obx(
-            () => Column(
-              children: controller.formats
-                  .map(
-                    (format) => OptionSelectionCard(
-                      item: format,
-                      title: format.name,
-                      subtitle: format.description,
-                      isSelected:
-                          controller.selectedFormat.value?.id == format.id,
-                      onTap: () => controller.selectFormat(format),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          SizedBox(height: 24.h),
-          _buildSectionTitle('Select Operation Mode'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription('Choose how to target locations.'),
-          SizedBox(height: 16.h),
-          Obx(
-            () => Row(
-              children: [
-                Expanded(
-                  child: _buildModeButton(
-                    'Single State',
-                    controller.locationType.value == 'Single',
-                    () => controller.setLocationType('Single'),
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: _buildModeButton(
-                    'Multiple States',
-                    controller.locationType.value == 'Multiple',
-                    () => controller.setLocationType('Multiple'),
-                  ),
-                ),
-              ],
+          SizedBox(height: 18.h),
+          ...controller.states.map(
+            (state) => SelectionCheckbox(
+              label: state.name,
+              isMultiSelect: isMultiple,
+              isSelected:
+                  controller.selectedStates.any((item) => item.id == state.id),
+              onTap: () => controller.toggleState(state),
             ),
           ),
         ],
@@ -184,55 +122,26 @@ class PostAdvertisementView extends GetView<PostAdvertisementController> {
     );
   }
 
-  Widget _buildStep2(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+  Widget _buildCategoryStep() {
+    final isMultiple = controller.categoryType.value == 'Multiple';
+
+    return _StepScrollView(
+      title: 'Select categories',
+      subtitle: 'Specific business categories',
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Select Category Type'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription('Choose how you want to select categories.'),
-          SizedBox(height: 16.h),
-          Obx(
-            () => Row(
-              children: [
-                Expanded(
-                  child: _buildModeButton(
-                    'Single Category',
-                    controller.categoryType.value == 'Single',
-                    () => controller.setCategoryType('Single'),
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: _buildModeButton(
-                    'Multiple Categories',
-                    controller.categoryType.value == 'Multiple',
-                    () => controller.setCategoryType('Multiple'),
-                  ),
-                ),
-              ],
-            ),
+          _buildModeSelector(
+            selectedValue: controller.categoryType.value,
+            onChanged: controller.setCategoryType,
           ),
-          SizedBox(height: 24.h),
-          _buildSectionTitle('Select Business Category'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription(
-              'Pick the category that matches your business.'),
-          SizedBox(height: 16.h),
-          Obx(
-            () => Column(
-              children: controller.categories
-                  .map(
-                    (category) => SelectionCheckbox(
-                      label: category.name,
-                      isSelected: controller.selectedCategories
-                          .any((c) => c.id == category.id),
-                      onTap: () => controller.toggleCategory(category),
-                    ),
-                  )
-                  .toList(),
+          SizedBox(height: 18.h),
+          ...controller.categories.map(
+            (category) => SelectionCheckbox(
+              label: category.name,
+              isMultiSelect: isMultiple,
+              isSelected: controller.selectedCategories
+                  .any((item) => item.id == category.id),
+              onTap: () => controller.toggleCategory(category),
             ),
           ),
         ],
@@ -240,211 +149,28 @@ class PostAdvertisementView extends GetView<PostAdvertisementController> {
     );
   }
 
-  Widget _buildStep3(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+  Widget _buildUploadStep() {
+    return _StepScrollView(
+      title: 'Upload Creative',
+      subtitle: 'Upload high-quality JPG or PNG images here',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Choose State(s)'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription(
-            controller.locationType.value == 'Single'
-                ? 'Select one state where you want to display your ad.'
-                : 'Select one or more states for your ad.',
-          ),
-          SizedBox(height: 16.h),
-          Obx(
-            () => Column(
-              children: controller.states
-                  .map(
-                    (state) => SelectionCheckbox(
-                      label: state.name,
-                      isSelected: controller.selectedStates
-                          .any((s) => s.id == state.id),
-                      onTap: () => controller.toggleState(state),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStep4(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle('Upload Creative'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription('Upload high-quality JPG or PNG images.'),
-          SizedBox(height: 24.h),
-          Obx(
-            () => ImagePickerWidget(
-              imagePath: controller.selectedImage.value?.path,
-              onTap: controller.pickImage,
-            ),
+          ImagePickerWidget(
+            imagePath: controller.selectedImage.value?.path,
+            onTap: controller.pickImage,
           ),
           SizedBox(height: 16.h),
           Container(
-            padding: EdgeInsets.all(12.w),
+            width: double.infinity,
+            padding: EdgeInsets.all(14.w),
             decoration: BoxDecoration(
               color: AppTokens.surface,
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(10.r),
+              border: Border.all(color: AppTokens.border, width: 1.w),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Image Guidelines:',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppTokens.textPrimary,
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                _buildGuidelineItem('Recommended size: 1080x720 px'),
-                _buildGuidelineItem('Formats: JPG, PNG'),
-                _buildGuidelineItem('Max file size: 5 MB'),
-                _buildGuidelineItem('Avoid cropped or blurry images'),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStep5(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle('Review Advertisement'),
-          SizedBox(height: 12.h),
-          _buildSectionDescription('Verify your ad details before submission.'),
-          SizedBox(height: 24.h),
-          _buildReviewCard(
-            'Ad Location',
-            controller.selectedLocation.value?.name ?? 'Not selected',
-          ),
-          SizedBox(height: 12.h),
-          _buildReviewCard(
-            'Ad Format',
-            controller.selectedFormat.value?.name ?? 'Not selected',
-          ),
-          SizedBox(height: 12.h),
-          _buildReviewCard(
-            'States',
-            controller.getSelectedStateText(),
-          ),
-          SizedBox(height: 12.h),
-          _buildReviewCard(
-            'Categories',
-            controller.getSelectedCategoryText(),
-          ),
-          SizedBox(height: 24.h),
-          Obx(
-            () => controller.selectedImage.value != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(12.r),
-                    child: Image.file(
-                      controller.selectedImage.value!,
-                      height: 250.h,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : Container(
-                    height: 250.h,
-                    decoration: BoxDecoration(
-                      color: AppTokens.surface,
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
-                        size: 48.sp,
-                        color: AppTokens.textSecondary,
-                      ),
-                    ),
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w700,
-        color: AppTokens.textPrimary,
-      ),
-    );
-  }
-
-  Widget _buildSectionDescription(String description) {
-    return Text(
-      description,
-      style: TextStyle(
-        fontSize: 13.sp,
-        color: AppTokens.textSecondary,
-      ),
-    );
-  }
-
-  Widget _buildModeButton(String label, bool isActive, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          color: isActive ? AppTokens.brandPrimary : AppTokens.surface,
-          border: Border.all(
-            color: isActive ? AppTokens.brandPrimary : AppTokens.border,
-          ),
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w600,
-              color: isActive ? AppTokens.white : AppTokens.textPrimary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGuidelineItem(String text) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 6.h),
-      child: Row(
-        children: [
-          Text(
-            '•',
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: AppTokens.textSecondary,
-            ),
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
             child: Text(
-              text,
+              'Recommended size: 1080 by 450 pixels. Formats: JPG or PNG.',
               style: TextStyle(
                 fontSize: 12.sp,
                 color: AppTokens.textSecondary,
@@ -456,45 +182,148 @@ class PostAdvertisementView extends GetView<PostAdvertisementController> {
     );
   }
 
-  Widget _buildReviewCard(String label, String value) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: AppTokens.surface,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: AppTokens.border),
+  Widget _buildModeSelector({
+    required String selectedValue,
+    required ValueChanged<String> onChanged,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: _ModeOption(
+            label: 'Single',
+            isSelected: selectedValue == 'Single',
+            onTap: () => onChanged('Single'),
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: _ModeOption(
+            label: 'Multiple',
+            isSelected: selectedValue == 'Multiple',
+            onTap: () => onChanged('Multiple'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomActions() {
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+        child: Row(
+          children: [
+            Expanded(
+              child: SecondaryButton(
+                label: 'Back',
+                onPressed: controller.previousStep,
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: PrimaryButton(
+                label: controller.primaryButtonLabel,
+                isLoading: controller.isSaving.value,
+                onPressed: controller.handlePrimaryAction,
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    );
+  }
+}
+
+class _StepScrollView extends StatelessWidget {
+  const _StepScrollView({
+    required this.title,
+    required this.subtitle,
+    required this.child,
+  });
+
+  final String title;
+  final String subtitle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 24.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            title,
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w700,
+              color: AppTokens.textPrimary,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            subtitle,
             style: TextStyle(
               fontSize: 13.sp,
               color: AppTokens.textSecondary,
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w600,
-              color: AppTokens.textPrimary,
-            ),
-          ),
+          SizedBox(height: 22.h),
+          child,
         ],
       ),
     );
   }
+}
 
-  void _showValidationError(String message) {
-    Get.snackbar(
-      'Validation Error',
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: AppTokens.error,
-      colorText: AppTokens.white,
-      duration: const Duration(seconds: 2),
+class _ModeOption extends StatelessWidget {
+  const _ModeOption({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTokens.selectionBackground : AppTokens.surface,
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: isSelected ? AppTokens.brandPrimary : AppTokens.border,
+            width: 1.w,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isSelected
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              size: 18.sp,
+              color: isSelected ? AppTokens.brandPrimary : AppTokens.textSecondary,
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: AppTokens.textPrimary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
