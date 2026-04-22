@@ -1,6 +1,8 @@
 ﻿import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'package:bizrato_owner/core/services/notification_service.dart';
+import 'package:bizrato_owner/features/messages/data/models/chat_models.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +19,8 @@ class ChatService extends GetxService {
   String _businessId = '';
   String? _connectionToken;
   int _invokeId = 0;
+  final Map<String, DateTime> _recentIncomingSignatures = <String, DateTime>{};
+  static const Duration _duplicateWindow = Duration(seconds: 2);
 
   String? _currentConversationId;
 
@@ -31,7 +35,7 @@ class ChatService extends GetxService {
   Stream<ConnectionStatus> get onConnectionStatusChanged => _connectionStatusController.stream;
 
   static const _baseUrl = 'https://merchant.bizrato.com/signalr';
-  static const _hubName = 'chatHub';
+  // static const _hubName = 'chatHub';
   static const _connectionData = '[{"name":"chatHub"}]';
 
   Future<ChatService> init({required String businessId}) async {
@@ -183,41 +187,136 @@ class ChatService extends GetxService {
 
   // Server sends: addNewMessageToPage(senderId, message, attachment, type)
   void _handleNewMessage(List<dynamic> args) {
-    final senderId     = args.length > 0 ? args[0]?.toString() ?? '' : '';
+    final senderId     = args.isNotEmpty ? args[0]?.toString() ?? '' : '';
     final messageText  = args.length > 1 ? args[1]?.toString() ?? '' : '';
     final attachment   = args.length > 2 ? args[2]?.toString() ?? '' : '';
     final messageType  = args.length > 3 ? args[3]?.toString() ?? 'text' : 'text';
 
-    final msg = {
-      'senderId':      senderId,
-      'message':       messageText,
-      'attachmentUrl': attachment,
-      'messageType':   messageType,
-      'timestamp':     DateTime.now().toIso8601String(),
-    };
-
-    // If a conversation is active, only pass through messages from that user
-    if (_currentConversationId == null || senderId == _currentConversationId) {
-      if (!_messageController.isClosed) {
-        _messageController.add(msg);
-        dev.log('Message streamed from: $senderId', name: 'ChatService');
-      }
-    } else {
-      dev.log(
-        'Filtered (expected: $_currentConversationId, got: $senderId)',
-        name: 'ChatService',
-      );
-    }
+    _emitIncomingMessage(
+      senderId: senderId,
+      message: messageText,
+      attachmentUrl: attachment,
+      messageType: messageType,
+    );
   }
 
   // Server sends: receiveNotification(title, message, senderId)
   void _handleNotification(List<dynamic> args) {
-    if (_notificationController.isClosed) return;
-    _notificationController.add({
-      'title':    args.length > 0 ? args[0]?.toString() ?? '' : '',
-      'message':  args.length > 1 ? args[1]?.toString() ?? '' : '',
-      'senderId': args.length > 2 ? args[2]?.toString() ?? '' : '',
-    });
+    final title = args.isNotEmpty ? args[0]?.toString() ?? '' : '';
+    final message = args.length > 1 ? args[1]?.toString() ?? '' : '';
+    final senderId = args.length > 2 ? args[2]?.toString() ?? '' : '';
+    final isImage = ChatMediaUrl.isImagePath(message);
+
+    _emitIncomingMessage(
+      senderId: senderId,
+      message: isImage ? '' : message,
+      attachmentUrl: isImage ? message : '',
+      messageType: isImage ? 'image' : 'text',
+      title: title,
+      notificationMessage: message,
+    );
+  }
+
+  void _emitIncomingMessage({
+    required String senderId,
+    required String message,
+    required String attachmentUrl,
+    required String messageType,
+    String title = '',
+    String notificationMessage = '',
+  }) {
+    final normalizedAttachment = ChatMediaUrl.normalize(attachmentUrl);
+    final isImage = normalizedAttachment.isNotEmpty ||
+        messageType.toLowerCase() == 'image' ||
+        ChatMediaUrl.isImagePath(message);
+    final displayMessage = notificationMessage.isNotEmpty
+        ? notificationMessage
+        : (message.isNotEmpty ? message : 'Image');
+
+    if (_isDuplicateIncoming(
+      senderId: senderId,
+      message: isImage ? '' : message,
+      attachmentUrl: isImage ? normalizedAttachment : '',
+      messageType: isImage ? 'image' : messageType,
+      displayMessage: displayMessage,
+    )) {
+      dev.log('Skipped duplicate incoming event for sender: $senderId', name: 'ChatService');
+      return;
+    }
+
+    final msg = {
+      'senderId': senderId,
+      'message': isImage ? '' : message,
+      'attachmentUrl': isImage ? normalizedAttachment : '',
+      'messageType': isImage ? 'image' : messageType,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+
+    if (_currentConversationId == senderId) {
+      if (!_messageController.isClosed) {
+        _messageController.add(msg);
+        dev.log('Message streamed from: $senderId', name: 'ChatService');
+      }
+      return;
+    }
+
+    final notification = {
+      'title': title,
+      'message': displayMessage,
+      'senderId': senderId,
+      'attachmentUrl': isImage ? normalizedAttachment : '',
+      'messageType': isImage ? 'image' : messageType,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+
+    if (!_notificationController.isClosed) {
+      _notificationController.add(notification);
+    }
+
+    if (Get.isRegistered<NotificationService>()) {
+      unawaited(Get.find<NotificationService>().showChatNotification(
+        title: _notificationTitle(title),
+        message: isImage ? 'Image' : displayMessage,
+        senderId: senderId,
+        attachmentUrl: isImage ? normalizedAttachment : '',
+      ));
+    }
+  }
+
+  String _notificationTitle(String title) {
+    final normalizedTitle = title.trim();
+    if (normalizedTitle.isEmpty || int.tryParse(normalizedTitle) != null) {
+      return 'New message';
+    }
+
+    return normalizedTitle;
+  }
+
+  bool _isDuplicateIncoming({
+    required String senderId,
+    required String message,
+    required String attachmentUrl,
+    required String messageType,
+    required String displayMessage,
+  }) {
+    final now = DateTime.now();
+    _recentIncomingSignatures.removeWhere(
+      (_, time) => now.difference(time) > _duplicateWindow,
+    );
+
+    final normalizedText = message.trim().toLowerCase();
+    final normalizedAttachment = attachmentUrl.trim().toLowerCase();
+    final normalizedDisplay = displayMessage.trim().toLowerCase();
+    final signature =
+        '$senderId|$messageType|$normalizedText|$normalizedAttachment|$normalizedDisplay';
+
+    final lastSeen = _recentIncomingSignatures[signature];
+    if (lastSeen != null && now.difference(lastSeen) <= _duplicateWindow) {
+      return true;
+    }
+
+    _recentIncomingSignatures[signature] = now;
+    return false;
   }
 
   // ─────────────────────────────────────────────
@@ -239,7 +338,8 @@ class ChatService extends GetxService {
     if (toUserId.isEmpty) throw Exception('toUserId is empty');
     if (_webSocket == null) throw Exception('Not connected');
 
-    await _invoke('SendMessage', [toUserId, _businessId, message, 'Merchant']);
+    final outboundMessage = attachmentUrl.trim().isNotEmpty ? attachmentUrl : message;
+    await _invoke('SendMessage', [toUserId, _businessId, outboundMessage, 'Merchant']);
     dev.log('SendMessage invoked → $toUserId', name: 'ChatService');
   }
 

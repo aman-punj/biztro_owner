@@ -12,10 +12,21 @@ class AdCategoryModel {
   });
 
   factory AdCategoryModel.fromJson(Map<String, dynamic> json) {
+    final categoryName =
+        (json['name'] ?? json['CategoryName'] ?? json['DisplayName'])
+                ?.toString()
+                .trim() ??
+            '';
+    final categoryValue =
+        (json['value'] ?? json['CategoryName'] ?? json['DisplayName'])
+                ?.toString()
+                .trim() ??
+            categoryName;
+
     return AdCategoryModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      value: json['value'] as String,
+      id: _parseId(json['id'] ?? json['CategoryId'] ?? json['KeywordId']),
+      name: categoryName,
+      value: categoryValue,
       isSelected: json['isSelected'] as bool? ?? false,
     );
   }
@@ -27,5 +38,18 @@ class AdCategoryModel {
       'value': value,
       'isSelected': isSelected,
     };
+  }
+
+  static int _parseId(dynamic value) {
+    if (value is int) return value;
+
+    final text = value?.toString().trim() ?? '';
+    final parsed = int.tryParse(text);
+    if (parsed != null) return parsed;
+
+    return text.codeUnits.fold<int>(
+      0,
+      (previous, element) => (previous * 31 + element) & 0x7fffffff,
+    );
   }
 }

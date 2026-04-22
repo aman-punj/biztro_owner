@@ -41,6 +41,42 @@ class ConversationModel {
     );
   }
 
+  factory ConversationModel.fromNotificationData(Map<String, dynamic> data) {
+    final String id = data['senderId']?.toString() ??
+        data['chatId']?.toString() ??
+        data['userId']?.toString() ??
+        '';
+    final String title = data['conversationName']?.toString().trim().isNotEmpty == true
+        ? data['conversationName'].toString()
+        : data['title']?.toString() ?? '';
+    final String name = title.trim().isNotEmpty &&
+            title != 'New message' &&
+            int.tryParse(title) == null
+        ? title
+        : 'Customer $id';
+
+    return ConversationModel(
+      id: id,
+      name: name,
+      avatarInitials: _buildInitials(name),
+      lastMessage: data['message']?.toString() ?? '',
+      time: '',
+      isOnline: false,
+    );
+  }
+
+  static String _buildInitials(String name) {
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty) return '?';
+
+    final parts = trimmedName.split(RegExp(r'\s+'));
+    if (parts.length > 1 && parts[1].isNotEmpty) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+
+    return trimmedName[0].toUpperCase();
+  }
+
   ConversationModel copyWith({
     String? id,
     String? name,
@@ -92,7 +128,9 @@ class ChatMessageModel {
       id: json['Id']?.toString() ?? json['id']?.toString() ?? '',
       senderId: json['SenderId']?.toString() ?? json['ReceiverId']?.toString() ?? '',
       text: json['MessageText']?.toString() ?? json['text']?.toString() ?? '',
-      attachmentUrl: json['FilePath']?.toString() ?? json['attachmentUrl']?.toString(),
+      attachmentUrl: ChatMediaUrl.normalize(
+        json['FilePath']?.toString() ?? json['attachmentUrl']?.toString(),
+      ),
       timestamp: json['Timestamp'] != null 
           ? DateTime.parse(json['Timestamp'].toString()).toLocal()
           : (json['timestamp'] != null 
@@ -112,6 +150,39 @@ class ChatMessageModel {
       'timestamp': timestamp.toIso8601String(),
       'isFromMerchant': isFromMerchant,
     };
+  }
+}
+
+class ChatMediaUrl {
+  ChatMediaUrl._();
+
+  static const String host = 'https://mybizimages.in';
+
+  static String normalize(String? path) {
+    final normalizedPath = path?.trim() ?? '';
+    if (normalizedPath.isEmpty) return '';
+
+    final uri = Uri.tryParse(normalizedPath);
+    if (uri != null && uri.hasScheme) {
+      return normalizedPath;
+    }
+
+    final sanitizedPath = normalizedPath.replaceFirst(RegExp(r'^/+'), '');
+    final encodedPath = Uri.encodeFull(sanitizedPath);
+    return '$host/$encodedPath';
+  }
+
+  static bool isImagePath(String? value) {
+    final path = value?.trim().toLowerCase() ?? '';
+    if (path.isEmpty) return false;
+
+    final uri = Uri.tryParse(path);
+    final checkPath = uri?.path.toLowerCase() ?? path;
+    return checkPath.endsWith('.png') ||
+        checkPath.endsWith('.jpg') ||
+        checkPath.endsWith('.jpeg') ||
+        checkPath.endsWith('.webp') ||
+        checkPath.endsWith('.gif');
   }
 }
 

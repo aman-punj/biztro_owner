@@ -5,7 +5,9 @@ import 'dart:io';
 
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/features/auth/data/repositories/device_repository.dart';
+import 'package:bizrato_owner/features/messages/data/models/chat_models.dart';
 import 'package:bizrato_owner/firebase_options.dart';
+import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -159,10 +161,53 @@ class NotificationService extends GetxService {
     }
   }
 
+  Future<void> showChatNotification({
+    required String title,
+    required String message,
+    required String senderId,
+    String attachmentUrl = '',
+  }) async {
+    final payload = <String, dynamic>{
+      'route': AppRoutes.chatRoom,
+      'senderId': senderId,
+      'title': title,
+      'message': message,
+      'attachmentUrl': attachmentUrl,
+      'messageType': attachmentUrl.isNotEmpty ? 'image' : 'text',
+      'source': 'socket_chat',
+    };
+
+    await _localNotifications.show(
+      DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      title,
+      message,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channel.id,
+          _channel.name,
+          channelDescription: _channel.description,
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      payload: jsonEncode(payload),
+    );
+  }
+
   void _handleNotificationClick(Map<String, dynamic> data) {
     log('Notification clicked with data: $data');
     final String? route = data['route'];
     if (route != null && route.isNotEmpty) {
+      if (route == AppRoutes.chatRoom) {
+        Get.toNamed(route, arguments: ConversationModel.fromNotificationData(data));
+        return;
+      }
+
       Get.toNamed(route, arguments: data);
     }
   }

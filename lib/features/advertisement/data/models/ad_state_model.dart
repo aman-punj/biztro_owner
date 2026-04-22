@@ -11,8 +11,8 @@ class AdStateModel {
 
   factory AdStateModel.fromJson(Map<String, dynamic> json) {
     return AdStateModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
+      id: _parseId(json['id'] ?? json['StateId']),
+      name: (json['name'] ?? json['StateName'])?.toString().trim() ?? '',
       isSelected: json['isSelected'] as bool? ?? false,
     );
   }
@@ -23,5 +23,10 @@ class AdStateModel {
       'name': name,
       'isSelected': isSelected,
     };
+  }
+
+  static int _parseId(dynamic value) {
+    if (value is int) return value;
+    return int.tryParse(value?.toString() ?? '') ?? 0;
   }
 }

@@ -140,7 +140,7 @@ class PostAdvertisementView extends GetView<PostAdvertisementController> {
               label: category.name,
               isMultiSelect: isMultiple,
               isSelected: controller.selectedCategories
-                  .any((item) => item.id == category.id),
+                  .any((item) => item.value == category.value),
               onTap: () => controller.toggleCategory(category),
             ),
           ),

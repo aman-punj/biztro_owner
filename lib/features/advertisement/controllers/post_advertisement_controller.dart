@@ -122,9 +122,10 @@ class PostAdvertisementController extends GetxController {
       return;
     }
 
-    final exists = selectedCategories.any((item) => item.id == category.id);
+    final exists =
+        selectedCategories.any((item) => item.value == category.value);
     if (exists) {
-      selectedCategories.removeWhere((item) => item.id == category.id);
+      selectedCategories.removeWhere((item) => item.value == category.value);
     } else {
       selectedCategories.add(category);
     }

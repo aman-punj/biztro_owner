@@ -271,8 +271,7 @@ class ChatRoomView extends GetView<ChatRoomController> {
                       minLines: 1,
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) {
-                        if (controller.connectionStatus.value ==
-                            ConnectionStatus.connected) {
+                        if (controller.canSendMessage) {
                           controller.sendMessage();
                         }
                       },
@@ -284,19 +283,14 @@ class ChatRoomView extends GetView<ChatRoomController> {
 
                 // Send Button
                 Obx(() {
-                  final isConnected = controller.connectionStatus.value ==
-                      ConnectionStatus.connected;
-                  final isEmpty =
-                      controller.messageController.text.trim().isEmpty;
+                  final canSend = controller.canSendMessage;
 
                   return InkWell(
-                    onTap: (isConnected && !isEmpty)
-                        ? controller.sendMessage
-                        : null,
+                    onTap: canSend ? controller.sendMessage : null,
                     borderRadius: BorderRadius.circular(24.r),
                     child: CircleAvatar(
                       radius: 22.r,
-                      backgroundColor: (isConnected && !isEmpty)
+                      backgroundColor: canSend
                           ? AppTokens.brandPrimary
                           : AppTokens.brandPrimary.withValues(alpha: 0.5),
                       child: Icon(

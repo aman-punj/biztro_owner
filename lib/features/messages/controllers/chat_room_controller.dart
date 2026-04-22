@@ -25,6 +25,8 @@ class ChatRoomController extends GetxController {
   final messages = <ChatMessageModel>[].obs;
   final isLoading = true.obs;
   final isUploadingImage = false.obs;
+  final isSendingMessage = false.obs;
+  final draftMessage = ''.obs;
   final connectionStatus = Rx<ConnectionStatus>(ConnectionStatus.disconnected);
 
   final messageController = TextEditingController();
@@ -32,6 +34,11 @@ class ChatRoomController extends GetxController {
 
   StreamSubscription? _messageSubscription;
   StreamSubscription? _connectionSubscription;
+
+  bool get canSendMessage =>
+      connectionStatus.value == ConnectionStatus.connected &&
+      draftMessage.value.trim().isNotEmpty &&
+      !isSendingMessage.value;
 
   // ─────────────────────────────────────────────
   // Grouped messages for UI
@@ -64,7 +71,8 @@ class ChatRoomController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    conversation = Get.arguments as ConversationModel;
+    conversation = _resolveConversation(Get.arguments);
+    messageController.addListener(_syncDraftMessage);
     _loadHistory();
     _subscribeToService();
   }
@@ -76,9 +84,38 @@ class ChatRoomController extends GetxController {
     if (Get.isRegistered<ChatService>()) {
       Get.find<ChatService>().clearCurrentConversation();
     }
+    messageController.removeListener(_syncDraftMessage);
     messageController.dispose();
     scrollController.dispose();
     super.onClose();
+  }
+
+  ConversationModel _resolveConversation(dynamic arguments) {
+    if (arguments is ConversationModel) {
+      return arguments;
+    }
+
+    if (arguments is Map<String, dynamic>) {
+      return ConversationModel.fromNotificationData(arguments);
+    }
+
+    if (arguments is Map) {
+      return ConversationModel.fromNotificationData(
+        arguments.map((key, value) => MapEntry(key.toString(), value)),
+      );
+    }
+
+    return const ConversationModel(
+      id: '',
+      name: 'Customer',
+      avatarInitials: '?',
+      lastMessage: '',
+      time: '',
+    );
+  }
+
+  void _syncDraftMessage() {
+    draftMessage.value = messageController.text;
   }
 
   // ─────────────────────────────────────────────
@@ -119,7 +156,7 @@ class ChatRoomController extends GetxController {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         senderId: senderId,
         text: data['message']?.toString() ?? '',
-        attachmentUrl: data['attachmentUrl']?.toString(),
+        attachmentUrl: ChatMediaUrl.normalize(data['attachmentUrl']?.toString()),
         timestamp: DateTime.now(),
         isFromMerchant: false, // came from user
         dateGroup: 'Today',
@@ -166,8 +203,9 @@ class ChatRoomController extends GetxController {
 
   Future<void> sendMessage() async {
     final text = messageController.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty || isSendingMessage.value) return;
     messageController.clear();
+    isSendingMessage.value = true;
 
     // Optimistic UI — add immediately before server confirms
     final optimistic = ChatMessageModel(
@@ -193,6 +231,8 @@ class ChatRoomController extends GetxController {
       messages.removeWhere((m) => m.id == optimistic.id);
       _showError('Failed to send: ${e.toString()}');
       dev.log('Send error: $e', name: 'ChatRoomController');
+    } finally {
+      isSendingMessage.value = false;
     }
   }
 
@@ -217,17 +257,18 @@ class ChatRoomController extends GetxController {
         }
 
         if (url != null && url.isNotEmpty) {
+          final imageUrl = ChatMediaUrl.normalize(url);
           if (Get.isRegistered<ChatService>()) {
             await Get.find<ChatService>().sendMessage(
               toUserId: conversation.id,
               message: '',
-              attachmentUrl: url,
+              attachmentUrl: imageUrl,
             );
             messages.add(ChatMessageModel(
               id: 'temp_${DateTime.now().millisecondsSinceEpoch}',
               senderId: conversation.id,
               text: '',
-              attachmentUrl: url,
+              attachmentUrl: imageUrl,
               timestamp: DateTime.now(),
               isFromMerchant: true,
               dateGroup: 'Today',
