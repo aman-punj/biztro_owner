@@ -1,0 +1,97 @@
+name: Firebase App Distribution
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        default: 'android'
+        type: choice
+        options:
+          - android
+          - ios
+          - both
+      testers:
+        description: 'Tester groups (comma separated)'
+        required: false
+        default: 'testers'
+      release_notes:
+        description: 'Release notes'
+        required: false
+        default: 'Manual build from GitHub Actions'
+
+jobs:
+  build-android:
+    name: Build & Distribute Android
+    if: github.event_name == 'push' || inputs.platform == 'android' || inputs.platform == 'both'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload to Firebase App Distribution
+        uses: wuba/firebase-app-distribution-github-action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_ANDROID || '1:207735956138:android:db8f638c89984a0d18e6d3' }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: ${{ github.event.inputs.testers || 'testers' }}
+          releaseNotes: ${{ github.event.inputs.release_notes || 'Automated build' }}
+          file: build/app/outputs/flutter-apk/app-release.apk
+
+  build-ios:
+    name: Build & Distribute iOS
+    if: github.event_name == 'push' || inputs.platform == 'ios' || inputs.platform == 'both'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+
+      - name: Create IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r app-release.ipa Payload/
+          mv app-release.ipa build/ios/iphoneos/
+
+      - name: Upload to Firebase App Distribution
+        uses: wuba/firebase-app-distribution-github-action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_IOS || '1:207735956138:ios:d8b655a4ce2f46e118e6d3' }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: ${{ github.event.inputs.testers || 'testers' }}
+          releaseNotes: ${{ github.event.inputs.release_notes || 'Automated build' }}
+          file: build/ios/iphoneos/app-release.ipa
