@@ -130,18 +130,20 @@ class DashboardDrawer extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 24.h, top: 10.h),
-            child: _DrawerItem(
-              icon: Icons.logout,
-              text: 'Sign Out',
-              textColor: AppTokens.error,
-              iconColor: AppTokens.error,
-              onTap: () async {
-                await Get.find<LogoutService>().logout();
-              },
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 24.h, top: 10.h),
+              child: _DrawerItem(
+                icon: Icons.logout,
+                text: 'Sign Out',
+                textColor: AppTokens.error,
+                iconColor: AppTokens.error,
+                onTap: () async {
+                  await Get.find<LogoutService>().logout();
+                },
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
