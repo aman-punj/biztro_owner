@@ -33,11 +33,24 @@ class NotificationService extends GetxService {
   );
 
   Future<NotificationService> init() async {
+    final authStorage = Get.find<AuthStorage>();
+    if (authStorage.isLoggedIn) {
+      await setup();
+    }
+    return this;
+  }
+
+  bool _isSetup = false;
+  Future<void> setup() async {
+    if (_isSetup) return;
+
     await _initializeFirebase();
     await _initializeLocalNotifications();
     _setupInteractions();
     _listenToTokenRefresh();
-    return this;
+
+    _isSetup = true;
+    log('NotificationService: Setup completed.');
   }
 
   Future<void> _initializeFirebase() async {

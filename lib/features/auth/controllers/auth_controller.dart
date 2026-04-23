@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/network/app_response.dart';
@@ -8,6 +10,8 @@ import 'package:bizrato_owner/features/auth/data/models/otp_verification_request
 import 'package:bizrato_owner/features/auth/data/models/signup_request.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
+
+import '../../../core/services/chat_service.dart';
 
 enum AuthStage { login, forgotPassword, register, otpVerification }
 
@@ -162,7 +166,21 @@ class AuthController extends GetxController {
 
   Future<void> _routeAfterAuth(dynamic user) async {
     final profileStep = (user.businessProfileStep as int?) ?? 0;
+    
+    // Initialize services as soon as we have a user session
+    if (Get.isRegistered<NotificationService>()) {
+      unawaited(Get.find<NotificationService>().setup());
+    }
+
     if (profileStep >= 3) {
+      final businessId = user.businessId?.toString() ?? '';
+      if (businessId.isNotEmpty && !Get.isRegistered<ChatService>()) {
+        await Get.putAsync<ChatService>(
+          () => ChatService().init(businessId: businessId),
+          permanent: true,
+        );
+      }
+
       await Get.find<NotificationService>().requestPermissionAndUploadToken();
       Get.offAllNamed(AppRoutes.dashboard);
       return;
