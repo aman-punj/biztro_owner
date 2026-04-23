@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/dimensions.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/features/auth/controllers/auth_controller.dart';
@@ -38,7 +39,7 @@ class ForgotPasswordStageView extends GetView<AuthController> {
                   controller.formError.value,
                   style: TextStyle(
                     fontSize: 11.sp,
-                    color: Colors.redAccent,
+                    color: AppTokens.error,
                   ),
                 ),
         ),

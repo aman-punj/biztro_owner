@@ -17,6 +17,27 @@ class AuthRepository {
   final ApiClient apiClient;
   final AuthStorage authStorage;
 
+  _AuthSession? _sessionFromPayload(dynamic payload) {
+    if (payload is! Map<String, dynamic>) return null;
+
+    final token = payload['Token']?.toString() ?? '';
+    final userPayload = payload['User'];
+    if (token.isEmpty || userPayload is! Map<String, dynamic>) return null;
+
+    return _AuthSession(token: token, user: UserModel.fromJson(userPayload));
+  }
+
+  Future<void> _persistSession(_AuthSession session) async {
+    final user = session.user;
+    await Future.wait([
+      authStorage.saveToken(session.token),
+      authStorage.saveMerchantId(user.merchantId),
+      authStorage.saveBusinessId(user.businessId),
+      authStorage.saveProfileStep(user.businessProfileStep),
+      authStorage.saveUserJson(jsonEncode(user.toJson())),
+    ]);
+  }
+
   Future<AppResponse<dynamic>> getTestData() =>
       apiClient.get('/api/auth/test');
 
@@ -31,36 +52,20 @@ class AuthRepository {
       );
     }
 
-    final payload = response.data;
-    if (payload is! Map<String, dynamic>) {
+    final session = _sessionFromPayload(response.data);
+    if (session == null) {
       return AppResponse.failure(
         message: 'Invalid login response',
         statusCode: response.statusCode,
       );
     }
 
-    final token = payload['Token']?.toString() ?? '';
-    final userPayload = payload['User'];
-    if (userPayload is! Map<String, dynamic>) {
-      return AppResponse.failure(
-        message: 'Invalid user data',
-        statusCode: response.statusCode,
-      );
-    }
-
-    final user = UserModel.fromJson(userPayload);
-    await Future.wait([
-      authStorage.saveToken(token),
-      authStorage.saveMerchantId(user.merchantId),
-      authStorage.saveBusinessId(user.businessId),
-      authStorage.saveProfileStep(user.businessProfileStep),
-      authStorage.saveUserJson(jsonEncode(user.toJson())),
-    ]);
+    await _persistSession(session);
 
     return AppResponse<UserModel>(
       success: true,
       message: response.message,
-      data: user,
+      data: session.user,
       statusCode: response.statusCode,
     );
   }
@@ -70,6 +75,37 @@ class AuthRepository {
 
   Future<AppResponse<dynamic>> verifyOtp(OtpVerificationRequest request) =>
       apiClient.post('/api/auth/verify-otp', data: request.toJson());
+
+  Future<AppResponse<UserModel>> verifyOtpAndHydrateSession({
+    required OtpVerificationRequest request,
+    required LoginRequest fallbackLoginRequest,
+  }) async {
+    final response =
+        await apiClient.post('/api/auth/verify-otp', data: request.toJson());
+
+    if (!response.success) {
+      return AppResponse.failure(
+        message: response.message,
+        statusCode: response.statusCode,
+        data: response.data,
+      );
+    }
+
+    final session = _sessionFromPayload(response.data);
+    if (session != null) {
+      await _persistSession(session);
+      return AppResponse<UserModel>(
+        success: true,
+        message: response.message,
+        data: session.user,
+        statusCode: response.statusCode,
+      );
+    }
+
+    // Backend doesn't provide auth session after OTP verification.
+    // Perform background login so we persist token/merchant/business/profileStep like normal login.
+    return login(fallbackLoginRequest);
+  }
 
   Future<AppResponse<dynamic>> search(String term) => apiClient.get(
         '/api/auth/search',
@@ -81,4 +117,14 @@ class AuthRepository {
         '/api/auth/get-keywords',
         queryParameters: {'categoryId': categoryId},
       );
+}
+
+class _AuthSession {
+  const _AuthSession({
+    required this.token,
+    required this.user,
+  });
+
+  final String token;
+  final UserModel user;
 }

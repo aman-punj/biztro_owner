@@ -1,8 +1,9 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/theme/dimensions.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/features/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -23,11 +24,11 @@ class _OtpStageViewState extends State<OtpStageView> {
         textStyle: TextStyle(
           fontSize: 18.sp,
           fontWeight: FontWeight.w600,
-          color: AppColors.textPrimaryLight,
+          color: AppTokens.textPrimary,
         ),
         decoration: BoxDecoration(
-          color: AppColors.white,
-          border: Border.all(color: AppColors.borderLight),
+          color: AppTokens.white,
+          border: Border.all(color: AppTokens.border),
           borderRadius: BorderRadius.circular(12.r),
         ),
       );
@@ -67,15 +68,18 @@ class _OtpStageViewState extends State<OtpStageView> {
         Pinput(
           length: 4,
           controller: _pinController,
+          autofillHints: const [AutofillHints.oneTimeCode],
+          androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
+          listenForMultipleSmsOnAndroid: true,
           defaultPinTheme: _pinTheme,
           focusedPinTheme: _pinTheme.copyWith(
             decoration: _pinTheme.decoration?.copyWith(
-              border: Border.all(color: AppColors.primary, width: 1.5),
+              border: Border.all(color: AppTokens.brandPrimary, width: 1.5),
             ),
           ),
           submittedPinTheme: _pinTheme.copyWith(
             decoration: _pinTheme.decoration?.copyWith(
-              color: AppColors.backgroundLight,
+              color: AppTokens.screenBackground,
             ),
           ),
           onChanged: _onOtpChanged,
@@ -97,7 +101,7 @@ class _OtpStageViewState extends State<OtpStageView> {
               : Text(
                   controller.infoMessage.value,
                   style: TextStyle(
-                    color: Colors.green,
+                    color: AppTokens.success,
                     fontSize: 11.sp,
                   ),
                 ),
@@ -109,7 +113,7 @@ class _OtpStageViewState extends State<OtpStageView> {
                   controller.formError.value,
                   style: TextStyle(
                     fontSize: 11.sp,
-                    color: Colors.redAccent,
+                    color: AppTokens.error,
                   ),
                 ),
         ),
@@ -124,7 +128,7 @@ class _OtpStageViewState extends State<OtpStageView> {
           child: Text(
             'Resend Now',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.primary,
+                  color: AppTokens.brandPrimary,
                   fontWeight: FontWeight.w700,
                 ),
           ),

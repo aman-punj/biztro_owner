@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/features/auth/controllers/auth_controller.dart';
@@ -34,7 +34,7 @@ class LoginStageView extends GetView<AuthController> {
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
                 size: 14.sp,
-                color: AppColors.textSecondaryLight,
+                color: AppTokens.textSecondary,
               ),
             ),
             initialValue: controller.password.value,
@@ -54,7 +54,7 @@ class LoginStageView extends GetView<AuthController> {
                           ? Icons.check_box_rounded
                           : Icons.check_box_outline_blank_rounded,
                       size: 12.sp,
-                      color: AppColors.textSecondaryLight,
+                      color: AppTokens.textSecondary,
                     ),
                     SizedBox(width: 4.w),
                     Text(
@@ -71,7 +71,7 @@ class LoginStageView extends GetView<AuthController> {
                 child: Text(
                   'Forgot Password',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.primary,
+                      color: AppTokens.brandPrimary,
                       fontWeight: FontWeight.w600,
                       fontSize: 12.sp),
                 ),
@@ -98,7 +98,7 @@ class LoginStageView extends GetView<AuthController> {
                   controller.formError.value,
                   style: TextStyle(
                     fontSize: 11.sp,
-                    color: Colors.redAccent,
+                    color: AppTokens.error,
                   ),
                 ),
         ),

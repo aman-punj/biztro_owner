@@ -174,13 +174,19 @@ class EditBusinessServicesController extends GetxController {
       return;
     }
 
+    final estbYear = page2EstbYear.value.trim();
+    if (estbYear.isNotEmpty && estbYear.length != 4) {
+      _toastService.error('Establishment year must be exactly 4 digits.');
+      return;
+    }
+
     final request = SaveServiceFacilitiesRequest(
       merchantId: merchantId,
       categoryId: data.categoryId,
       subcategoryId: data.subCategoryId,
       website: page2Website.value.trim(),
       famousFor: page2FamousFor.value.trim(),
-      estbYear: page2EstbYear.value.trim(),
+      estbYear: estbYear,
       businessEmail: page2BusinessEmail.value.trim().isEmpty
           ? null
           : page2BusinessEmail.value.trim(),
