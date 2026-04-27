@@ -5,6 +5,9 @@ class SaveSocialMediaRequest {
     required this.instagramUrl,
     required this.twitterUrl,
     required this.linkedinUrl,
+    required this.justdialUrl,
+    required this.indiamartUrl,
+    required this.websiteUrl,
     required this.youTubeUrl,
     required this.isPubliclyVisible,
   });
@@ -14,6 +17,9 @@ class SaveSocialMediaRequest {
   final String instagramUrl;
   final String twitterUrl;
   final String linkedinUrl;
+  final String justdialUrl;
+  final String indiamartUrl;
+  final String websiteUrl;
   final String youTubeUrl;
   final bool isPubliclyVisible;
 
@@ -24,6 +30,9 @@ class SaveSocialMediaRequest {
       'InstagramUrl': instagramUrl,
       'TwitterUrl': twitterUrl,
       'LinkedinUrl': linkedinUrl,
+      'JustdialUrl': justdialUrl,
+      'IndiamartUrl': indiamartUrl,
+      'WebsiteUrl': websiteUrl,
       'YouTubeUrl': youTubeUrl,
       'IsPubliclyVisible': isPubliclyVisible,
     };

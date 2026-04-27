@@ -129,6 +129,31 @@ class EditSocialMediaLinksController extends GetxController {
   bool validateForm() {
     clearValidationErrors();
 
+    facebookUrl.value = _normalizeUrl(facebookUrl.value);
+    twitterUrl.value = _normalizeUrl(twitterUrl.value);
+    instagramUrl.value = _normalizeUrl(instagramUrl.value);
+    linkedinUrl.value = _normalizeUrl(linkedinUrl.value);
+    justdialUrl.value = _normalizeUrl(justdialUrl.value);
+    indiamartUrl.value = _normalizeUrl(indiamartUrl.value);
+    websiteUrl.value = _normalizeUrl(websiteUrl.value);
+    youTubeUrl.value = _normalizeUrl(youTubeUrl.value);
+
+    final hasAtLeastOneLink = <String>[
+      facebookUrl.value,
+      twitterUrl.value,
+      instagramUrl.value,
+      linkedinUrl.value,
+      justdialUrl.value,
+      indiamartUrl.value,
+      websiteUrl.value,
+      youTubeUrl.value,
+    ].any((value) => value.trim().isNotEmpty);
+
+    if (!hasAtLeastOneLink) {
+      _toastService.error('Please add at least one social media link.');
+      return false;
+    }
+
     var hasErrors = false;
     hasErrors = _validateUrl(
           value: facebookUrl.value,
@@ -201,6 +226,8 @@ class EditSocialMediaLinksController extends GetxController {
     final isValid = uri != null &&
         uri.hasScheme &&
         uri.hasAuthority &&
+        uri.host.isNotEmpty &&
+        uri.host.contains('.') &&
         (uri.scheme == 'http' || uri.scheme == 'https');
     if (!isValid) {
       error.value = 'Enter a valid $fieldLabel URL';
@@ -209,6 +236,20 @@ class EditSocialMediaLinksController extends GetxController {
 
     error.value = '';
     return false;
+  }
+
+  String _normalizeUrl(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      return '';
+    }
+
+    final parsed = Uri.tryParse(trimmed);
+    if (parsed != null && parsed.hasScheme) {
+      return trimmed;
+    }
+
+    return 'https://$trimmed';
   }
 
   Future<void> saveAndUpdate() async {
@@ -228,6 +269,9 @@ class EditSocialMediaLinksController extends GetxController {
       instagramUrl: instagramUrl.value.trim(),
       twitterUrl: twitterUrl.value.trim(),
       linkedinUrl: linkedinUrl.value.trim(),
+      justdialUrl: justdialUrl.value.trim(),
+      indiamartUrl: indiamartUrl.value.trim(),
+      websiteUrl: websiteUrl.value.trim(),
       youTubeUrl: youTubeUrl.value.trim(),
       isPubliclyVisible: isPubliclyVisible.value,
     );

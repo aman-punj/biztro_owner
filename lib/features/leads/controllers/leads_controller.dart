@@ -22,10 +22,21 @@ class LeadsController extends GetxController {
   final searchQuery = ''.obs;
   final searchController = TextEditingController();
 
-  final filterLikeByDate = true.obs;
-  final filterJunkLead = false.obs;
-  final filterInterested = false.obs;
-  final filterNotInterested = false.obs;
+  static const List<String> leadStatusFilters = [
+    'Interested',
+    'Converted',
+    'Not Interested',
+    'Follow-up',
+    'Ringing',
+    'Junk Lead',
+    'Busy',
+    'Wrong Number',
+    'Switched Off',
+    'Price Issue',
+    'Location Issue',
+  ];
+
+  final selectedLeadStatuses = <String>{}.obs;
 
   @override
   void onInit() {
@@ -76,20 +87,30 @@ class LeadsController extends GetxController {
       }).toList();
     }
 
-    // Advanced sorting/filtering mock based on bottom sheet toggles
-    // We only implement date sort as the API doesn't specify 'interested' or 'junk' properties
-    if (filterLikeByDate.value) {
-      // sort by date descending (safely parsing)
-      result.sort((a, b) {
-        if (a.leadDate == null) return 1;
-        if (b.leadDate == null) return -1;
-        final dateA = DateTime.tryParse(a.leadDate!) ?? DateTime.fromMillisecondsSinceEpoch(0);
-        final dateB = DateTime.tryParse(b.leadDate!) ?? DateTime.fromMillisecondsSinceEpoch(0);
-        return dateB.compareTo(dateA); // descending
-      });
+    if (selectedLeadStatuses.isNotEmpty) {
+      final selectedNormalized = selectedLeadStatuses
+          .map(_normalizeStatus)
+          .toSet();
+      result = result.where((lead) {
+        final status = _normalizeStatus(lead.leadStatus);
+        return status.isNotEmpty && selectedNormalized.contains(status);
+      }).toList();
     }
 
+    result.sort((a, b) {
+      if (a.leadDate == null) return 1;
+      if (b.leadDate == null) return -1;
+      final dateA = DateTime.tryParse(a.leadDate!) ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final dateB = DateTime.tryParse(b.leadDate!) ?? DateTime.fromMillisecondsSinceEpoch(0);
+      return dateB.compareTo(dateA);
+    });
+
     return result;
+  }
+
+  String _normalizeStatus(String? status) {
+    if (status == null) return '';
+    return status.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
   }
 
   Future<void> callLead(String? mobileNo) async {
@@ -123,10 +144,18 @@ class LeadsController extends GetxController {
     // Stub definition as per user instructions
   }
 
-  void toggleFilterLikeByDate() => filterLikeByDate.toggle();
-  void toggleFilterJunkLead() => filterJunkLead.toggle();
-  void toggleFilterInterested() => filterInterested.toggle();
-  void toggleFilterNotInterested() => filterNotInterested.toggle();
+  void toggleLeadStatusFilter(String status) {
+    if (selectedLeadStatuses.contains(status)) {
+      selectedLeadStatuses.remove(status);
+      return;
+    }
+    selectedLeadStatuses.add(status);
+  }
+
+  void clearLeadStatusFilters() {
+    selectedLeadStatuses.clear();
+    leads.refresh();
+  }
 
   void applyFilter() {
     // trigger rebuilds or refresh if needed. Currently computing via getter.

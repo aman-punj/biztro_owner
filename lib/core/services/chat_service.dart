@@ -1,6 +1,7 @@
 ﻿import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'package:bizrato_owner/core/network/app_errors.dart';
 import 'package:bizrato_owner/core/services/notification_service.dart';
 import 'package:bizrato_owner/features/messages/data/models/chat_models.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ enum ConnectionStatus { connecting, connected, disconnected, error }
 class ChatService extends GetxService {
   WebSocketChannel? _webSocket;
   int _reconnectAttempts = 0;
-  static const _maxReconnectAttempts = 5;
+  static const _maxReconnectExponent = 4;
   Timer? _reconnectTimer;
   Timer? _keepAliveTimer;
 
@@ -33,6 +34,10 @@ class ChatService extends GetxService {
 
   final _connectionStatusController = StreamController<ConnectionStatus>.broadcast();
   Stream<ConnectionStatus> get onConnectionStatusChanged => _connectionStatusController.stream;
+  final _connectionMessageController = StreamController<String>.broadcast();
+  Stream<String> get onConnectionMessageChanged => _connectionMessageController.stream;
+  String _lastConnectionMessage = '';
+  String get lastConnectionMessage => _lastConnectionMessage;
 
   static const _baseUrl = 'https://merchant.bizrato.com/signalr';
   // static const _hubName = 'chatHub';
@@ -40,7 +45,7 @@ class ChatService extends GetxService {
 
   Future<ChatService> init({required String businessId}) async {
     _businessId = businessId;
-    await _connect();
+    unawaited(_connect());
     return this;
   }
 
@@ -127,6 +132,7 @@ class ChatService extends GetxService {
       dev.log('Start response: ${startRes.body}', name: 'ChatService');
 
       _reconnectAttempts = 0;
+      _emitConnectionMessage('');
       _emitStatus(ConnectionStatus.connected);
       dev.log('SignalR connected ✅', name: 'ChatService');
 
@@ -136,8 +142,10 @@ class ChatService extends GetxService {
       }
 
       _startKeepAlive();
-    } catch (e, st) {
-      dev.log('Connect failed: $e\n$st', name: 'ChatService');
+    } catch (e) {
+      final safeMessage = AppErrors.messageFromException(e);
+      _emitConnectionMessage(safeMessage);
+      dev.log('Connect failed: $safeMessage', name: 'ChatService');
       _webSocket = null;
       _emitStatus(ConnectionStatus.error);
       _scheduleReconnect();
@@ -372,12 +380,11 @@ class ChatService extends GetxService {
   }
 
   void _scheduleReconnect() {
-    if (_reconnectAttempts >= _maxReconnectAttempts) {
-      _emitStatus(ConnectionStatus.error);
-      return;
-    }
     _reconnectTimer?.cancel();
-    final delay = Duration(seconds: 2 * (1 << _reconnectAttempts));
+    final exponent = _reconnectAttempts <= _maxReconnectExponent
+        ? _reconnectAttempts
+        : _maxReconnectExponent;
+    final delay = Duration(seconds: 2 * (1 << exponent));
     _reconnectAttempts++;
     dev.log(
       'Reconnecting in ${delay.inSeconds}s (attempt $_reconnectAttempts)',
@@ -392,6 +399,13 @@ class ChatService extends GetxService {
     }
   }
 
+  void _emitConnectionMessage(String message) {
+    _lastConnectionMessage = message;
+    if (!_connectionMessageController.isClosed) {
+      _connectionMessageController.add(message);
+    }
+  }
+
   // ─────────────────────────────────────────────
   // Cleanup
   // ─────────────────────────────────────────────
@@ -402,6 +416,7 @@ class ChatService extends GetxService {
     try { _webSocket?.sink.close(); } catch (_) {}
     _webSocket = null;
     _connectionToken = null;
+    _emitConnectionMessage('');
     _emitStatus(ConnectionStatus.disconnected);
   }
 
@@ -411,6 +426,7 @@ class ChatService extends GetxService {
     if (!_messageController.isClosed) _messageController.close();
     if (!_notificationController.isClosed) _notificationController.close();
     if (!_connectionStatusController.isClosed) _connectionStatusController.close();
+    if (!_connectionMessageController.isClosed) _connectionMessageController.close();
     super.onClose();
   }
 }

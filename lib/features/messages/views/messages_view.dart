@@ -45,20 +45,20 @@ class MessagesView extends GetView<MessagesController> {
           ],
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: CircleAvatar(
-              radius: 14.r,
-              backgroundColor: AppTokens.white.withValues(alpha: 0.2),
-              child: Icon(
-                Icons.person_outline,
-                size: 16.sp,
-                color: AppTokens.white,
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: CircleAvatar(
+        //       radius: 14.r,
+        //       backgroundColor: AppTokens.white.withValues(alpha: 0.2),
+        //       child: Icon(
+        //         Icons.person_outline,
+        //         size: 16.sp,
+        //         color: AppTokens.white,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: Column(
         children: [

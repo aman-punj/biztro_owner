@@ -4,7 +4,6 @@ import 'package:bizrato_owner/features/course/data/models/course_model.dart';
 import 'package:bizrato_owner/features/course/data/repositories/course_repository.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class CourseController extends GetxController {
   CourseController({required this.repository});
@@ -74,20 +73,61 @@ class CourseController extends GetxController {
     _toastService.error(response.message);
   }
 
-  Future<void> openYoutubeVideo(String url) async {
+  void openYoutubeVideo({
+    required String url,
+    required String title,
+  }) {
     final sanitizedUrl = url.trim();
     if (sanitizedUrl.isEmpty) {
       _toastService.error('Video link is unavailable.');
       return;
     }
 
-    final opened = await launchUrlString(
-      sanitizedUrl,
-      mode: LaunchMode.externalApplication,
-    );
-
-    if (!opened) {
-      _toastService.error('Unable to open the video link.');
+    final videoId = _extractYoutubeVideoId(sanitizedUrl);
+    if (videoId == null || videoId.isEmpty) {
+      _toastService.error('Invalid YouTube link.');
+      return;
     }
+
+    Get.toNamed(
+      AppRoutes.courseVideoPlayer,
+      arguments: <String, String>{
+        'videoId': videoId,
+        'title': title.trim().isEmpty ? 'Video Lecture' : title.trim(),
+      },
+    );
+  }
+
+  String? _extractYoutubeVideoId(String inputUrl) {
+    final uri = Uri.tryParse(inputUrl);
+    if (uri == null) return null;
+
+    String? videoId;
+    final host = uri.host.toLowerCase();
+
+    if (host.contains('youtu.be')) {
+      final path = uri.pathSegments;
+      if (path.isNotEmpty) {
+        videoId = path.first;
+      }
+    } else if (host.contains('youtube.com')) {
+      final queryId = uri.queryParameters['v'];
+      if (queryId != null && queryId.isNotEmpty) {
+        videoId = queryId;
+      } else {
+        final segments = uri.pathSegments;
+        final embedIndex = segments.indexOf('embed');
+        if (embedIndex != -1 && embedIndex + 1 < segments.length) {
+          videoId = segments[embedIndex + 1];
+        } else {
+          final shortsIndex = segments.indexOf('shorts');
+          if (shortsIndex != -1 && shortsIndex + 1 < segments.length) {
+            videoId = segments[shortsIndex + 1];
+          }
+        }
+      }
+    }
+
+    return videoId;
   }
 }

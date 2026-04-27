@@ -15,6 +15,8 @@ class BusinessEditHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool showSubtitle = subtitle.trim().isNotEmpty;
+
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -25,6 +27,7 @@ class BusinessEditHeader extends StatelessWidget {
         ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 40.w,
@@ -39,30 +42,52 @@ class BusinessEditHeader extends StatelessWidget {
               size: 20.sp,
             ),
           ),
+
           SizedBox(width: 12.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Obx(
-                () => Text(
-                  businessName.value.isNotEmpty
-                      ? businessName.value
-                      : 'Business Name',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppTokens.textPrimary,
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Obx(
+                      () => FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 260.w,
+                      ),
+                      child: Text(
+                        businessName.value.trim().isNotEmpty
+                            ? businessName.value
+                            : 'Business Name',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppTokens.textPrimary,
+                          height: 1.3,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: AppTokens.brandPrimary,
-                ),
-              ),
-            ],
+
+                if (showSubtitle) ...[
+                  SizedBox(height: 4.h),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      color: AppTokens.brandPrimary,
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
       ),

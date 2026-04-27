@@ -26,6 +26,7 @@ import 'package:bizrato_owner/features/trusted_shield/views/trusted_shield_view.
 import 'package:bizrato_owner/features/course/bindings/course_binding.dart';
 import 'package:bizrato_owner/features/course/views/course_details_view.dart';
 import 'package:bizrato_owner/features/course/views/course_list_view.dart';
+import 'package:bizrato_owner/features/course/views/course_video_player_view.dart';
 import 'package:bizrato_owner/features/festival/bindings/festival_binding.dart';
 import 'package:bizrato_owner/features/festival/views/festival_details_view.dart';
 import 'package:bizrato_owner/features/festival/views/festival_list_view.dart';
@@ -123,6 +124,10 @@ class AppPages {
     GetPage<CourseDetailsView>(
       name: AppRoutes.courseDetails,
       page: CourseDetailsView.new,
+    ),
+    GetPage<CourseVideoPlayerView>(
+      name: AppRoutes.courseVideoPlayer,
+      page: CourseVideoPlayerView.new,
     ),
     GetPage<LeadsView>(
       name: AppRoutes.leads,

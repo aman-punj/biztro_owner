@@ -129,7 +129,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
 
                     return BusinessEditHeader(
                       businessName: data.displayName.obs,
-                      subtitle: 'Basic Info & Services',
+                      subtitle: '',
                     );
                   },
                 ),

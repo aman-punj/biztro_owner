@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/secondary_button.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/leads/controllers/leads_controller.dart';
 import 'package:bizrato_owner/features/leads/widgets/lead_card.dart';
@@ -26,7 +27,7 @@ class LeadsView extends GetView<LeadsController> {
 
   Widget _buildSearchBar() {
     return Positioned(
-      top: -24.h, // Adjusted to overlap the header border natively if AppPageShell structure permits, otherwise within content shell
+      top: 14.h,
       left: 16.w,
       right: 16.w,
       child: Container(
@@ -178,31 +179,34 @@ class LeadsView extends GetView<LeadsController> {
               ),
             ),
             SizedBox(height: 16.h),
-            // Obx for filter switches
-            Obx(() => _buildFilterOption(
-              'Like by Date',
-              controller.filterLikeByDate.value,
-              controller.toggleFilterLikeByDate,
-            )),
-            Obx(() => _buildFilterOption(
-              'Junk Lead',
-              controller.filterJunkLead.value,
-              controller.toggleFilterJunkLead,
-            )),
-            Obx(() => _buildFilterOption(
-              'Interested',
-              controller.filterInterested.value,
-              controller.toggleFilterInterested,
-            )),
-            Obx(() => _buildFilterOption(
-              'Not Interested',
-              controller.filterNotInterested.value,
-              controller.toggleFilterNotInterested,
-            )),
+            Obx(
+              () => Column(
+                children: LeadsController.leadStatusFilters.map((status) {
+                  return _buildFilterOption(
+                    status,
+                    controller.selectedLeadStatuses.contains(status),
+                    () => controller.toggleLeadStatusFilter(status),
+                  );
+                }).toList(),
+              ),
+            ),
             SizedBox(height: 24.h),
-            PrimaryButton(
-              label: 'Apply',
-              onPressed: controller.applyFilter,
+            Row(
+              children: [
+                Expanded(
+                  child: SecondaryButton(
+                    label: 'Clear',
+                    onPressed: controller.clearLeadStatusFilters,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: PrimaryButton(
+                    label: 'Apply',
+                    onPressed: controller.applyFilter,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
