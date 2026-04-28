@@ -1,5 +1,6 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
+import 'package:bizrato_owner/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,11 +11,12 @@ class DashboardDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DashboardController controller = Get.find<DashboardController>();
     return Drawer(
       backgroundColor: AppTokens.white,
       child: Column(
         children: [
-          _buildHeader(),
+          _buildHeader(controller),
           Expanded(
             child: ListView(
               padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -130,24 +132,26 @@ class DashboardDrawer extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 24.h, top: 10.h),
-            child: _DrawerItem(
-              icon: Icons.logout,
-              text: 'Sign Out',
-              textColor: AppTokens.error,
-              iconColor: AppTokens.error,
-              onTap: () async {
-                await Get.find<LogoutService>().logout();
-              },
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 24.h, top: 10.h),
+              child: _DrawerItem(
+                icon: Icons.logout,
+                text: 'Sign Out',
+                textColor: AppTokens.error,
+                iconColor: AppTokens.error,
+                onTap: () async {
+                  await Get.find<LogoutService>().logout();
+                },
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(DashboardController controller) {
     return Container(
       padding: EdgeInsets.fromLTRB(20.w, 54.h, 20.w, 24.h),
       decoration: const BoxDecoration(
@@ -155,35 +159,53 @@ class DashboardDrawer extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 26.r,
-            backgroundImage: const NetworkImage(
-              'https://i.pravatar.cc/150?img=11',
-            ),
-            backgroundColor: AppTokens.white.withValues(alpha: 0.2),
-          ),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Singh Brother's",
+          Obx(
+            () {
+              final name = controller.businessName.value.trim();
+              final initial =
+                  name.isNotEmpty ? name.substring(0, 1).toUpperCase() : 'B';
+              return CircleAvatar(
+                radius: 26.r,
+                backgroundColor: AppTokens.white.withValues(alpha: 0.2),
+                child: Text(
+                  initial,
                   style: TextStyle(
                     color: AppTokens.white,
-                    fontSize: 16.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: 4.h),
-                Text(
-                  'Business Partner',
-                  style: TextStyle(
-                    color: AppTokens.white.withValues(alpha: 0.9),
-                    fontSize: 10.sp,
-                  ),
-                ),
-              ],
+              );
+            },
+          ),
+          SizedBox(width: 14.w),
+          Expanded(
+            child: Obx(
+              () {
+                final businessName = controller.businessName.value.trim();
+                final businessType = controller.businessType.value.trim();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      businessName.isNotEmpty ? businessName : 'Business',
+                      style: TextStyle(
+                        color: AppTokens.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      businessType.isNotEmpty ? businessType : 'Business Partner',
+                      style: TextStyle(
+                        color: AppTokens.white.withValues(alpha: 0.9),
+                        fontSize: 10.sp,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],

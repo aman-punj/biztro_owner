@@ -40,16 +40,14 @@ class AppDependencies {
       permanent: true,
     );
 
-    // Initialize ChatService with business ID if user is logged in
-    if (authStorage.businessId != null && authStorage.businessId!.isNotEmpty) {
-      print('Initializing ChatService with business ID: ${authStorage.businessId}');
+    // Initialize ChatService if user is logged in and has a business ID
+    if (authStorage.isLoggedIn &&
+        authStorage.businessId != null &&
+        authStorage.businessId!.isNotEmpty) {
+      print(
+          'Initializing ChatService with business ID: ${authStorage.businessId}');
       await Get.putAsync<ChatService>(
         () => ChatService().init(businessId: authStorage.businessId!),
-        permanent: true,
-      );
-    } else {
-      await Get.putAsync<ChatService>(
-        () => ChatService().init(businessId: 'temp'),
         permanent: true,
       );
     }

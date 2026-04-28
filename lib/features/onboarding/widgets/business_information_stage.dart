@@ -184,7 +184,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
               children: [
                 AppTextField(
                   controller: _searchController,
-                  title: 'SEARCH YOUR BUSINESS CATEGORY',
+                  title: 'Enter your category name',
                   hintText: 'e.g. Sweets, Restaurant...',
                   readOnly: controller.isCategoryRestored.value,
                   prefixIcon: Icon(

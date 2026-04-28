@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
+import 'package:bizrato_owner/core/services/chat_service.dart';
+import 'package:bizrato_owner/core/services/notification_service.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
@@ -451,13 +455,19 @@ class OnboardingController extends GetxController {
       return;
     }
 
+    final estbYear = page2EstbYear.value.trim();
+    if (estbYear.isNotEmpty && estbYear.length != 4) {
+      _notifyError('Establishment year must be exactly 4 digits.');
+      return;
+    }
+
     final request = SaveServiceFacilitiesRequest(
       merchantId: merchantId,
       categoryId: data.categoryId,
       subcategoryId: data.subCategoryId,
       website: page2Website.value.trim(),
       famousFor: page2FamousFor.value.trim(),
-      estbYear: page2EstbYear.value.trim(),
+      estbYear: estbYear,
       businessEmail: page2BusinessEmail.value.trim().isEmpty
           ? null
           : page2BusinessEmail.value.trim(),
@@ -782,6 +792,20 @@ class OnboardingController extends GetxController {
       }
 
       await _authStorage.saveProfileStep(AuthStorage.completedProfileStep);
+      
+      // Initialize services after completing onboarding
+      if (Get.isRegistered<NotificationService>()) {
+        unawaited(Get.find<NotificationService>().setup());
+      }
+      
+      final businessId = p3BusinessId.value.trim();
+      if (businessId.isNotEmpty && !Get.isRegistered<ChatService>()) {
+        await Get.putAsync<ChatService>(
+          () => ChatService().init(businessId: businessId),
+          permanent: true,
+        );
+      }
+
       Get.offAllNamed(AppRoutes.dashboard);
     } finally {
       isSavingContact.value = false;

@@ -31,7 +31,7 @@ class BusinessInsightsSection extends GetView<DashboardController> {
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: Text('Details', style: TextStyle(fontSize: 11.sp)),
+              child: Text('', style: TextStyle(fontSize: 11.sp)),
             ),
           ],
         ),

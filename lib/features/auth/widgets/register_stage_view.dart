@@ -1,4 +1,4 @@
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/theme/dimensions.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
@@ -84,12 +84,12 @@ class RegisterStageView extends GetView<AuthController> {
               TextSpan(text: 'By signing up, I agree to the '),
               TextSpan(
                 text: 'Terms of\nService',
-                style: TextStyle(color: AppColors.primary),
+                style: TextStyle(color: AppTokens.brandPrimary),
               ),
               TextSpan(text: ' and '),
               TextSpan(
                 text: 'Privacy Policy.',
-                style: TextStyle(color: AppColors.primary),
+                style: TextStyle(color: AppTokens.brandPrimary),
               ),
             ],
           ),
@@ -111,7 +111,7 @@ class RegisterStageView extends GetView<AuthController> {
                   controller.formError.value,
                   style: TextStyle(
                     fontSize: 11.sp,
-                    color: Colors.redAccent,
+                    color: AppTokens.error,
                   ),
                 ),
         ),

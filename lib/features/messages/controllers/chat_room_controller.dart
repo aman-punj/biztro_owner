@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'package:bizrato_owner/core/app_toast/app_notification.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_type.dart';
+import 'package:bizrato_owner/core/network/app_errors.dart';
 import 'package:bizrato_owner/core/services/chat_service.dart';
 import 'package:bizrato_owner/features/messages/data/models/chat_models.dart';
 import 'package:bizrato_owner/features/messages/data/repositories/chat_repository.dart';
@@ -229,7 +230,7 @@ class ChatRoomController extends GetxController {
     } catch (e) {
       // Remove optimistic message on failure
       messages.removeWhere((m) => m.id == optimistic.id);
-      _showError('Failed to send: ${e.toString()}');
+      _showError(AppErrors.messageFromException(e));
       dev.log('Send error: $e', name: 'ChatRoomController');
     } finally {
       isSendingMessage.value = false;

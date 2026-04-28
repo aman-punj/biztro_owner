@@ -3,6 +3,7 @@ import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
+import 'package:bizrato_owner/core/widgets/year_picker_dialog.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
@@ -209,11 +210,21 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                 AppTextField(
                   controller: _estbYearController,
                   title: 'Establishment Year',
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  onChanged: (value) => controller.page2EstbYear.value = value,
+                  readOnly: true,
+                  onTap: () async {
+                    final int currentYear = DateTime.now().year;
+                    final int? pickedYear = await showAppYearPicker(
+                      context: context,
+                      initialYear: int.tryParse(_estbYearController.text) ??
+                          currentYear,
+                      firstYear: 1900,
+                      lastYear: currentYear + 1,
+                    );
+                    if (pickedYear != null) {
+                      _estbYearController.text = pickedYear.toString();
+                      controller.page2EstbYear.value = pickedYear.toString();
+                    }
+                  },
                 ),
                 // SizedBox(height: 12.h),
                 // AppTextField(

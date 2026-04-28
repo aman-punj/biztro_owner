@@ -46,6 +46,23 @@ class BusinessCredentialsSection extends GetView<TrustedShieldController> {
         AppTextField(
           title: 'GST Number',
           controller: controller.gstNumberController,
+          maxLength: 15,
+          textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.characters,
+          keyboardType: TextInputType.text,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(15),
+          ],
+          onChanged: (value) {
+            final upperValue = value.toUpperCase();
+            if (upperValue != value) {
+              controller.gstNumberController.value =
+                  controller.gstNumberController.value.copyWith(
+                text: upperValue,
+                selection: TextSelection.collapsed(offset: upperValue.length),
+              );
+            }
+          },
         ),
         SizedBox(height: 12.h),
         Obx(
@@ -66,6 +83,23 @@ class BusinessCredentialsSection extends GetView<TrustedShieldController> {
         AppTextField(
           title: 'PAN Number',
           controller: controller.panNumberController,
+          maxLength: 10,
+          textInputAction: TextInputAction.next,
+          textCapitalization: TextCapitalization.characters,
+          keyboardType: TextInputType.text,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(10),
+          ],
+          onChanged: (value) {
+            final upperValue = value.toUpperCase();
+            if (upperValue != value) {
+              controller.panNumberController.value =
+                  controller.panNumberController.value.copyWith(
+                text: upperValue,
+                selection: TextSelection.collapsed(offset: upperValue.length),
+              );
+            }
+          },
         ),
         SizedBox(height: 12.h),
         Obx(

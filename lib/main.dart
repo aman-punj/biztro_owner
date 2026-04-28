@@ -31,6 +31,8 @@ class BiztroOwnerApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.light,
+          defaultTransition: Transition.fadeIn,
+          transitionDuration: const Duration(milliseconds: 280),
           initialRoute: AppRoutes.splash,
           getPages: AppPages.routes,
         );

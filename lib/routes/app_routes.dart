@@ -27,6 +27,7 @@ class AppRoutes {
   static const festivalDetails = '/festival-details';
   static const courses = '/courses';
   static const courseDetails = '/course-details';
+  static const courseVideoPlayer = '/course-video-player';
   static const leads = '/leads';
   static const feedback = '/feedback';
   static const postAdvertisement = '/post-advertisement';

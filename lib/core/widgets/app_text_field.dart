@@ -26,6 +26,8 @@ class AppTextField extends StatelessWidget {
     this.textInputAction,
     this.autofocus = false,
     this.errorText,
+    this.onTap,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   final String title;
@@ -33,6 +35,7 @@ class AppTextField extends StatelessWidget {
   final String? initialValue;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
+  final VoidCallback? onTap;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
@@ -48,6 +51,7 @@ class AppTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final bool autofocus;
   final String? errorText;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +80,8 @@ class AppTextField extends StatelessWidget {
             focusNode: focusNode,
             textInputAction: textInputAction,
             autofocus: autofocus,
+            onTap: onTap,
+            textCapitalization: textCapitalization,
             initialValue: controller == null ? initialValue : null,
             onChanged: onChanged,
             obscureText: obscureText,

@@ -1,6 +1,7 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
+import 'package:bizrato_owner/core/widgets/year_picker_dialog.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_services_controller.dart';
 import 'package:bizrato_owner/features/business_edit/widgets/widgets.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
@@ -128,7 +129,7 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
 
                     return BusinessEditHeader(
                       businessName: data.displayName.obs,
-                      subtitle: 'Basic Info & Services',
+                      subtitle: '',
                     );
                   },
                 ),
@@ -166,12 +167,23 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                       AppTextField(
                         controller: _estbYearController,
                         title: 'Establishment Year',
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        onChanged: (value) =>
-                            controller.page2EstbYear.value = value,
+                        readOnly: true,
+                        onTap: () async {
+                          final int currentYear = DateTime.now().year;
+                          final int? pickedYear = await showAppYearPicker(
+                            context: context,
+                            initialYear:
+                                int.tryParse(_estbYearController.text) ??
+                                    currentYear,
+                            firstYear: 1900,
+                            lastYear: currentYear + 1,
+                          );
+                          if (pickedYear != null) {
+                            _estbYearController.text = pickedYear.toString();
+                            controller.page2EstbYear.value =
+                                pickedYear.toString();
+                          }
+                        },
                       ),
                       SizedBox(height: 12.h),
                       AppTextField(

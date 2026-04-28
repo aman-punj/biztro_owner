@@ -431,17 +431,26 @@ class TrustedShieldController extends GetxController {
       return 'Firm name is required.';
     }
 
-    if (gstNumberController.text.trim().isEmpty) {
+    final gst = gstNumberController.text.trim();
+    if (gst.isEmpty) {
       return 'GST number is required.';
     }
+    if (!RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$')
+        .hasMatch(gst)) {
+      return 'Invalid GST format.';
+    }
 
-    if (panNumberController.text.trim().isEmpty) {
+    final pan = panNumberController.text.trim();
+    if (pan.isEmpty) {
       return 'PAN number is required.';
+    }
+    if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$').hasMatch(pan)) {
+      return 'Invalid PAN format.';
     }
 
     final aadhaar = aadhaarNumberController.text.trim();
     if (!RegExp(r'^\d{12}$').hasMatch(aadhaar)) {
-      return 'Aadhaar number must be 12 digits.';
+      return 'Aadhaar number must be exactly 12 digits.';
     }
 
     if (!_hasDocument(KycDocumentType.gst)) {

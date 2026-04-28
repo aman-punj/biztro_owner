@@ -67,7 +67,10 @@ class CourseDetailsView extends GetView<CourseController> {
                     return CourseVideoTile(
                       title: video.videoTitle,
                       index: index,
-                      onPlay: () => controller.openYoutubeVideo(video.youtubeLink),
+                      onPlay: () => controller.openYoutubeVideo(
+                        url: video.youtubeLink,
+                        title: video.videoTitle,
+                      ),
                     );
                   },
                 ),

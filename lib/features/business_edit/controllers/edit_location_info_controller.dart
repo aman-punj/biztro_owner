@@ -202,16 +202,41 @@ class EditLocationInfoController extends GetxController {
     otherAreaName.value = '';
   }
 
+  String? _validateForm() {
+    if (address.value.trim().isEmpty) {
+      return 'Building / Shop No. is required.';
+    }
+    if (streetNo.value.trim().isEmpty) {
+      return 'Street Name is required.';
+    }
+    if (landmark.value.trim().isEmpty) {
+      return 'Landmark is required.';
+    }
+    if (pincode.value.trim().isEmpty) {
+      return 'Pincode is required.';
+    }
+    if (pincode.value.trim().length != 6) {
+      return 'Pincode must be 6 digits.';
+    }
+    if (stateName.value.trim().isEmpty || cityName.value.trim().isEmpty) {
+      return 'Please enter a valid pincode to fetch City and State.';
+    }
+    if (selectedArea.value == null) {
+      return 'Please select an area.';
+    }
+    return null;
+  }
+
   Future<void> saveAndUpdate() async {
-    final merchantId = _authStorage.merchantId;
-    if (merchantId == null || merchantId == 0) {
-      _toastService.error('Merchant ID is unavailable.');
+    final validationError = _validateForm();
+    if (validationError != null) {
+      _toastService.error(validationError);
       return;
     }
 
-    final hasPincode = pincode.value.trim().isNotEmpty;
-    if (hasPincode && selectedArea.value == null) {
-      _toastService.error('Please select an area.');
+    final merchantId = _authStorage.merchantId;
+    if (merchantId == null || merchantId == 0) {
+      _toastService.error('Merchant ID is unavailable.');
       return;
     }
 

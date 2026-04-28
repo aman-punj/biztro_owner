@@ -20,6 +20,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class NotificationService extends GetxService {
+  static const String _androidNotificationIcon = 'ic_stat_br_notification';
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
   bool _isPermissionRequestInProgress = false;
@@ -33,11 +34,24 @@ class NotificationService extends GetxService {
   );
 
   Future<NotificationService> init() async {
+    final authStorage = Get.find<AuthStorage>();
+    if (authStorage.isLoggedIn) {
+      await setup();
+    }
+    return this;
+  }
+
+  bool _isSetup = false;
+  Future<void> setup() async {
+    if (_isSetup) return;
+
     await _initializeFirebase();
     await _initializeLocalNotifications();
     _setupInteractions();
     _listenToTokenRefresh();
-    return this;
+
+    _isSetup = true;
+    log('NotificationService: Setup completed.');
   }
 
   Future<void> _initializeFirebase() async {
@@ -52,7 +66,7 @@ class NotificationService extends GetxService {
 
   Future<void> _initializeLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@drawable/ic_stat_br_notification');
 
     const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -146,7 +160,7 @@ class NotificationService extends GetxService {
             _channel.id,
             _channel.name,
             channelDescription: _channel.description,
-            icon: android?.smallIcon,
+            icon: android?.smallIcon ?? _androidNotificationIcon,
             importance: Importance.max,
             priority: Priority.high,
           ),
@@ -186,6 +200,7 @@ class NotificationService extends GetxService {
           _channel.id,
           _channel.name,
           channelDescription: _channel.description,
+          icon: _androidNotificationIcon,
           importance: Importance.max,
           priority: Priority.high,
         ),
