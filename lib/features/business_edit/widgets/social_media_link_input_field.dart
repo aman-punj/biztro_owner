@@ -66,10 +66,21 @@ class SocialMediaLinkInputField extends StatelessWidget {
           SizedBox(height: 12.h),
           AppTextField(
             controller: controller,
-            title: 'Link',
+            title: '',
             hintText: hint ?? 'https://...',
             keyboardType: TextInputType.url,
-            onChanged: onChanged,
+            textCapitalization: TextCapitalization.none,
+            onChanged: (value) {
+              final lower = value.toLowerCase();
+              if (lower != value) {
+                controller.value = controller.value.copyWith(
+                  text: lower,
+                  selection: TextSelection.collapsed(offset: lower.length),
+                  composing: TextRange.empty,
+                );
+              }
+              onChanged?.call(lower);
+            },
             errorText: errorText,
             height: 52.h,
           ),

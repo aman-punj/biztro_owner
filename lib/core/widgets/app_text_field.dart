@@ -60,7 +60,7 @@ class AppTextField extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // External Title
-        Padding(
+      if(title.isNotEmpty)  Padding(
           padding: EdgeInsets.only(left: 2.w, bottom: 6.h),
           child: Text(
             title,
@@ -94,7 +94,7 @@ class AppTextField extends StatelessWidget {
             maxLines: maxLines,
             style: TextStyle(
               fontSize: 15.sp,
-              fontWeight: FontWeight.w400, // Medium weight for the value
+              fontWeight: FontWeight.w400,
               color: AppTokens.textPrimary,
             ),
             decoration: InputDecoration(
@@ -113,19 +113,28 @@ class AppTextField extends StatelessWidget {
               prefixIcon: prefixIcon,
               suffixIcon: suffixIcon,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r), // Slightly smaller radius
-                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(
+                  color: AppTokens.textPrimary,
+                  width: 0.8.w,
+                ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
                 borderSide: errorText?.trim().isEmpty ?? true
-                    ? BorderSide.none
+                    ? BorderSide(
+                        color: AppTokens.textPrimary,
+                        width: 0.8.w,
+                      )
                     : BorderSide(color: AppTokens.error, width: 1.w),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
                 borderSide: errorText?.trim().isEmpty ?? true
-                    ? BorderSide.none
+                    ? BorderSide(
+                        color: AppTokens.textPrimary,
+                        width: 0.8.w,
+                      )
                     : BorderSide(color: AppTokens.error, width: 1.w),
               ),
               errorBorder: OutlineInputBorder(

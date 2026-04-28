@@ -93,57 +93,90 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+
     return Container(
       decoration: BoxDecoration(
         color: AppTokens.white,
         boxShadow: [
           BoxShadow(
-            color: AppTokens.surfaceInverse.withValues(alpha: 0.06),
-            offset: const Offset(0, -2),
-            blurRadius: 10,
+            color: AppTokens.surfaceInverse.withValues(alpha: .06),
+            offset: const Offset(0,-2),
+            blurRadius:10,
           ),
         ],
       ),
       child: SafeArea(
-        top: false,
-        child: BottomAppBar(
-          height: 64.h,
-          color: Colors.transparent,
-          elevation: 0,
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 8,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _NavItem(
-                iconPath: AppAssets.navBarHomePage,
-                label: 'Home',
-                selected: _selected == 0,
-                onTap: () => setState(() => _selected = 0),
+        top:false,
+        child: SizedBox(
+          // compact but font-safe
+          height: 66.h + (bottomInset > 0 ? 2.h : 0),
+          child: BottomAppBar(
+            color: Colors.transparent,
+            elevation:0,
+            shape: const CircularNotchedRectangle(),
+            notchMargin:7,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 2.h,
               ),
-              _NavItem(
-                iconPath: AppAssets.navBarMessages,
-                label: 'Analytics',
-                selected: _selected == 1,
-                onTap: () => setState(() => _selected = 1),
+              child: Row(
+                children: [
+
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _NavItem(
+                          width:68.w,
+                          iconPath: AppAssets.navBarHomePage,
+                          label:'Home',
+                          selected:_selected==0,
+                          onTap:()=>setState(()=>_selected=0),
+                        ),
+                        _NavItem(
+                          width:74.w,
+                          iconPath: AppAssets.navBarMessages,
+                          label:'Analytics',
+                          selected:_selected==1,
+                          onTap:()=>setState(()=>_selected=1),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(width:56.w),
+
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _NavItem(
+                          width:74.w,
+                          iconPath: AppAssets.navBarAnalytics,
+                          label:'Messages',
+                          selected:_selected==3,
+                          onTap: (){
+                            setState(()=>_selected=3);
+                            Get.toNamed(AppRoutes.messages);
+                          },
+                        ),
+                        _NavItem(
+                          width:68.w,
+                          iconPath: AppAssets.navBarProfile,
+                          label:'Profile',
+                          selected:_selected==4,
+                          onTap:()=>setState(()=>_selected=4),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                ],
               ),
-              SizedBox(width: 48.w), // FAB space
-              _NavItem(
-                iconPath: AppAssets.navBarAnalytics,
-                label: 'Messages',
-                selected: _selected == 3,
-                onTap: () {
-                  setState(() => _selected = 3);
-                  Get.toNamed(AppRoutes.messages);
-                },
-              ),
-              _NavItem(
-                iconPath: AppAssets.navBarProfile,
-                label: 'Profile',
-                selected: _selected == 4,
-                onTap: () => setState(() => _selected = 4),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -152,51 +185,70 @@ class _DashboardBottomNavState extends State<_DashboardBottomNav> {
 }
 
 class _NavItem extends StatelessWidget {
+  final String iconPath;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final double width;
+
   const _NavItem({
     required this.iconPath,
     required this.label,
     required this.selected,
     required this.onTap,
+    required this.width,
   });
-
-  final String iconPath;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
+    return SizedBox(
+      width: width,
+      child: InkWell(
+        onTap:onTap,
+        borderRadius: BorderRadius.circular(12.r),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 4.h),
+          padding: EdgeInsets.symmetric(
+            vertical:3.h,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+
               AppImage(
                 path: iconPath,
-                width: 20.sp,
-                height: 20.sp,
-                fit: BoxFit.contain,
-                showLoading: false,
-                color:
-                    selected ? AppTokens.brandPrimary : AppTokens.textSecondary,
+                width:18.sp,
+                height:18.sp,
+                fit:BoxFit.contain,
+                showLoading:false,
+                color:selected
+                    ? AppTokens.brandPrimary
+                    : AppTokens.textSecondary,
               ),
-              SizedBox(height: 2.h),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 8.5.sp, // Slightly reduced for safety
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: selected
-                        ? AppTokens.brandPrimary
-                        : AppTokens.textSecondary,
+
+              SizedBox(height:2.h),
+
+              SizedBox(
+                height:14.h,
+                child: MediaQuery(
+                  // prevents device large-font from breaking nav
+                  data: MediaQuery.of(context).copyWith(
+                    textScaler: TextScaler.noScaling,
+                  ),
+                  child: Text(
+                    label,
+                    maxLines:1,
+                    overflow:TextOverflow.clip,
+                    textAlign:TextAlign.center,
+                    style: TextStyle(
+                      fontSize:9.5.sp,
+                      height:1,
+                      fontWeight:selected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                      color:selected
+                          ? AppTokens.brandPrimary
+                          : AppTokens.textSecondary,
+                    ),
                   ),
                 ),
               ),

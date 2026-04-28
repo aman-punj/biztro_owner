@@ -201,15 +201,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                             color: AppTokens.textSecondary,
                           ),
                         )
-                      : controller.isSearching.value
-                          ? SizedBox(
-                              width: 18.w,
-                              height: 18.w,
-                              child: const CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 250),

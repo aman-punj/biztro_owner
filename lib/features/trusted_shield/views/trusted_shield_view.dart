@@ -102,21 +102,22 @@ class _KycStatusBanner extends GetView<TrustedShieldController> {
                   ),
                 ),
                 SizedBox(width: 8.w),
+                FittedBox(child:
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 13.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
                     color: AppTokens.textPrimary,
                   ),
-                ),
+                ),),
               ],
             ),
             SizedBox(height: 8.h),
             Text(
               message,
               style: TextStyle(
-                fontSize: 11.sp,
+                fontSize: 10.sp,
                 color: AppTokens.textSecondary,
               ),
             ),

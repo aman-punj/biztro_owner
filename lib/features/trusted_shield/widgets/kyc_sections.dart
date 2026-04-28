@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/secondary_button.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/trusted_shield/controllers/trusted_shield_controller.dart';
 import 'package:flutter/material.dart';
@@ -209,18 +210,16 @@ class LivenessCheckSection extends GetView<TrustedShieldController> {
           ),
         ),
         SizedBox(height: 12.h),
-        Obx(
-          () => ElevatedButton.icon(
-            onPressed: controller.startLiveIdentityVerification,
-            icon: Icon(Icons.camera_alt_outlined, size: 16.sp),
-            label: Text(
-              controller.liveImageFileName.value.isEmpty
-                  ? 'Start Live Verification'
-                  : 'Retake Live Verification',
-              style: TextStyle(fontSize: 12.sp),
-            ),
-            style: ElevatedButton.styleFrom(
-              minimumSize: Size(double.infinity, 44.h),
+        Center(
+          child: Obx(
+                () => SecondaryButton(
+              onPressed: controller.startLiveIdentityVerification,
+              child: Text(
+                controller.liveImageFileName.value.isEmpty
+                    ? 'Start Scanning'
+                    : 'Retake Live Verification',
+                style: TextStyle(fontSize: 12.sp),
+              ),
             ),
           ),
         ),
@@ -271,7 +270,7 @@ class _KycCard extends StatelessWidget {
                       Text(
                         title,
                         style: TextStyle(
-                          fontSize: 13.sp,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
                           color: AppTokens.textPrimary,
                         ),
@@ -544,6 +543,7 @@ class _LiveImagePreview extends StatelessWidget {
             )
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   Icons.camera_alt_outlined,
@@ -560,12 +560,12 @@ class _LiveImagePreview extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 6.h),
-                Text(
-                  'Bizrato will use this only for live identity verification.',
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                    color: AppTokens.white.withValues(alpha: 0.78),
-                  ),
+                 Text(
+                    'Bizrato will use this only for live identity verification.',
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      color: AppTokens.white.withValues(alpha: 0.78),
+                    ),textAlign: TextAlign.center,
                 ),
               ],
             ),

@@ -152,18 +152,20 @@ class AppPageShell extends StatelessWidget {
       top: Radius.circular(contentTopRadius.r),
     );
 
-    return Container(
+    return SafeArea(
+         top: false,
+        child: Container(
       decoration: BoxDecoration(
         color: contentBackgroundColor,
         borderRadius: borderRadius,
       ),
       child: clipContent
           ? ClipRRect(
-              borderRadius: borderRadius,
-              child: child,
-            )
+        borderRadius: borderRadius,
+        child: child,
+      )
           : child,
-    );
+    ));
   }
 }
 
