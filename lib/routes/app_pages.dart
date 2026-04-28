@@ -1,7 +1,5 @@
 import 'package:bizrato_owner/features/auth/bindings/auth_binding.dart';
 import 'package:bizrato_owner/features/auth/views/login_view.dart';
-import 'package:bizrato_owner/features/dashboard/controllers/dashboard_binding.dart';
-import 'package:bizrato_owner/features/dashboard/views/dashboard_view.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_binding.dart';
 import 'package:bizrato_owner/features/messages/views/messages_view.dart';
 import 'package:bizrato_owner/features/messages/controllers/chat_room_binding.dart';
@@ -36,6 +34,12 @@ import 'package:bizrato_owner/features/leads/bindings/leads_binding.dart';
 import 'package:bizrato_owner/features/leads/views/leads_view.dart';
 import 'package:bizrato_owner/features/advertisement/bindings/post_advertisement_binding.dart';
 import 'package:bizrato_owner/features/advertisement/views/post_advertisement_view.dart';
+import 'package:bizrato_owner/features/main_nav/bindings/main_nav_binding.dart';
+import 'package:bizrato_owner/features/main_nav/views/main_nav_shell_view.dart';
+import 'package:bizrato_owner/features/profile/bindings/profile_binding.dart';
+import 'package:bizrato_owner/features/profile/views/profile_view.dart';
+import 'package:bizrato_owner/features/support/bindings/support_binding.dart';
+import 'package:bizrato_owner/features/support/views/support_view.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
 import 'package:get/get.dart';
 
@@ -57,10 +61,15 @@ class AppPages {
       page: OnboardingView.new,
       binding: OnboardingBinding(),
     ),
-    GetPage<DashboardView>(
+    GetPage<MainNavShellView>(
       name: AppRoutes.dashboard,
-      page: DashboardView.new,
-      binding: DashboardBinding(),
+      page: MainNavShellView.new,
+      binding: MainNavBinding(),
+    ),
+    GetPage<MainNavShellView>(
+      name: AppRoutes.mainNav,
+      page: MainNavShellView.new,
+      binding: MainNavBinding(),
     ),
     GetPage<TrustedShieldView>(
       name: AppRoutes.trustedShield,
@@ -133,6 +142,16 @@ class AppPages {
       name: AppRoutes.leads,
       page: LeadsView.new,
       binding: LeadsBinding(),
+    ),
+    GetPage<SupportView>(
+      name: AppRoutes.support,
+      page: SupportView.new,
+      binding: SupportBinding(),
+    ),
+    GetPage<ProfileView>(
+      name: AppRoutes.profile,
+      page: ProfileView.new,
+      binding: ProfileBinding(),
     ),
     GetPage<FeedbackView>(
       name: AppRoutes.feedback,

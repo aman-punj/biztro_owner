@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/features/main_nav/controllers/main_nav_controller.dart';
 import 'package:bizrato_owner/features/messages/controllers/messages_controller.dart';
 import 'package:bizrato_owner/features/messages/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,13 @@ class MessagesView extends GetView<MessagesController> {
         backgroundColor: AppTokens.brandPrimary,
         elevation: 0,
         leading: IconButton(
-          onPressed: Get.back,
+          onPressed: () {
+            if (Get.isRegistered<MainNavController>()) {
+              Get.find<MainNavController>().changeTab(2);
+              return;
+            }
+            Get.back();
+          },
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             size: 18.sp,

@@ -3,6 +3,7 @@ import 'package:bizrato_owner/core/widgets/secondary_button.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/leads/controllers/leads_controller.dart';
 import 'package:bizrato_owner/features/leads/widgets/lead_card.dart';
+import 'package:bizrato_owner/features/main_nav/controllers/main_nav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,13 @@ class LeadsView extends GetView<LeadsController> {
   Widget build(BuildContext context) {
     return AppPageShell(
       title: 'Recent Leads',
+      onBack: () {
+        if (Get.isRegistered<MainNavController>()) {
+          Get.find<MainNavController>().changeTab(2);
+          return;
+        }
+        Get.back();
+      },
       onFilter: () => _showFilterBottomSheet(context),
       clipContent: false,
       child: Stack(

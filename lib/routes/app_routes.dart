@@ -13,6 +13,7 @@ class AppRoutes {
   static const login = '/login';
   static const onboarding = '/onboarding';
   static const dashboard = '/dashboard';
+  static const mainNav = '/main-nav';
   static const trustedShield = '/trusted-shield';
   static const liveIdentityVerification = '/live-identity-verification';
   static const messages = '/messages';
@@ -29,6 +30,8 @@ class AppRoutes {
   static const courseDetails = '/course-details';
   static const courseVideoPlayer = '/course-video-player';
   static const leads = '/leads';
+  static const support = '/support';
+  static const profile = '/profile';
   static const feedback = '/feedback';
   static const postAdvertisement = '/post-advertisement';
 }
