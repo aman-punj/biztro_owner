@@ -211,7 +211,8 @@ class _DashboardSliverAppBar extends GetView<DashboardController> {
                         borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
-                            color: AppTokens.surfaceInverse.withValues(alpha: 0.08),
+                            color: AppTokens.surfaceInverse
+                                .withValues(alpha: 0.08),
                             blurRadius: 8.r,
                             offset: const Offset(0, 2),
                           ),

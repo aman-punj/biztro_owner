@@ -2,6 +2,7 @@ import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/keyword_input_widget.dart';
+import 'package:bizrato_owner/core/widgets/multi_select_bottom_sheet_field.dart';
 import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
@@ -26,7 +27,6 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
   late final TextEditingController _customKeywordController;
   late final VoidCallback _searchListener;
   Worker? _searchQueryWorker;
-  bool _isAddingCustomKeyword = false;
 
   @override
   void initState() {
@@ -90,23 +90,8 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
     controller.addCustomKeyword(value);
     if (controller.customKeywords.length != previousCount) {
       _customKeywordController.clear();
-      setState(() {
-        _isAddingCustomKeyword = false;
-      });
+      controller.hideCustomKeywordInput();
     }
-  }
-
-  void _showCustomKeywordInput() {
-    setState(() {
-      _isAddingCustomKeyword = true;
-    });
-  }
-
-  void _hideCustomKeywordInput() {
-    _customKeywordController.clear();
-    setState(() {
-      _isAddingCustomKeyword = false;
-    });
   }
 
   @override
@@ -337,6 +322,11 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
             );
           }
 
+          final allKeywordOptions = [
+            ...controller.qualityKeywords.map((k) => MultiSelectOption(id: k.keywordId, label: k.keyword)),
+            ...controller.serviceKeywords.map((k) => MultiSelectOption(id: k.keywordId, label: k.keyword)),
+          ];
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -368,35 +358,12 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                 }
                 return const SizedBox.shrink();
               }),
-              ScrollableOptionList(
-                maxHeight: 220,
-                title: 'SUGGESTED KEYWORDS',
-                titleIconPath: AppAssets.sparkleIcon,
-                items: controller.qualityKeywords
-                    .map(
-                      (k) => ScrollableOptionItem(
-                        id: k.keywordId,
-                        label: k.keyword,
-                      ),
-                    )
-                    .toList(),
-                selectedIds: controller.selectedKeywordIds.toSet(),
-                onTap: (item) => controller.toggleKeyword(item.id),
-              ),
-              SizedBox(height: 12.h),
-              ScrollableOptionList(
-                maxHeight: 220,
-                title: 'SERVICE BASED',
-                items: controller.serviceKeywords
-                    .map(
-                      (k) => ScrollableOptionItem(
-                        id: k.keywordId,
-                        label: k.keyword,
-                      ),
-                    )
-                    .toList(),
-                selectedIds: controller.selectedKeywordIds.toSet(),
-                onTap: (item) => controller.toggleKeyword(item.id),
+              MultiSelectBottomSheetField(
+                title: 'Select business keywords',
+                options: allKeywordOptions,
+                selectedIds: controller.selectedKeywordIds,
+                onSelectionChanged: (ids) => controller.setSelectedKeywords(ids),
+                limit: 5,
               ),
               SizedBox(height: 12.h),
               Text(
@@ -408,7 +375,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                 ),
               ),
               SizedBox(height: 8.h),
-              Column(
+              Obx(() => Column(
                 children: [
                   ...controller.customKeywords.map(
                     (keyword) => EditableKeywordRow(
@@ -420,7 +387,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                       ),
                     ),
                   ),
-                  if (_isAddingCustomKeyword && controller.canAddMoreKeywords)
+                  if (controller.isAddingCustomKeyword.value && controller.canAddMoreKeywords)
                     KeywordInputRow(
                       controller: _customKeywordController,
                       isReadOnly: false,
@@ -437,9 +404,9 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                     Padding(
                       padding: EdgeInsets.only(top: 8.h),
                       child: OutlinedButton(
-                        onPressed: _isAddingCustomKeyword
-                            ? _hideCustomKeywordInput
-                            : _showCustomKeywordInput,
+                        onPressed: controller.isAddingCustomKeyword.value
+                            ? controller.hideCustomKeywordInput
+                            : controller.showCustomKeywordInput,
                         style: OutlinedButton.styleFrom(
                           fixedSize: Size(double.maxFinite, 52.h),
                           side: BorderSide(
@@ -454,7 +421,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              _isAddingCustomKeyword
+                              controller.isAddingCustomKeyword.value
                                   ? Icons.close
                                   : Icons.add_circle_outline,
                               size: 20.sp,
@@ -462,7 +429,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                             ),
                             SizedBox(width: 8.w),
                             Text(
-                              _isAddingCustomKeyword
+                              controller.isAddingCustomKeyword.value
                                   ? 'Cancel'
                                   : 'Add Another Keyword',
                               style: TextStyle(
@@ -487,7 +454,7 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                       ),
                     ),
                 ],
-              ),
+              )),
             ],
           );
         },

@@ -1,5 +1,6 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
 import 'package:bizrato_owner/core/constants/app_assets.dart';
+import 'package:bizrato_owner/core/widgets/multi_select_bottom_sheet_field.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_details_controller.dart';
 import 'package:bizrato_owner/features/business_edit/widgets/widgets.dart';
@@ -25,8 +26,6 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
   late final TextEditingController _customKeywordController;
   late final VoidCallback _searchListener;
   Worker? _searchQueryWorker;
-
-  bool _isAddingCustomKeyword = false;
 
   @override
   void initState() {
@@ -75,25 +74,8 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
 
     if (controller.customKeywords.length != previousCount) {
       _customKeywordController.clear();
-
-      setState(() {
-        _isAddingCustomKeyword = false;
-      });
+      controller.hideCustomKeywordInput();
     }
-  }
-
-  void _showCustomKeywordInput() {
-    setState(() {
-      _isAddingCustomKeyword = true;
-    });
-  }
-
-  void _hideCustomKeywordInput() {
-    _customKeywordController.clear();
-
-    setState(() {
-      _isAddingCustomKeyword = false;
-    });
   }
 
   @override
@@ -296,44 +278,20 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
             );
           }
 
+          final allKeywordOptions = [
+            ...controller.qualityKeywords.map((k) => MultiSelectOption(id: k.keywordId, label: k.keyword)),
+            ...controller.serviceKeywords.map((k) => MultiSelectOption(id: k.keywordId, label: k.keyword)),
+          ];
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ScrollableOptionList(
-                maxHeight: 220,
-                title: 'SUGGESTED KEYWORDS',
-                titleIconPath: AppAssets.sparkleIcon,
-                items: controller.qualityKeywords
-                    .map(
-                      (k) => ScrollableOptionItem(
-                    id: k.keywordId,
-                    label: k.keyword,
-                  ),
-                )
-                    .toList(),
-                selectedIds:
-                controller.selectedKeywordIds.toSet(),
-                onTap: (item) =>
-                    controller.toggleKeyword(item.id),
-              ),
-
-              SizedBox(height: 12.h),
-
-              ScrollableOptionList(
-                maxHeight: 220,
-                title: 'SERVICES BASED',
-                items: controller.serviceKeywords
-                    .map(
-                      (k) => ScrollableOptionItem(
-                    id: k.keywordId,
-                    label: k.keyword,
-                  ),
-                )
-                    .toList(),
-                selectedIds:
-                controller.selectedKeywordIds.toSet(),
-                onTap: (item) =>
-                    controller.toggleKeyword(item.id),
+              MultiSelectBottomSheetField(
+                title: 'Select business keywords',
+                options: allKeywordOptions,
+                selectedIds: controller.selectedKeywordIds,
+                onSelectionChanged: (ids) => controller.setSelectedKeywords(ids),
+                limit: 5,
               ),
 
               SizedBox(height: 12.h),
@@ -362,43 +320,47 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                 ),
               ),
 
-              if (_isAddingCustomKeyword &&
-                  controller.canAddMoreKeywords)
-                KeywordInputRow(
-                  controller: _customKeywordController,
-                  hint: 'Enter keyword...',
-                  actionIcon: Icons.check,
-                  actionBackgroundColor:
-                  AppTokens.brandPrimary.withValues(
-                    alpha: .12,
-                  ),
-                  actionIconColor:
-                  AppTokens.brandPrimary,
-                  onSubmitted: (_) =>
-                      _addCustomKeywordFromField(),
-                  onAction: _addCustomKeywordFromField,
-                ),
+              Obx(() => Column(
+                children: [
+                  if (controller.isAddingCustomKeyword.value &&
+                      controller.canAddMoreKeywords)
+                    KeywordInputRow(
+                      controller: _customKeywordController,
+                      hint: 'Enter keyword...',
+                      actionIcon: Icons.check,
+                      actionBackgroundColor:
+                      AppTokens.brandPrimary.withValues(
+                        alpha: .12,
+                      ),
+                      actionIconColor:
+                      AppTokens.brandPrimary,
+                      onSubmitted: (_) =>
+                          _addCustomKeywordFromField(),
+                      onAction: _addCustomKeywordFromField,
+                    ),
 
-              if (controller.canAddMoreKeywords)
-                Padding(
-                  padding: EdgeInsets.only(top: 8.h),
-                  child: OutlinedButton(
-                    onPressed: _isAddingCustomKeyword
-                        ? _hideCustomKeywordInput
-                        : _showCustomKeywordInput,
-                    style: OutlinedButton.styleFrom(
-                      fixedSize: Size(
-                        double.maxFinite,
-                        52.h,
+                  if (controller.canAddMoreKeywords)
+                    Padding(
+                      padding: EdgeInsets.only(top: 8.h),
+                      child: OutlinedButton(
+                        onPressed: controller.isAddingCustomKeyword.value
+                            ? controller.hideCustomKeywordInput
+                            : controller.showCustomKeywordInput,
+                        style: OutlinedButton.styleFrom(
+                          fixedSize: Size(
+                            double.maxFinite,
+                            52.h,
+                          ),
+                        ),
+                        child: Text(
+                          controller.isAddingCustomKeyword.value
+                              ? 'Cancel'
+                              : 'Add Another Keyword',
+                        ),
                       ),
                     ),
-                    child: Text(
-                      _isAddingCustomKeyword
-                          ? 'Cancel'
-                          : 'Add Another Keyword',
-                    ),
-                  ),
-                ),
+                ],
+              )),
             ],
           );
         },

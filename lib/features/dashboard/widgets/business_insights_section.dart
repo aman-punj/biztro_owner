@@ -83,8 +83,8 @@ class _InsightStatCard extends StatelessWidget {
               child: Center(
                 child: AppImage(
                   path: stat.iconPath,
-                  width: 38.sp,
-                  height: 38.sp,
+                  width: 24.sp,
+                  height: 24.sp,
                   fit: BoxFit.contain,
                   showLoading: false,
                 ),

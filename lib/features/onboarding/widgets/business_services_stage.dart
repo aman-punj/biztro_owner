@@ -1,5 +1,6 @@
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
+import 'package:bizrato_owner/core/widgets/multi_select_bottom_sheet_field.dart';
 import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
 import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
@@ -255,28 +256,38 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
           SizedBox(height: 16.h),
           OnboardingSectionCard(
             title: 'SERVICES OFFERED',
-            child: Obx(
-              () => _buildServiceFacilityContent(
-                items: controller.servicesOfferedList,
-                isLoading: controller.isLoadingFacilities.value,
+            child: Obx(() {
+              if (controller.isLoadingFacilities.value) {
+                return _buildLoadingIndicator();
+              }
+              return MultiSelectBottomSheetField(
+                title: 'Select services offered',
+                options: controller.servicesOfferedList
+                    .map((e) => MultiSelectOption(id: e.id, label: e.name))
+                    .toList(),
                 selectedIds: controller.selectedServiceIds,
-                onTap: controller.toggleService,
-                emptyMessage: 'Services list will be available soon.',
-              ),
-            ),
+                onSelectionChanged: (ids) => controller.setSelectedServices(ids),
+                limit: 5,
+              );
+            }),
           ),
           SizedBox(height: 16.h),
           OnboardingSectionCard(
             title: 'FACILITIES',
-            child: Obx(
-              () => _buildServiceFacilityContent(
-                items: controller.facilitiesList,
-                isLoading: controller.isLoadingFacilities.value,
+            child: Obx(() {
+              if (controller.isLoadingFacilities.value) {
+                return _buildLoadingIndicator();
+              }
+              return MultiSelectBottomSheetField(
+                title: 'Select facilities',
+                options: controller.facilitiesList
+                    .map((e) => MultiSelectOption(id: e.id, label: e.name))
+                    .toList(),
                 selectedIds: controller.selectedFacilityIds,
-                onTap: controller.toggleFacility,
-                emptyMessage: 'Facilities list will be available soon.',
-              ),
-            ),
+                onSelectionChanged: (ids) => controller.setSelectedFacilities(ids),
+                limit: 5,
+              );
+            }),
           ),
           SizedBox(height: 24.h),
           Obx(
@@ -294,48 +305,15 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
     });
   }
 
-  Widget _buildServiceFacilityContent({
-    required List<ServiceFacilityItemModel> items,
-    required bool isLoading,
-    required Set<int> selectedIds,
-    required ValueChanged<int> onTap,
-    required String emptyMessage,
-  }) {
-    if (isLoading) {
-      return SizedBox(
-        height: 96.h,
-        child: Center(
-          child: CircularProgressIndicator(
-            color: AppTokens.brandPrimary,
-            strokeWidth: 2.w,
-          ),
+  Widget _buildLoadingIndicator() {
+    return SizedBox(
+      height: 44.h,
+      child: Center(
+        child: CircularProgressIndicator(
+          color: AppTokens.brandPrimary,
+          strokeWidth: 2.w,
         ),
-      );
-    }
-
-    if (items.isEmpty) {
-      return Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.h),
-        child: Text(
-          emptyMessage,
-          style: TextStyle(
-            fontSize: 12.sp,
-            color: AppTokens.textSecondary,
-          ),
-        ),
-      );
-    }
-
-    return ScrollableOptionList(
-      maxHeight: 220.h,
-      title: emptyMessage == 'Services list will be available soon.'
-          ? 'SERVICES OFFERED'
-          : 'FACILITIES',
-      items: items
-          .map((item) => ScrollableOptionItem(id: item.id, label: item.name))
-          .toList(),
-      selectedIds: selectedIds.toSet(),
-      onTap: (item) => onTap(item.id),
+      ),
     );
   }
 

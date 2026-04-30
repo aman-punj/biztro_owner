@@ -182,7 +182,7 @@ class LeadsView extends GetView<LeadsController> {
                   hintStyle: TextStyle(color: AppTokens.textSecondary, fontSize: 13.sp),
                   prefixIcon: Icon(Icons.search, color: AppTokens.textSecondary, size: 20.sp),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 ),
               ),
             ),

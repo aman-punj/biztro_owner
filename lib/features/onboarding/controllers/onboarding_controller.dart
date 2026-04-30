@@ -55,6 +55,7 @@ class OnboardingController extends GetxController {
   final RxBool isSavingServiceData = false.obs;
   final RxBool isRestoringKeywords = false.obs;
   final RxBool isCategoryRestored = false.obs;
+  final RxBool isAddingCustomKeyword = false.obs;
 
   final Rxn<BusinessServiceResult> businessServiceData =
       Rxn<BusinessServiceResult>();
@@ -193,9 +194,20 @@ class OnboardingController extends GetxController {
     if (selectedKeywordIds.contains(keywordId)) {
       selectedKeywordIds.remove(keywordId);
     } else {
-      selectedKeywordIds.add(keywordId);
+      if (selectedKeywordIds.length < 5) {
+        selectedKeywordIds.add(keywordId);
+      } else {
+        Get.find<AppToastService>().warning('Maximum 5 keywords can be selected.');
+      }
     }
   }
+
+  void setSelectedKeywords(Set<int> ids) {
+    selectedKeywordIds.assignAll(ids);
+  }
+
+  void showCustomKeywordInput() => isAddingCustomKeyword.value = true;
+  void hideCustomKeywordInput() => isAddingCustomKeyword.value = false;
 
   void addCustomKeyword(String value) {
     if (!canAddMoreKeywords) {
@@ -826,16 +838,32 @@ class OnboardingController extends GetxController {
     if (selectedServiceIds.contains(id)) {
       selectedServiceIds.remove(id);
     } else {
-      selectedServiceIds.add(id);
+      if (selectedServiceIds.length < 5) {
+        selectedServiceIds.add(id);
+      } else {
+        Get.find<AppToastService>().warning('Maximum 5 services can be selected.');
+      }
     }
+  }
+
+  void setSelectedServices(Set<int> ids) {
+    selectedServiceIds.assignAll(ids);
   }
 
   void toggleFacility(int id) {
     if (selectedFacilityIds.contains(id)) {
       selectedFacilityIds.remove(id);
     } else {
-      selectedFacilityIds.add(id);
+      if (selectedFacilityIds.length < 5) {
+        selectedFacilityIds.add(id);
+      } else {
+        Get.find<AppToastService>().warning('Maximum 5 facilities can be selected.');
+      }
     }
+  }
+
+  void setSelectedFacilities(Set<int> ids) {
+    selectedFacilityIds.assignAll(ids);
   }
 
   List<SelectedKeyword> _selectedKeywordPayload() {

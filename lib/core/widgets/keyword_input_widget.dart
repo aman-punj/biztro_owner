@@ -40,7 +40,7 @@ class KeywordInputRow extends StatelessWidget {
         children: [
           Expanded(
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: 48.h),
+              constraints: BoxConstraints(minHeight: 44.h),
               child: TextFormField(
                 controller: controller,
                 initialValue: controller == null ? initialValue : null,
@@ -67,7 +67,7 @@ class KeywordInputRow extends StatelessWidget {
                   ),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 14.w,
-                    vertical: 12.h,
+                    vertical: 10.h,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.r),
@@ -89,8 +89,8 @@ class KeywordInputRow extends StatelessWidget {
           GestureDetector(
             onTap: onAction,
             child: Container(
-              width: 48.h,
-              height: 48.h,
+              width: 44.h,
+              height: 44.h,
               decoration: BoxDecoration(
                 color: actionBackgroundColor ??
                     AppColors.error.withValues(alpha: 0.1),

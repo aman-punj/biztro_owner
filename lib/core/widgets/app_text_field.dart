@@ -74,7 +74,7 @@ class AppTextField extends StatelessWidget {
 
         // Input Box
         SizedBox(
-          height: height ?? 48.h, // Reduced height to match screenshot
+          height: height ?? 44.h, // Reduced height to match screenshot
           child: TextFormField(
             controller: controller,
             focusNode: focusNode,

@@ -203,8 +203,8 @@ class ChatRoomView extends GetView<ChatRoomController> {
           // Input Area
           Container(
             padding:
-                EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h).copyWith(
-              bottom: 12.h + MediaQuery.of(context).padding.bottom,
+                EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h).copyWith(
+              bottom: 10.h + MediaQuery.of(context).padding.bottom,
             ),
             decoration: BoxDecoration(
               color: AppTokens.white,
@@ -259,7 +259,7 @@ class ChatRoomView extends GetView<ChatRoomController> {
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 16.w,
-                          vertical: 12.h,
+                          vertical: 10.h,
                         ),
                       ),
                       style: TextStyle(

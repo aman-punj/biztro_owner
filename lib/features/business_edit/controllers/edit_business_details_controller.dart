@@ -36,6 +36,7 @@ class EditBusinessDetailsController extends GetxController {
   final RxBool isLoadingPage = false.obs;
   final RxBool isCategoryRestored = false.obs;
   final RxBool isRestoringKeywords = false.obs;
+  final RxBool isAddingCustomKeyword = false.obs;
 
   String? _lastLoadedCategoryId;
 
@@ -47,6 +48,9 @@ class EditBusinessDetailsController extends GetxController {
     super.onInit();
     loadExistingData();
   }
+
+  void showCustomKeywordInput() => isAddingCustomKeyword.value = true;
+  void hideCustomKeywordInput() => isAddingCustomKeyword.value = false;
 
   @override
   void onClose() {
@@ -197,8 +201,16 @@ class EditBusinessDetailsController extends GetxController {
     if (selectedKeywordIds.contains(keywordId)) {
       selectedKeywordIds.remove(keywordId);
     } else {
-      selectedKeywordIds.add(keywordId);
+      if (selectedKeywordIds.length < 5) {
+        selectedKeywordIds.add(keywordId);
+      } else {
+        _toastService.warning('Maximum 5 keywords can be selected.');
+      }
     }
+  }
+
+  void setSelectedKeywords(Set<int> ids) {
+    selectedKeywordIds.assignAll(ids);
   }
 
   void addCustomKeyword(String value) {
