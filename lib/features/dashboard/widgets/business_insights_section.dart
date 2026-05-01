@@ -46,7 +46,7 @@ class BusinessInsightsSection extends GetView<DashboardController> {
               crossAxisCount: 2,
               crossAxisSpacing: 10.w,
               mainAxisSpacing: 10.h,
-              childAspectRatio: 2.4,
+              childAspectRatio: 2.5,
             ),
             itemBuilder: (context, index) {
               final stat = controller.insightStats[index];
@@ -71,17 +71,17 @@ class _InsightStatCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(7.r),
               decoration: BoxDecoration(
                 color: stat.iconBg,
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Center(
-                child: AppImage(
+                child: Padding(padding: REdgeInsets.all(4),child: AppImage(
                   path: stat.iconPath,
                   width: 24.sp,
                   height: 24.sp,
@@ -89,8 +89,8 @@ class _InsightStatCard extends StatelessWidget {
                   showLoading: false,
                 ),
               ),
-            ),
-            SizedBox(width: 10.w),
+              )),
+            SizedBox(width: 9.w),
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +99,7 @@ class _InsightStatCard extends StatelessWidget {
                   Text(
                     stat.value,
                     style: TextStyle(
-                      fontSize: 15.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w800,
                       color: AppTokens.textPrimary,
                     ),
@@ -108,7 +108,7 @@ class _InsightStatCard extends StatelessWidget {
                     child: Text(
                       stat.label,
                       style: TextStyle(
-                        fontSize: 10.sp,
+                        fontSize: 9.sp,
                         color: AppTokens.textSecondary,
                       ),
                     ),

@@ -49,7 +49,7 @@ class QuickActionsSection extends GetView<DashboardController> {
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: Text('View All', style: TextStyle(fontSize: 11.sp)),
+              child: Text('', style: TextStyle(fontSize: 11.sp)),
             ),
           ],
         ),
@@ -89,8 +89,8 @@ class _QuickActionTile extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 70.w,
-            height: 70.h,
+            width: 60.w,
+            height: 60.h,
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(12.r),
@@ -105,8 +105,8 @@ class _QuickActionTile extends StatelessWidget {
             child: Center(
               child: AppImage(
                 path: iconPath,
-                width: 45.w,
-                height: 45.w,
+                width: 35.w,
+                height: 35.w,
                 fit: BoxFit.contain,
                 showLoading: false,
               ),

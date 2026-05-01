@@ -199,6 +199,7 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
           AppTextField(
             controller: _searchController,
             hintText: 'Search services...',
+            title: 'Services...',
             prefixIcon: Icon(Icons.search, size: 20.sp, color: AppTokens.textSecondary),
             onChanged: (val) => setState(() => _searchQuery = val),
           ),
