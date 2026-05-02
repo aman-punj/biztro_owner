@@ -1,4 +1,5 @@
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
+import 'package:bizrato_owner/core/widgets/app_overlay_loader.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
@@ -154,241 +155,224 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
         );
       }
 
-      return Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-          // TextButton.icon(
-          //   onPressed: controller.previousStage,
-          //   icon: Icon(
-          //     Icons.arrow_back_ios,
-          //     size: 14.sp,
-          //     color: AppTokens.brandPrimary,
-          //   ),
-          //   label: Text(
-          //     'Back',
-          //     style: TextStyle(
-          //       fontSize: 13.sp,
-          //       color: AppTokens.brandPrimary,
-          //     ),
-          //   ),
-          // ),
-          SizedBox(height: 8.h),
-          OnboardingSectionCard(
-            title: 'Personal Information',
-            titleIcon: Icon(
-              Icons.person_outline,
-              size: 16.sp,
-              color: AppTokens.brandPrimary,
-            ),
-            child: Column(
-              children: [
-                AppTextField(
-                  controller: _nameController,
-                  title: 'Full Name',
-                  onChanged: (value) => controller.p3FullName.value = value,
-                ),
-                SizedBox(height: 12.h),
-                AppTextField(
-                  controller: _emailController,
-                  title: 'Email',
-                  onChanged: (value) => controller.p3Email.value = value,
-                ),
-                SizedBox(height: 12.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppTextField(
-                        controller: _mobileController,
-                        title: 'Mobile No.',
-                        keyboardType: TextInputType.phone,
-                        onChanged: (value) => controller.p3Mobile.value = value,
+      final isPincodeLoading = controller.isLoadingAreas.value ||
+          controller.isLoadingLocationDetails.value;
+
+      return AppOverlayLoader(
+        isVisible: isPincodeLoading,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // TextButton.icon(
+            //   onPressed: controller.previousStage,
+            //   icon: Icon(
+            //     Icons.arrow_back_ios,
+            //     size: 14.sp,
+            //     color: AppTokens.brandPrimary,
+            //   ),
+            //   label: Text(
+            //     'Back',
+            //     style: TextStyle(
+            //       fontSize: 13.sp,
+            //       color: AppTokens.brandPrimary,
+            //     ),
+            //   ),
+            // ),
+            SizedBox(height: 8.h),
+            OnboardingSectionCard(
+              title: 'Personal Information',
+              titleIcon: Icon(
+                Icons.person_outline,
+                size: 16.sp,
+                color: AppTokens.brandPrimary,
+              ),
+              child: Column(
+                children: [
+                  AppTextField(
+                    controller: _nameController,
+                    title: 'Full Name',
+                    onChanged: (value) => controller.p3FullName.value = value,
+                  ),
+                  SizedBox(height: 12.h),
+                  AppTextField(
+                    controller: _emailController,
+                    title: 'Email',
+                    onChanged: (value) => controller.p3Email.value = value,
+                  ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                          controller: _mobileController,
+                          title: 'Mobile No.',
+                          keyboardType: TextInputType.phone,
+                          onChanged: (value) =>
+                              controller.p3Mobile.value = value,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: AppTextField(
-                        controller: _whatsAppController,
-                        title: 'WhatsApp No.',
-                        keyboardType: TextInputType.phone,
-                        onChanged: (value) =>
-                            controller.p3WhatsApp.value = value,
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: AppTextField(
+                          controller: _whatsAppController,
+                          title: 'WhatsApp No.',
+                          keyboardType: TextInputType.phone,
+                          onChanged: (value) =>
+                              controller.p3WhatsApp.value = value,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-                AppTextField(
-                  controller: _landlineController,
-                  title: 'Landline (Optional)',
-                  keyboardType: TextInputType.phone,
-                  onChanged: (value) => controller.p3Landline.value = value,
-                ),
-              ],
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  AppTextField(
+                    controller: _landlineController,
+                    title: 'Landline (Optional)',
+                    keyboardType: TextInputType.phone,
+                    onChanged: (value) => controller.p3Landline.value = value,
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 16.h),
-          OnboardingSectionCard(
-            title: 'Business Information',
-            titleIcon: Icon(
-              Icons.business_center_outlined,
-              size: 16.sp,
-              color: AppTokens.brandPrimary,
+            SizedBox(height: 16.h),
+            OnboardingSectionCard(
+              title: 'Business Information',
+              titleIcon: Icon(
+                Icons.business_center_outlined,
+                size: 16.sp,
+                color: AppTokens.brandPrimary,
+              ),
+              child: Column(
+                children: [
+                  AppTextField(
+                    controller: _businessEmailController,
+                    title: 'Business Email',
+                    onChanged: (value) =>
+                        controller.p3BusinessEmail.value = value,
+                  ),
+                  SizedBox(height: 12.h),
+                  AppTextField(
+                    controller: _businessWhatsAppController,
+                    title: 'Business WhatsApp',
+                    keyboardType: TextInputType.phone,
+                    onChanged: (value) =>
+                        controller.p3BusinessWhatsApp.value = value,
+                  ),
+                  SizedBox(height: 12.h),
+                  AppTextField(
+                    controller: _businessLandlineController,
+                    title: 'Business Landline (Optional)',
+                    keyboardType: TextInputType.phone,
+                    onChanged: (value) =>
+                        controller.p3BusinessLandline.value = value,
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              children: [
-                AppTextField(
-                  controller: _businessEmailController,
-                  title: 'Business Email',
-                  onChanged: (value) =>
-                      controller.p3BusinessEmail.value = value,
-                ),
-                SizedBox(height: 12.h),
-                AppTextField(
-                  controller: _businessWhatsAppController,
-                  title: 'Business WhatsApp',
-                  keyboardType: TextInputType.phone,
-                  onChanged: (value) =>
-                      controller.p3BusinessWhatsApp.value = value,
-                ),
-                SizedBox(height: 12.h),
-                AppTextField(
-                  controller: _businessLandlineController,
-                  title: 'Business Landline (Optional)',
-                  keyboardType: TextInputType.phone,
-                  onChanged: (value) =>
-                      controller.p3BusinessLandline.value = value,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16.h),
-          OnboardingSectionCard(
-            title: 'Location Information',
-            titleIcon: Icon(
-              Icons.location_on_outlined,
-              size: 16.sp,
-              color: AppTokens.brandPrimary,
-            ),
-            child: Column(
-              children: [
-                AppTextField(
-                  controller: _addressController,
-                  title: 'Building/Shop No.',
-                  onChanged: (value) => controller.p3Address.value = value,
-                ),
-                SizedBox(height: 12.h),
-                AppTextField(
-                  controller: _streetController,
-                  title: 'Street Name',
-                  onChanged: (value) => controller.p3StreetNo.value = value,
-                ),
-                SizedBox(height: 12.h),
-                AppTextField(
-                  controller: _landmarkController,
-                  title: 'Landmark',
-                  onChanged: (value) => controller.p3Landmark.value = value,
-                ),
-                SizedBox(height: 12.h),
-                AppTextField(
-                  controller: _pincodeController,
-                  title: 'Pincode',
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    controller.onPincodeChanged(value);
-                  },
-                ),
-                SizedBox(height: 12.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppTextField(
-                        controller: _stateController,
-                        title: 'State',
-                        readOnly: true,
+            SizedBox(height: 16.h),
+            OnboardingSectionCard(
+              title: 'Location Information',
+              titleIcon: Icon(
+                Icons.location_on_outlined,
+                size: 16.sp,
+                color: AppTokens.brandPrimary,
+              ),
+              child: Column(
+                children: [
+                  AppTextField(
+                    controller: _addressController,
+                    title: 'Building/Shop No.',
+                    onChanged: (value) => controller.p3Address.value = value,
+                  ),
+                  SizedBox(height: 12.h),
+                  AppTextField(
+                    controller: _streetController,
+                    title: 'Street Name',
+                    onChanged: (value) => controller.p3StreetNo.value = value,
+                  ),
+                  SizedBox(height: 12.h),
+                  AppTextField(
+                    controller: _landmarkController,
+                    title: 'Landmark',
+                    onChanged: (value) => controller.p3Landmark.value = value,
+                  ),
+                  SizedBox(height: 12.h),
+                  AppTextField(
+                    controller: _pincodeController,
+                    title: 'Pincode',
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      controller.onPincodeChanged(value);
+                    },
+                  ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                          controller: _stateController,
+                          title: 'State',
+                          readOnly: true,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: AppTextField(
-                        controller: _cityController,
-                        title: 'City',
-                        readOnly: true,
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: AppTextField(
+                          controller: _cityController,
+                          title: 'City',
+                          readOnly: true,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h),
-                GestureDetector(
-                  onTap: _showAreaPicker,
-                  child: AbsorbPointer(
-                    child: Obx(
-                      () => AppTextField(
-                        controller: _areaController,
-                        title: controller.p3AreaList.isEmpty
-                            ? 'Enter pincode first'
-                            : 'Select Area',
-                        readOnly: true,
-                        suffixIcon: Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 20.sp,
-                          color: AppTokens.textSecondary,
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  GestureDetector(
+                    onTap: _showAreaPicker,
+                    child: AbsorbPointer(
+                      child: Obx(
+                        () => AppTextField(
+                          controller: _areaController,
+                          title: controller.p3AreaList.isEmpty
+                              ? 'Enter pincode first'
+                              : 'Select Area',
+                          readOnly: true,
+                          suffixIcon: Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 20.sp,
+                            color: AppTokens.textSecondary,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Obx(
-                  () => controller.isOtherAreaSelected
-                      ? Padding(
-                          padding: EdgeInsets.only(top: 12.h),
-                          child: AppTextField(
-                            controller: _otherAreaController,
-                            title: 'Enter Area Name',
-                            onChanged: (value) =>
-                                controller.p3OtherAreaName.value = value,
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 24.h),
-          Obx(
-            () => PrimaryButton(
-              label: 'SAVE & CONTINUE',
-              isLoading: controller.isSavingContact.value,
-              onPressed: controller.saveContactAndFinish,
-            ),
-          ),
-          SizedBox(height: 16.h),
-          const AuthFooterText(),
-          SizedBox(height: 12.h),
-            ],
-          ),
-          Obx(
-            () {
-              final isLoading = controller.isLoadingAreas.value ||
-                  controller.isLoadingLocationDetails.value;
-              if (!isLoading) {
-                return const SizedBox.shrink();
-              }
-
-              return Positioned.fill(
-                child: Container(
-                  color: AppTokens.white.withValues(alpha: 0.75),
-                  alignment: Alignment.center,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.w,
-                    color: AppTokens.brandPrimary,
+                  Obx(
+                    () => controller.isOtherAreaSelected
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 12.h),
+                            child: AppTextField(
+                              controller: _otherAreaController,
+                              title: 'Enter Area Name',
+                              onChanged: (value) =>
+                                  controller.p3OtherAreaName.value = value,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
-                ),
-              );
-            },
-          ),
-        ],
+                ],
+              ),
+            ),
+            SizedBox(height: 24.h),
+            Obx(
+              () => PrimaryButton(
+                label: 'SAVE & CONTINUE',
+                isLoading: controller.isSavingContact.value,
+                onPressed: controller.saveContactAndFinish,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            const AuthFooterText(),
+            SizedBox(height: 12.h),
+          ],
+        ),
       );
     });
   }
