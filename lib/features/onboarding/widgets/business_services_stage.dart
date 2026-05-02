@@ -268,6 +268,8 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                 selectionLimit: null,
                 showSelectionCount: false,
                 hint: 'Tap to choose services',
+                searchHint: 'Search services...',
+                searchLabel: 'Services',
               );
             }),
           ),
@@ -289,6 +291,8 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                 selectionLimit: null,
                 showSelectionCount: false,
                 hint: 'Tap to choose facilities',
+                searchHint: 'Search facilities...',
+                searchLabel: 'Facilities',
               );
             }),
           ),

@@ -1,5 +1,4 @@
 import 'package:bizrato_owner/core/theme/theme.dart';
-import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/widgets/multi_select_bottom_sheet_field.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_details_controller.dart';
@@ -220,6 +219,8 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                   onSelectionChanged: (ids) =>
                       controller.setSelectedKeywords(ids),
                   selectionLimit: null,
+                  searchHint: 'Search keywords...',
+                  searchLabel: 'Keywords',
                 ),
               ),
 

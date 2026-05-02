@@ -1,11 +1,9 @@
-import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/keyword_input_widget.dart';
 import 'package:bizrato_owner/core/widgets/multi_select_bottom_sheet_field.dart';
 import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
-import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/search_result_model.dart';
@@ -288,6 +286,8 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                   onSelectionChanged: (ids) =>
                       controller.setSelectedKeywords(ids),
                   selectionLimit: null,
+                  searchHint: 'Search keywords...',
+                  searchLabel: 'Keywords',
                 ),
               ),
               SizedBox(height: 12.h),

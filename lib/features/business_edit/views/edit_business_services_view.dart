@@ -254,6 +254,8 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                         onSelectionChanged: (ids) =>
                             controller.setSelectedServices(ids),
                         selectionLimit: null,
+                        searchHint: 'Search services...',
+                        searchLabel: 'Services',
                       );
                     },
                   ),
@@ -301,6 +303,8 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                         onSelectionChanged: (ids) =>
                             controller.setSelectedFacilities(ids),
                         selectionLimit: null,
+                        searchHint: 'Search facilities...',
+                        searchLabel: 'Facilities',
                       );
                     },
                   ),

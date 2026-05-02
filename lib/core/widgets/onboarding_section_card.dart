@@ -10,11 +10,13 @@ class OnboardingSectionCard extends StatelessWidget {
     this.title,
     this.subtitle,
     this.titleIcon,
+    this.action,
   });
 
   final String? title;
   final String? subtitle;
   final Widget? titleIcon;
+  final Widget? action;
   final Widget child;
 
   @override
@@ -41,6 +43,10 @@ class OnboardingSectionCard extends StatelessWidget {
                     color: AppTokens.textPrimary,
                   ),
                 ),
+                if (action != null) ...[
+                  const Spacer(),
+                  action!,
+                ],
               ],
             ),
           if (hasSubtitle) ...[

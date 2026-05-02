@@ -707,18 +707,14 @@ class OnboardingController extends GetxController {
     }
 
     if (pincode.length == 6) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      _debouncer(
-        () async {
-          await _loadLocationByPincode(pincode);
-          await _loadAreasByPincode(pincode);
-        },
-        duration: const Duration(milliseconds: 600),
-      );
+      // Trigger immediately for 6 digits
+      await _loadLocationByPincode(pincode);
+      await _loadAreasByPincode(pincode);
     }
   }
 
   Future<void> _loadLocationByPincode(String pincode) async {
+    if (isLoadingLocationDetails.value) return;
     isLoadingLocationDetails.value = true;
     try {
       final response = await onboardingRepository.getLocationByPincode(pincode);
@@ -741,6 +737,7 @@ class OnboardingController extends GetxController {
   }
 
   Future<void> _loadAreasByPincode(String pincode) async {
+    if (isLoadingAreas.value) return;
     isLoadingAreas.value = true;
     try {
       final response = await onboardingRepository.getAreasByPincode(pincode);
@@ -779,6 +776,11 @@ class OnboardingController extends GetxController {
 
     final validationError = OnboardingValidators.validateLocationAndContact(
       fullName: p3FullName.value,
+      email: p3Email.value,
+      mobile: p3Mobile.value,
+      whatsApp: p3WhatsApp.value,
+      businessEmail: p3BusinessEmail.value,
+      businessWhatsApp: p3BusinessWhatsApp.value,
       address: p3Address.value,
       streetNo: p3StreetNo.value,
       landmark: p3Landmark.value,

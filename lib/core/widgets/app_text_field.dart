@@ -28,6 +28,7 @@ class AppTextField extends StatelessWidget {
     this.errorText,
     this.onTap,
     this.textCapitalization = TextCapitalization.none,
+    this.isLoading = false,
   });
 
   final String title;
@@ -52,6 +53,7 @@ class AppTextField extends StatelessWidget {
   final bool autofocus;
   final String? errorText;
   final TextCapitalization textCapitalization;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +113,19 @@ class AppTextField extends StatelessWidget {
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
               prefixIcon: prefixIcon,
-              suffixIcon: suffixIcon,
+              suffixIcon: isLoading
+                  ? Padding(
+                      padding: EdgeInsets.all(12.w),
+                      child: SizedBox(
+                        width: 16.w,
+                        height: 16.w,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.w,
+                          color: AppTokens.brandPrimary,
+                        ),
+                      ),
+                    )
+                  : suffixIcon,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
                 borderSide: BorderSide(

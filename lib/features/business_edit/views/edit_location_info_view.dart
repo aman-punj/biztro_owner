@@ -90,13 +90,11 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return Stack(
-            children: [
-              SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 OnboardingSectionCard(
                   title: 'Location Information',
                   titleIcon: Icon(
@@ -130,6 +128,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                         controller: _pincodeController,
                         title: 'Pincode',
                         keyboardType: TextInputType.number,
+                        isLoading: controller.isLoadingLocationDetails.value,
                         onChanged: controller.onPincodeChanged,
                       ),
                       SizedBox(height: 12.h),
@@ -157,18 +156,30 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                         onTap: _showAreaPicker,
                         child: AbsorbPointer(
                           child: Obx(
-                            () => AppTextField(
-                              controller: _areaController,
-                              title: controller.areaList.isEmpty
-                                  ? 'Enter pincode first'
-                                  : 'Select Area',
-                              readOnly: true,
-                              suffixIcon: Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 20.sp,
-                                color: AppTokens.textSecondary,
-                              ),
-                            ),
+                            () {
+                              final String title;
+                              if (controller.isLoadingAreas.value) {
+                                title = 'Loading areas...';
+                              } else if (controller.pincode.value.length < 6) {
+                                title = 'Enter pincode first';
+                              } else if (controller.areaList.isEmpty) {
+                                title = 'No areas found';
+                              } else {
+                                title = 'Select Area';
+                              }
+
+                              return AppTextField(
+                                controller: _areaController,
+                                title: title,
+                                readOnly: true,
+                                isLoading: controller.isLoadingAreas.value,
+                                suffixIcon: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  size: 20.sp,
+                                  color: AppTokens.textSecondary,
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -196,29 +207,8 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                     onPressed: controller.saveAndUpdate,
                   ),
                 ),
-                  ],
-                ),
-              ),
-              Obx(
-                () {
-                  final isLoading = controller.isLoadingLocationDetails.value ||
-                      controller.isLoadingAreas.value;
-                  if (!isLoading) {
-                    return const SizedBox.shrink();
-                  }
-                  return Positioned.fill(
-                    child: Container(
-                      color: AppTokens.white.withValues(alpha: 0.75),
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.w,
-                        color: AppTokens.brandPrimary,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
@@ -227,6 +217,14 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
 
   void _showAreaPicker() {
     FocusScope.of(context).unfocus();
+    if (controller.isLoadingAreas.value) {
+      Get.snackbar(
+        'Please wait',
+        'Fetching areas for the entered pincode...',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
     if (controller.areaList.isEmpty) {
       return;
     }

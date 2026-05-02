@@ -22,6 +22,8 @@ class MultiSelectBottomSheetField extends StatelessWidget {
     this.hint = 'Select options',
     this.selectionLimit,
     this.showSelectionCount = true,
+    this.searchHint,
+    this.searchLabel,
   });
 
   final String title;
@@ -31,6 +33,8 @@ class MultiSelectBottomSheetField extends StatelessWidget {
   final ValueChanged<Set<int>> onSelectionChanged;
   final int? selectionLimit;
   final bool showSelectionCount;
+  final String? searchHint;
+  final String? searchLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +125,8 @@ class MultiSelectBottomSheetField extends StatelessWidget {
         selectionLimit: selectionLimit,
         showSelectionCount: showSelectionCount,
         onDone: onSelectionChanged,
+        searchHint: searchHint,
+        searchLabel: searchLabel,
       ),
       isScrollControlled: true,
       backgroundColor: AppTokens.white,
@@ -149,6 +155,8 @@ class _BottomSheetContent extends StatefulWidget {
     required this.selectionLimit,
     required this.showSelectionCount,
     required this.onDone,
+    this.searchHint,
+    this.searchLabel,
   });
 
   final String title;
@@ -157,6 +165,8 @@ class _BottomSheetContent extends StatefulWidget {
   final int? selectionLimit;
   final bool showSelectionCount;
   final ValueChanged<Set<int>> onDone;
+  final String? searchHint;
+  final String? searchLabel;
 
   @override
   State<_BottomSheetContent> createState() => _BottomSheetContentState();
@@ -214,8 +224,8 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
           SizedBox(height: 16.h),
           AppTextField(
             controller: _searchController,
-            hintText: 'Search services...',
-            title: 'Services...',
+            hintText: widget.searchHint ?? 'Search...',
+            title: widget.searchLabel ?? 'Search',
             prefixIcon: Icon(Icons.search, size: 20.sp, color: AppTokens.textSecondary),
             onChanged: (val) => setState(() => _searchQuery = val),
           ),

@@ -3,7 +3,6 @@ import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/utils/onboarding_validators.dart';
-import 'package:bizrato_owner/core/utils/debouncer.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/contact_info_model.dart';
@@ -11,7 +10,6 @@ import 'package:bizrato_owner/features/onboarding/data/models/location_details_m
 import 'package:bizrato_owner/features/onboarding/data/models/save_contact_request.dart';
 import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class EditLocationInfoController extends GetxController {
@@ -21,7 +19,6 @@ class EditLocationInfoController extends GetxController {
   final AuthStorage _authStorage = Get.find<AuthStorage>();
   final AppToastService _toastService =
       Get.find<AppToastService>();
-  final Debouncer _debouncer = Debouncer();
 
   final RxBool isLoadingPage = false.obs;
   final RxBool isLoadingLocationDetails = false.obs;
@@ -147,18 +144,14 @@ class EditLocationInfoController extends GetxController {
     }
 
     if (value.length == 6) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      _debouncer(
-        () async {
-          await _loadLocationByPincode(value);
-          await _loadAreasByPincode(value);
-        },
-        duration: const Duration(milliseconds: 600),
-      );
+      // Trigger immediately for 6 digits
+      _loadLocationByPincode(value);
+      _loadAreasByPincode(value);
     }
   }
 
   Future<void> _loadLocationByPincode(String value) async {
+    if (isLoadingLocationDetails.value) return;
     isLoadingLocationDetails.value = true;
     try {
       final response = await repository.getLocationByPincode(value);
@@ -180,6 +173,7 @@ class EditLocationInfoController extends GetxController {
   }
 
   Future<void> _loadAreasByPincode(String value) async {
+    if (isLoadingAreas.value) return;
     isLoadingAreas.value = true;
     try {
       final response = await repository.getAreasByPincode(value);
@@ -210,6 +204,11 @@ class EditLocationInfoController extends GetxController {
   String? _validateForm() {
     return OnboardingValidators.validateLocationAndContact(
       fullName: fullName.value,
+      email: emailId.value,
+      mobile: mobile.value,
+      whatsApp: whatsappNo.value,
+      businessEmail: businessEmailId.value,
+      businessWhatsApp: businessWhatsappNo.value,
       address: address.value,
       streetNo: streetNo.value,
       landmark: landmark.value,
