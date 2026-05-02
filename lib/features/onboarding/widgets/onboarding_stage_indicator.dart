@@ -19,61 +19,57 @@ class OnboardingStageIndicator extends StatelessWidget {
     return Column(
       children: [
         Row(
-          children: List.generate(stages.length * 2 - 1, (i) {
-            if (i.isEven) {
-              final index = i ~/ 2;
+          children: List.generate(stages.length * 2 - 1, (index) {
+            if (index.isEven) {
+              final stageIndex = index ~/ 2;
               return GestureDetector(
-                onTap: () => onStageTap?.call(index),
-                child: _buildStageDot(index),
-              );
-            } else {
-              final lineIndex = i ~/ 2;
-              return Expanded(
-                child: Container(
-                  height: 1.5.h,
-                  color: lineIndex < currentIndex
-                      ? AppTokens.success
-                      : AppTokens.border,
-                ),
+                onTap: () => onStageTap?.call(stageIndex),
+                child: _buildStageDot(stageIndex),
               );
             }
+
+            final connectorIndex = index ~/ 2;
+            return Expanded(
+              child: Container(
+                height: 1.h,
+                color: connectorIndex < currentIndex
+                    ? AppTokens.success
+                    : AppTokens.border,
+              ),
+            );
           }),
         ),
-        SizedBox(height: 6.h),
-        // ── Labels ────────────────────────────────────────────────
-        // Each label is Expanded so it fills space between connectors.
-        // First label aligns left, last aligns right, middle centered —
-        // this keeps them visually over their dots without overflow.
+        SizedBox(height: 4.h),
         Row(
-          children: List.generate(stages.length * 2 - 1, (i) {
-            if (i.isEven) {
-              final index = i ~/ 2;
-              final bool isDone = index < currentIndex;
-              final bool isActive = index == currentIndex;
+          children: List.generate(stages.length * 2 - 1, (index) {
+            if (index.isEven) {
+              final stageIndex = index ~/ 2;
+              final isDone = stageIndex < currentIndex;
+              final isActive = stageIndex == currentIndex;
+
               TextAlign align = TextAlign.center;
-              if (index == 0) align = TextAlign.left;
-              if (index == stages.length - 1) align = TextAlign.right;
+              if (stageIndex == 0) align = TextAlign.left;
+              if (stageIndex == stages.length - 1) align = TextAlign.right;
+
               return Expanded(
                 child: Text(
-                  stages[index],
+                  stages[stageIndex],
                   textAlign: align,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 11.sp,
-                    fontWeight:
-                    isActive ? FontWeight.w600 : FontWeight.w400,
+                    fontSize: 10.sp,
+                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                     color: isActive
                         ? AppTokens.brandPrimary
                         : isDone
-                        ? AppTokens.success
-                        : AppTokens.textSecondary,
+                            ? AppTokens.success
+                            : AppTokens.textSecondary,
                   ),
                 ),
               );
-            } else {
-              return SizedBox(width: 4.w);
             }
+            return SizedBox(width: 4.w);
           }),
         ),
       ],
@@ -81,41 +77,40 @@ class OnboardingStageIndicator extends StatelessWidget {
   }
 
   Widget _buildStageDot(int index) {
-    final bool isActive = index == currentIndex;
-    final bool isDone = index < currentIndex;
+    final isActive = index == currentIndex;
+    final isDone = index < currentIndex;
 
     return Container(
-      width: 32.w,
-      height: 32.w,
+      width: 24.w,
+      height: 24.w,
       decoration: BoxDecoration(
         color: isDone
             ? AppTokens.success
             : isActive
-            ? AppTokens.brandPrimary
-            : AppTokens.surface,
+                ? AppTokens.brandPrimary
+                : AppTokens.surface,
         shape: BoxShape.circle,
         border: Border.all(
           color: isDone
               ? AppTokens.success
               : isActive
-              ? AppTokens.brandPrimary
-              : AppTokens.border,
-          width: 1,
+                  ? AppTokens.brandPrimary
+                  : AppTokens.border,
+          width: 1.w,
         ),
       ),
       child: Center(
         child: isDone
-            ? Icon(Icons.check, size: 14.sp, color: AppTokens.white)
+            ? Icon(Icons.check, size: 12.sp, color: AppTokens.white)
             : Text(
-          '${index + 1}',
-          style: TextStyle(
-            fontSize: 10.sp,
-            fontWeight: FontWeight.w600,
-            color: isActive
-                ? AppTokens.white
-                : AppTokens.textSecondary,
-          ),
-        ),
+                '${index + 1}',
+                style: TextStyle(
+                  fontSize: 9.sp,
+                  fontWeight: FontWeight.w600,
+                  color:
+                      isActive ? AppTokens.white : AppTokens.textSecondary,
+                ),
+              ),
       ),
     );
   }

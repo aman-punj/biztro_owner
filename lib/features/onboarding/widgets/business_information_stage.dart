@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import 'package:bizrato_owner/features/onboarding/widgets/category_search_results_widget.dart';
+
 class BusinessInformationStage extends StatefulWidget {
   const BusinessInformationStage({super.key});
 
@@ -188,15 +190,11 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                         )
                       : const SizedBox.shrink(),
                 ),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  ),
-                  child: _buildSearchResults(),
+                CategorySearchResultsWidget(
+                  searchResults: controller.searchResults,
+                  isSearching: controller.isSearching.value,
+                  onCategoryTap: _handleCategoryTap,
+                  searchQuery: controller.searchQuery.value,
                 ),
               ],
             ),
@@ -228,82 +226,6 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
         const AuthFooterText(),
         SizedBox(height: 10.h),
       ],
-    );
-  }
-
-  Widget _buildSearchResults() {
-    final bool hasResults = controller.searchResults.isNotEmpty;
-    final bool isSearching = controller.isSearching.value;
-    final bool shouldShow = hasResults || isSearching;
-
-    if (!shouldShow) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      key: const ValueKey('search-results'),
-      margin: EdgeInsets.only(top: 8.h),
-      padding: EdgeInsets.symmetric(vertical: 12.h),
-      decoration: BoxDecoration(
-        color: AppTokens.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppTokens.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppTokens.textSecondary.withValues(alpha: 0.1),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          if (isSearching)
-            SizedBox(
-              height: 60.h,
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: AppTokens.brandPrimary,
-                  strokeWidth: 2,
-                ),
-              ),
-            )
-          else
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 220.h),
-              child: controller.searchResults.isEmpty
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      child: Text(
-                        'No categories found for "${controller.searchQuery.value}".',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: AppTokens.textSecondary,
-                        ),
-                      ),
-                    )
-                  : ListView.separated(
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: controller.searchResults.length,
-                      separatorBuilder: (_, __) =>
-                          Divider(color: AppTokens.border),
-                      itemBuilder: (context, index) {
-                        final result = controller.searchResults[index];
-                        return ListTile(
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 4.h),
-                          title: Text(
-                            result.displayName,
-                            style: TextStyle(fontSize: 12.sp),
-                          ),
-                          onTap: () => _handleCategoryTap(result),
-                        );
-                      },
-                    ),
-            ),
-        ],
-      ),
     );
   }
 
@@ -358,12 +280,15 @@ class _BusinessInformationStageState extends State<BusinessInformationStage> {
                 }
                 return const SizedBox.shrink();
               }),
-              MultiSelectBottomSheetField(
-                title: 'Select business keywords',
-                options: allKeywordOptions,
-                selectedIds: controller.selectedKeywordIds,
-                onSelectionChanged: (ids) => controller.setSelectedKeywords(ids),
-                limit: 5,
+              Obx(
+                () => MultiSelectBottomSheetField(
+                  title: 'Select business keywords',
+                  options: allKeywordOptions,
+                  selectedIds: controller.selectedKeywordIds.toSet(),
+                  onSelectionChanged: (ids) =>
+                      controller.setSelectedKeywords(ids),
+                  selectionLimit: null,
+                ),
               ),
               SizedBox(height: 12.h),
               Text(

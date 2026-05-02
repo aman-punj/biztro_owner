@@ -16,6 +16,9 @@ import 'package:get/get.dart';
 class EditBusinessDetailsController extends GetxController {
   EditBusinessDetailsController({required this.repository});
 
+  static const int? _keywordSelectionLimit = null;
+  static const int? _customKeywordLimit = null;
+
   final OnboardingRepository repository;
   final AuthStorage _authStorage = Get.find<AuthStorage>();
   final AppToastService _toastService =
@@ -41,7 +44,8 @@ class EditBusinessDetailsController extends GetxController {
   String? _lastLoadedCategoryId;
 
   bool get hasSelectedCategory => selectedCategory.value != null;
-  bool get canAddMoreKeywords => customKeywords.length < 5;
+  bool get canAddMoreKeywords =>
+      _customKeywordLimit == null || customKeywords.length < _customKeywordLimit!;
 
   @override
   void onInit() {
@@ -128,6 +132,7 @@ class EditBusinessDetailsController extends GetxController {
 
   void onCategorySelected(SearchResultModel result) {
     selectedCategory.value = result;
+    isCategoryRestored.value = true;
     searchQuery.value = result.displayName;
     searchResults.clear();
     selectedKeywordIds.clear();
@@ -201,10 +206,14 @@ class EditBusinessDetailsController extends GetxController {
     if (selectedKeywordIds.contains(keywordId)) {
       selectedKeywordIds.remove(keywordId);
     } else {
-      if (selectedKeywordIds.length < 5) {
+      final canSelectMore = _keywordSelectionLimit == null ||
+          selectedKeywordIds.length < _keywordSelectionLimit!;
+      if (canSelectMore) {
         selectedKeywordIds.add(keywordId);
       } else {
-        _toastService.warning('Maximum 5 keywords can be selected.');
+        _toastService.warning(
+          'Maximum $_keywordSelectionLimit keywords can be selected.',
+        );
       }
     }
   }

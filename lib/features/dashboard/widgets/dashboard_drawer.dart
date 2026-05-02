@@ -6,8 +6,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class DashboardDrawer extends StatelessWidget {
+class DashboardDrawer extends StatefulWidget {
   const DashboardDrawer({super.key});
+
+  @override
+  State<DashboardDrawer> createState() => _DashboardDrawerState();
+}
+
+class _DashboardDrawerState extends State<DashboardDrawer> {
+  late final ScrollController _scrollController;
+  bool _showBottomFade = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_updateBottomFade);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateBottomFade());
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateBottomFade);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _updateBottomFade() {
+    if (!_scrollController.hasClients) {
+      return;
+    }
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final current = _scrollController.position.pixels;
+    final nextShow = maxScroll > 0 && current < (maxScroll - 1);
+    if (nextShow != _showBottomFade) {
+      setState(() {
+        _showBottomFade = nextShow;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,117 +56,143 @@ class DashboardDrawer extends StatelessWidget {
         children: [
           _buildHeader(controller),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
+            child: Stack(
               children: [
-                _DrawerItem(
-                  icon: Icons.home_filled,
-                  text: 'Dashboard',
-                  onTap: () {
-                    Get.back();
-                  },
+                ListView(
+                  controller: _scrollController,
+                  padding: EdgeInsets.fromLTRB(0.w, 10.h, 0.w, 20.h),
+                  children: [
+                    _DrawerItem(
+                      icon: Icons.home_filled,
+                      text: 'Dashboard',
+                      onTap: () {
+                        Get.back();
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.shield,
+                      text: 'Trusted Shield',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.trustedShield);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.chat_bubble,
+                      text: 'Chat',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.messages);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.work,
+                      text: 'Business Info',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.editBusinessDetails);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.layers,
+                      text: 'Business Service',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.editBusinessServices);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.location_on,
+                      text: 'Location Info',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.editLocationInfo);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.access_time_filled,
+                      text: 'Timing Info',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.editTimingPayment);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.share,
+                      text: 'Social Media Link',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.editSocialMediaLinks);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.school,
+                      text: 'Course',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.courses);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.celebration,
+                      text: 'Festival',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.festivals);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.people,
+                      text: 'Leads',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.leads);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.star,
+                      text: 'Review & Rating',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.feedback);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.ad_units,
+                      text: 'Advertisement',
+                      onTap: () {
+                        Get.back();
+                        Get.toNamed(AppRoutes.postAdvertisement);
+                      },
+                    ),
+                    _DrawerItem(
+                      icon: Icons.headset_mic,
+                      text: 'Support',
+                      onTap: () {},
+                    ),
+                  ],
                 ),
-                _DrawerItem(
-                  icon: Icons.shield,
-                  text: 'Trusted Shield',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.trustedShield);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.chat_bubble,
-                  text: 'Chat',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.messages);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.work,
-                  text: 'Business Info',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.editBusinessDetails);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.layers,
-                  text: 'Business Service',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.editBusinessServices);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.location_on,
-                  text: 'Location Info',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.editLocationInfo);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.access_time_filled,
-                  text: 'Timing Info',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.editTimingPayment);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.share,
-                  text: 'Social Media Link',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.editSocialMediaLinks);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.school,
-                  text: 'Course',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.courses);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.celebration,
-                  text: 'Festival',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.festivals);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.people,
-                  text: 'Leads',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.leads);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.star,
-                  text: 'Review & Rating',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.feedback);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.ad_units,
-                  text: 'Advertisement',
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed(AppRoutes.postAdvertisement);
-                  },
-                ),
-                _DrawerItem(
-                  icon: Icons.headset_mic,
-                  text: 'Support',
-                  onTap: () {},
-                ),
+                if (_showBottomFade)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: IgnorePointer(
+                      child: Container(
+                        height: 24.h,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: <Color>[
+                              AppTokens.white.withValues(alpha: 0),
+                              AppTokens.white,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
+import 'package:bizrato_owner/core/utils/onboarding_validators.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/business_service_model.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/save_service_facilities_request.dart';
@@ -148,12 +149,20 @@ class EditBusinessServicesController extends GetxController {
     }
   }
 
+  void setSelectedServices(Set<int> ids) {
+    selectedServiceIds.assignAll(ids);
+  }
+
   void toggleFacility(int id) {
     if (selectedFacilityIds.contains(id)) {
       selectedFacilityIds.remove(id);
     } else {
       selectedFacilityIds.add(id);
     }
+  }
+
+  void setSelectedFacilities(Set<int> ids) {
+    selectedFacilityIds.assignAll(ids);
   }
 
   Future<void> saveAndUpdate() async {
@@ -174,11 +183,16 @@ class EditBusinessServicesController extends GetxController {
       return;
     }
 
-    final estbYear = page2EstbYear.value.trim();
-    if (estbYear.isNotEmpty && estbYear.length != 4) {
-      _toastService.error('Establishment year must be exactly 4 digits.');
+    final validationError = OnboardingValidators.validateBusinessServices(
+      businessName: page2BusinessName.value,
+      estbYear: page2EstbYear.value,
+    );
+    if (validationError != null) {
+      _toastService.error(validationError);
       return;
     }
+
+    final estbYear = page2EstbYear.value.trim();
 
     final request = SaveServiceFacilitiesRequest(
       merchantId: merchantId,

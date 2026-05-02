@@ -10,6 +10,7 @@ class BusinessCategorySearchField extends StatelessWidget {
     required this.isSearching,
     required this.onClearRestoredCategory,
     required this.results,
+    this.focusNode,
     super.key,
   });
 
@@ -18,6 +19,7 @@ class BusinessCategorySearchField extends StatelessWidget {
   final bool isSearching;
   final VoidCallback onClearRestoredCategory;
   final Widget results;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class BusinessCategorySearchField extends StatelessWidget {
       children: [
         AppTextField(
           controller: controller,
+          focusNode: focusNode,
           title: 'e.g. Sweets, Restaurant...',
           readOnly: isCategoryRestored,
           prefixIcon: Icon(

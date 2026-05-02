@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import 'package:bizrato_owner/features/onboarding/widgets/category_search_results_widget.dart';
+
 class EditBusinessDetailsView extends StatefulWidget {
   const EditBusinessDetailsView({super.key});
 
@@ -24,6 +26,8 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
 
   late final TextEditingController _searchController;
   late final TextEditingController _customKeywordController;
+  late final FocusNode _categoryFocusNode;
+  late final FocusNode _customKeywordFocusNode;
   late final VoidCallback _searchListener;
   Worker? _searchQueryWorker;
 
@@ -35,6 +39,8 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
         TextEditingController(text: controller.searchQuery.value);
 
     _customKeywordController = TextEditingController();
+    _categoryFocusNode = FocusNode();
+    _customKeywordFocusNode = FocusNode();
 
     _searchListener = () {
       controller.onSearchChanged(_searchController.text);
@@ -78,12 +84,29 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
     }
   }
 
+  void _toggleCustomKeywordInput() {
+    if (controller.isAddingCustomKeyword.value) {
+      _customKeywordFocusNode.unfocus();
+      controller.hideCustomKeywordInput();
+      return;
+    }
+
+    controller.showCustomKeywordInput();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _customKeywordFocusNode.requestFocus();
+      }
+    });
+  }
+
   @override
   void dispose() {
     _searchQueryWorker?.dispose();
     _searchController.removeListener(_searchListener);
     _searchController.dispose();
     _customKeywordController.dispose();
+    _categoryFocusNode.dispose();
+    _customKeywordFocusNode.dispose();
     super.dispose();
   }
 
@@ -121,12 +144,18 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                     children: [
                       BusinessCategorySearchField(
                         controller: _searchController,
+                        focusNode: _categoryFocusNode,
                         isCategoryRestored:
                             controller.isCategoryRestored.value,
                         isSearching: controller.isSearching.value,
                         onClearRestoredCategory:
                             controller.clearRestoredCategory,
-                        results: _buildSearchResults(),
+                        results: CategorySearchResultsWidget(
+                          searchResults: controller.searchResults,
+                          isSearching: controller.isSearching.value,
+                          onCategoryTap: _handleCategoryTap,
+                          searchQuery: controller.searchQuery.value,
+                        ),
                       ),
                     ],
                   ),
@@ -158,111 +187,6 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
     );
   }
 
-  Widget _buildSearchResults() {
-    final hasResults = controller.searchResults.isNotEmpty;
-    final isSearching = controller.isSearching.value;
-
-    if (!hasResults && !isSearching) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      margin: EdgeInsets.only(top: 8.h),
-      padding: EdgeInsets.zero, // removes top blank gap
-      decoration: BoxDecoration(
-        color: AppTokens.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: AppTokens.border,
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12.r),
-        child: isSearching
-            ? SizedBox(
-          height: 50.h,
-          child: Center(
-            child: SizedBox(
-              height: 18.w,
-              width: 18.w,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: AppTokens.brandPrimary,
-              ),
-            ),
-          ),
-        )
-            : ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: 150.h,
-          ),
-          child: controller.searchResults.isEmpty
-              ? Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 12.h,
-            ),
-            child: Text(
-              'No categories found',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: AppTokens.textSecondary,
-              ),
-            ),
-          )
-              : MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            removeBottom: true,
-            child: ListView.separated(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              itemCount: controller.searchResults.length,
-              separatorBuilder: (_, __) => Divider(
-                height: 1,
-                thickness: .6,
-                color: AppTokens.border,
-              ),
-              itemBuilder: (context, index) {
-                final result =
-                controller.searchResults[index];
-
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () =>
-                        _handleCategoryTap(result),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 14.w,
-                        vertical: 10.h,
-                      ),
-                      child: Text(
-                        result.displayName,
-                        maxLines: 2,
-                        overflow:
-                        TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 11.4.sp,
-                          height: 1.08,
-                          fontWeight:
-                          FontWeight.w500,
-                          color:
-                          AppTokens.textPrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildKeywordSection() {
     return OnboardingSectionCard(
       child: Obx(
@@ -286,12 +210,17 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MultiSelectBottomSheetField(
-                title: 'Select business keywords',
-                options: allKeywordOptions,
-                selectedIds: controller.selectedKeywordIds,
-                onSelectionChanged: (ids) => controller.setSelectedKeywords(ids),
-                limit: 5,
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTapDown: (_) => _categoryFocusNode.unfocus(),
+                child: MultiSelectBottomSheetField(
+                  title: 'Select business keywords',
+                  options: allKeywordOptions,
+                  selectedIds: controller.selectedKeywordIds,
+                  onSelectionChanged: (ids) =>
+                      controller.setSelectedKeywords(ids),
+                  selectionLimit: null,
+                ),
               ),
 
               SizedBox(height: 12.h),
@@ -326,6 +255,8 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                       controller.canAddMoreKeywords)
                     KeywordInputRow(
                       controller: _customKeywordController,
+                      focusNode: _customKeywordFocusNode,
+                      isReadOnly: false,
                       hint: 'Enter keyword...',
                       actionIcon: Icons.check,
                       actionBackgroundColor:
@@ -343,9 +274,7 @@ class _EditBusinessDetailsViewState extends State<EditBusinessDetailsView> {
                     Padding(
                       padding: EdgeInsets.only(top: 8.h),
                       child: OutlinedButton(
-                        onPressed: controller.isAddingCustomKeyword.value
-                            ? controller.hideCustomKeywordInput
-                            : controller.showCustomKeywordInput,
+                        onPressed: _toggleCustomKeywordInput,
                         style: OutlinedButton.styleFrom(
                           fixedSize: Size(
                             double.maxFinite,

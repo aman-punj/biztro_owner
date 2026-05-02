@@ -7,6 +7,7 @@ import 'package:bizrato_owner/core/services/chat_service.dart';
 import 'package:bizrato_owner/core/services/notification_service.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
 import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/utils/onboarding_validators.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
@@ -27,6 +28,11 @@ import 'package:get/get.dart';
 
 class OnboardingController extends GetxController {
   OnboardingController({required this.onboardingRepository});
+
+  static const int? _keywordSelectionLimit = null;
+  static const int? _customKeywordLimit = null;
+  static const int? _serviceSelectionLimit = null;
+  static const int? _facilitySelectionLimit = null;
 
   final OnboardingRepository onboardingRepository;
   final AuthStorage _authStorage = Get.find<AuthStorage>();
@@ -111,9 +117,12 @@ class OnboardingController extends GetxController {
   String? _lastLoadedCategoryId;
   int? _merchantIdOverride;
 
+  AppToastService get _toastService => Get.find<AppToastService>();
+
   bool get hasSelectedCategory => selectedCategory.value != null;
 
-  bool get canAddMoreKeywords => customKeywords.length < 5;
+  bool get canAddMoreKeywords =>
+      _customKeywordLimit == null || customKeywords.length < _customKeywordLimit!;
 
   @override
   void onInit() {
@@ -146,7 +155,7 @@ class OnboardingController extends GetxController {
     isSearching.value = false;
 
     if (!response.success) {
-      Get.snackbar('Search failed', response.message);
+      _toastService.error(response.message, title: 'Search failed');
       return;
     }
 
@@ -175,7 +184,7 @@ class OnboardingController extends GetxController {
     isLoadingKeywords.value = false;
 
     if (!response.success) {
-      Get.snackbar('Unable to load keywords', response.message);
+      _toastService.error(response.message, title: 'Unable to load keywords');
       return;
     }
 
@@ -194,10 +203,14 @@ class OnboardingController extends GetxController {
     if (selectedKeywordIds.contains(keywordId)) {
       selectedKeywordIds.remove(keywordId);
     } else {
-      if (selectedKeywordIds.length < 5) {
+      final canSelectMore = _keywordSelectionLimit == null ||
+          selectedKeywordIds.length < _keywordSelectionLimit!;
+      if (canSelectMore) {
         selectedKeywordIds.add(keywordId);
       } else {
-        Get.find<AppToastService>().warning('Maximum 5 keywords can be selected.');
+        _toastService.warning(
+          'Maximum $_keywordSelectionLimit keywords can be selected.',
+        );
       }
     }
   }
@@ -263,18 +276,18 @@ class OnboardingController extends GetxController {
 
   Future<void> saveAndContinue() async {
     if (selectedCategory.value == null) {
-      Get.snackbar(
-        'Category required',
+      _toastService.warning(
         'Please select a category to continue.',
+        title: 'Category required',
       );
       return;
     }
 
     final List<SelectedKeyword> keywordPayload = _selectedKeywordPayload();
     if (keywordPayload.isEmpty && customKeywords.isEmpty) {
-      Get.snackbar(
-        'Add keywords',
+      _toastService.warning(
         'Select at least one suggested keyword or add your own before continuing.',
+        title: 'Add keywords',
       );
       return;
     }
@@ -299,7 +312,7 @@ class OnboardingController extends GetxController {
     isSaving.value = false;
 
     if (!response.success) {
-      Get.snackbar('Unable to save keywords', response.message);
+      _toastService.error(response.message, title: 'Unable to save keywords');
       return;
     }
 
@@ -467,11 +480,16 @@ class OnboardingController extends GetxController {
       return;
     }
 
-    final estbYear = page2EstbYear.value.trim();
-    if (estbYear.isNotEmpty && estbYear.length != 4) {
-      _notifyError('Establishment year must be exactly 4 digits.');
+    final validationError = OnboardingValidators.validateBusinessServices(
+      businessName: page2BusinessName.value,
+      estbYear: page2EstbYear.value,
+    );
+    if (validationError != null) {
+      _notifyError(validationError);
       return;
     }
+
+    final estbYear = page2EstbYear.value.trim();
 
     final request = SaveServiceFacilitiesRequest(
       merchantId: merchantId,
@@ -689,6 +707,7 @@ class OnboardingController extends GetxController {
     }
 
     if (pincode.length == 6) {
+      FocusManager.instance.primaryFocus?.unfocus();
       _debouncer(
         () async {
           await _loadLocationByPincode(pincode);
@@ -746,6 +765,9 @@ class OnboardingController extends GetxController {
 
   void selectArea(AreaItemModel area) {
     p3SelectedArea.value = area;
+    if (!_isOtherArea(area)) {
+      p3OtherAreaName.value = '';
+    }
   }
 
   Future<void> saveContactAndFinish() async {
@@ -755,16 +777,32 @@ class OnboardingController extends GetxController {
       return;
     }
 
-    if (p3FullName.value.trim().isEmpty) {
-      _notifyError('Full name is required.');
+    final validationError = OnboardingValidators.validateLocationAndContact(
+      fullName: p3FullName.value,
+      address: p3Address.value,
+      streetNo: p3StreetNo.value,
+      landmark: p3Landmark.value,
+      pincode: p3Pincode.value,
+      stateName: p3StateName.value,
+      cityName: p3CityName.value,
+      hasSelectedArea: p3SelectedArea.value != null,
+    );
+    if (validationError != null) {
+      _notifyError(validationError);
       return;
     }
 
-    final hasPincode = p3Pincode.value.trim().isNotEmpty;
-    if (hasPincode && p3SelectedArea.value == null) {
-      _notifyError('Please select an area.');
+    final isOtherAreaSelected = _isOtherArea(p3SelectedArea.value);
+    if (isOtherAreaSelected && p3OtherAreaName.value.trim().isEmpty) {
+      _notifyError('Please enter area name.');
       return;
     }
+
+    final selectedArea = p3SelectedArea.value;
+    final areaId = isOtherAreaSelected ? 0 : selectedArea?.areaId ?? 0;
+    final areaName = isOtherAreaSelected
+        ? p3OtherAreaName.value.trim()
+        : selectedArea?.areaName ?? '';
 
     final request = SaveContactRequest(
       fullName: p3FullName.value.trim(),
@@ -786,8 +824,8 @@ class OnboardingController extends GetxController {
       pincode: p3Pincode.value.trim(),
       stateId: p3StateId.value,
       cityId: p3CityId.value,
-      areaId: p3SelectedArea.value?.areaId ?? 0,
-      areaName: p3SelectedArea.value?.areaName ?? '',
+      areaId: areaId,
+      areaName: areaName,
       otherAreaName: p3OtherAreaName.value.trim(),
       merchantId: merchantId,
       businessId: p3BusinessId.value.trim(),
@@ -838,10 +876,14 @@ class OnboardingController extends GetxController {
     if (selectedServiceIds.contains(id)) {
       selectedServiceIds.remove(id);
     } else {
-      if (selectedServiceIds.length < 5) {
+      final canSelectMore = _serviceSelectionLimit == null ||
+          selectedServiceIds.length < _serviceSelectionLimit!;
+      if (canSelectMore) {
         selectedServiceIds.add(id);
       } else {
-        Get.find<AppToastService>().warning('Maximum 5 services can be selected.');
+        _toastService.warning(
+          'Maximum $_serviceSelectionLimit services can be selected.',
+        );
       }
     }
   }
@@ -854,10 +896,14 @@ class OnboardingController extends GetxController {
     if (selectedFacilityIds.contains(id)) {
       selectedFacilityIds.remove(id);
     } else {
-      if (selectedFacilityIds.length < 5) {
+      final canSelectMore = _facilitySelectionLimit == null ||
+          selectedFacilityIds.length < _facilitySelectionLimit!;
+      if (canSelectMore) {
         selectedFacilityIds.add(id);
       } else {
-        Get.find<AppToastService>().warning('Maximum 5 facilities can be selected.');
+        _toastService.warning(
+          'Maximum $_facilitySelectionLimit facilities can be selected.',
+        );
       }
     }
   }
@@ -940,7 +986,7 @@ class OnboardingController extends GetxController {
       return;
     }
     if (index > _stageIndex.value) {
-      Get.find<AppToastService>().warning(
+      _toastService.warning(
         'Please complete the current step first.',
       );
       return;
@@ -960,7 +1006,15 @@ class OnboardingController extends GetxController {
   int? get _resolvedMerchantId =>
       _authStorage.merchantId ?? _merchantIdOverride;
 
+  bool get isOtherAreaSelected => _isOtherArea(p3SelectedArea.value);
+
+  bool _isOtherArea(AreaItemModel? area) {
+    if (area == null) return false;
+    final name = area.areaName.trim().toLowerCase();
+    return name == 'other' || name == 'other area';
+  }
+
   void _notifyError(String message) {
-    Get.find<AppToastService>().error(message);
+    _toastService.error(message);
   }
 }

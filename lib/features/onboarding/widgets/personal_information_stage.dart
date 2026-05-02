@@ -35,6 +35,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
   late final TextEditingController _stateController;
   late final TextEditingController _cityController;
   late final TextEditingController _areaController;
+  late final TextEditingController _otherAreaController;
 
   final List<Worker> _workers = <Worker>[];
 
@@ -56,6 +57,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
     _stateController = TextEditingController();
     _cityController = TextEditingController();
     _areaController = TextEditingController();
+    _otherAreaController = TextEditingController();
 
     _bindText(controller.p3FullName, _nameController);
     _bindText(controller.p3Email, _emailController);
@@ -71,6 +73,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
     _bindText(controller.p3Pincode, _pincodeController);
     _bindText(controller.p3StateName, _stateController);
     _bindText(controller.p3CityName, _cityController);
+    _bindText(controller.p3OtherAreaName, _otherAreaController);
     _workers.add(
       ever<AreaItemModel?>(
         controller.p3SelectedArea,
@@ -105,6 +108,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
       _areaController,
       controller.p3SelectedArea.value?.areaName ?? '',
     );
+    _syncController(_otherAreaController, controller.p3OtherAreaName.value);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.initPage3Data();
@@ -131,6 +135,7 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
     _stateController.dispose();
     _cityController.dispose();
     _areaController.dispose();
+    _otherAreaController.dispose();
     super.dispose();
   }
 
@@ -149,9 +154,11 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
         );
       }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      return Stack(
         children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
           // TextButton.icon(
           //   onPressed: controller.previousStage,
           //   icon: Icon(
@@ -300,7 +307,6 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                         controller: _stateController,
                         title: 'State',
                         readOnly: true,
-                        suffixIcon: _loadingSuffix(),
                       ),
                     ),
                     SizedBox(width: 12.w),
@@ -309,7 +315,6 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                         controller: _cityController,
                         title: 'City',
                         readOnly: true,
-                        suffixIcon: _loadingSuffix(),
                       ),
                     ),
                   ],
@@ -325,23 +330,27 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
                             ? 'Enter pincode first'
                             : 'Select Area',
                         readOnly: true,
-                        suffixIcon: controller.isLoadingAreas.value
-                            ? SizedBox(
-                                width: 14.w,
-                                height: 14.w,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.w,
-                                  color: AppTokens.brandPrimary,
-                                ),
-                              )
-                            : Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 20.sp,
-                                color: AppTokens.textSecondary,
-                              ),
+                        suffixIcon: Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 20.sp,
+                          color: AppTokens.textSecondary,
+                        ),
                       ),
                     ),
                   ),
+                ),
+                Obx(
+                  () => controller.isOtherAreaSelected
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 12.h),
+                          child: AppTextField(
+                            controller: _otherAreaController,
+                            title: 'Enter Area Name',
+                            onChanged: (value) =>
+                                controller.p3OtherAreaName.value = value,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
               ],
             ),
@@ -357,28 +366,35 @@ class _PersonalInformationStageState extends State<PersonalInformationStage> {
           SizedBox(height: 16.h),
           const AuthFooterText(),
           SizedBox(height: 12.h),
+            ],
+          ),
+          Obx(
+            () {
+              final isLoading = controller.isLoadingAreas.value ||
+                  controller.isLoadingLocationDetails.value;
+              if (!isLoading) {
+                return const SizedBox.shrink();
+              }
+
+              return Positioned.fill(
+                child: Container(
+                  color: AppTokens.white.withValues(alpha: 0.75),
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.w,
+                    color: AppTokens.brandPrimary,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       );
     });
   }
 
-  Widget _loadingSuffix() {
-    return Obx(
-      () => controller.isLoadingAreas.value ||
-              controller.isLoadingLocationDetails.value
-          ? SizedBox(
-              width: 14.w,
-              height: 14.w,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.w,
-                color: AppTokens.brandPrimary,
-              ),
-            )
-          : const SizedBox.shrink(),
-    );
-  }
-
   void _showAreaPicker() {
+    FocusScope.of(context).unfocus();
     if (controller.p3AreaList.isEmpty) {
       return;
     }

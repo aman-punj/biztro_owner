@@ -1,5 +1,5 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
-import 'package:bizrato_owner/core/theme/colors.dart';
+import 'package:bizrato_owner/core/theme/app_tokens.dart';
 import 'package:bizrato_owner/core/theme/dimensions.dart';
 import 'package:bizrato_owner/core/widgets/app_image.dart';
 import 'package:bizrato_owner/features/auth/services/logout_service.dart';
@@ -24,87 +24,93 @@ class OnboardingView extends GetView<OnboardingController> {
         controller.handleBackPress();
       },
       child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppDimensions.screenHorizontalPadding,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const AppImage(path: AppAssets.appTextLogo, width: 86),
-                        const Spacer(),
-                        _ActionIcon(
-                          icon: AppAssets.youtubeRedIcon,
-                          onTap: () {},
-                        ),
-                        SizedBox(width: 8.w),
-                        _ActionIcon(
-                          icon: AppAssets.logoutRedIcon,
-                          onTap: () async {
-                            await Get.find<LogoutService>().logout();
-                          },
-                        ),
-                      ],
-                    ),
-                    Obx(
-                      () => OnboardingStageIndicator(
-                        stages: OnboardingController.stageTitles,
-                        currentIndex: controller.stageIndex,
-                        onStageTap: controller.goToStageIfAllowed,
-                      ),
-                    ),
-                    SizedBox(height: 24.h),
-                    Obx(
-                      () => Text(
-                        _titleByIndex(controller.stageIndex),
-                        style: TextStyle(
-                          fontSize: 22.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimaryLight,
-                        ),
-                      ),
-                    ),
-                    Obx(
-                      () => Text(
-                        _subtitleByIndex(controller.stageIndex),
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: AppColors.textSecondaryLight,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: AppDimensions.screenHorizontalPadding,
                   ),
-                  child: Obx(
-                    () => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 8.h),
-                        if (controller.stageIndex == 0)
-                          BusinessInformationStage(),
-                        if (controller.stageIndex == 1)
-                          const BusinessServicesStage(),
-                        if (controller.stageIndex == 2)
-                          const PersonalInformationStage(),
-                        SizedBox(height: 24.h),
-                      ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 4.h),
+                      Row(
+                        children: [
+                          AppImage(path: AppAssets.appTextLogo, width: 72.w),
+                          const Spacer(),
+                          _ActionIcon(
+                            icon: AppAssets.youtubeRedIcon,
+                            onTap: () {},
+                          ),
+                          SizedBox(width: 8.w),
+                          _ActionIcon(
+                            icon: AppAssets.logoutRedIcon,
+                            onTap: () async {
+                              await Get.find<LogoutService>().logout();
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Obx(
+                        () => OnboardingStageIndicator(
+                          stages: OnboardingController.stageTitles,
+                          currentIndex: controller.stageIndex,
+                          onStageTap: controller.goToStageIfAllowed,
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Obx(
+                        () => Text(
+                          _titleByIndex(controller.stageIndex),
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppTokens.textPrimary,
+                          ),
+                        ),
+                      ),
+                      Obx(
+                        () => Text(
+                          _subtitleByIndex(controller.stageIndex),
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            color: AppTokens.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppDimensions.screenHorizontalPadding,
+                    ),
+                    child: Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 8.h),
+                          if (controller.stageIndex == 0)
+                            BusinessInformationStage(),
+                          if (controller.stageIndex == 1)
+                            const BusinessServicesStage(),
+                          if (controller.stageIndex == 2)
+                            const PersonalInformationStage(),
+                          SizedBox(height: 24.h),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -145,20 +151,20 @@ class _ActionIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 32.w,
-        height: 32.w,
-        padding: EdgeInsets.all(6.w),
+        width: 28.w,
+        height: 28.w,
+        padding: EdgeInsets.all(5.w),
         decoration: BoxDecoration(
-          color: AppColors.errorSurfaceLight,
+          color: AppTokens.errorSurface,
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: AppColors.errorBorderLight),
+          border: Border.all(color: AppTokens.errorBorder),
         ),
         child: AppImage(
           path: icon,
-          height: 14,
-          width: 14,
+          height: 14.w,
+          width: 14.w,
           fit: BoxFit.contain,
-          color: AppColors.error,
+          color: AppTokens.error,
         ),
       ),
     );

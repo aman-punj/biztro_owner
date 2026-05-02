@@ -20,7 +20,8 @@ class MultiSelectBottomSheetField extends StatelessWidget {
     required this.onSelectionChanged,
     super.key,
     this.hint = 'Select options',
-    this.limit = 5,
+    this.selectionLimit,
+    this.showSelectionCount = true,
   });
 
   final String title;
@@ -28,7 +29,8 @@ class MultiSelectBottomSheetField extends StatelessWidget {
   final List<MultiSelectOption> options;
   final Set<int> selectedIds;
   final ValueChanged<Set<int>> onSelectionChanged;
-  final int limit;
+  final int? selectionLimit;
+  final bool showSelectionCount;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +73,7 @@ class MultiSelectBottomSheetField extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    '${selectedIds.length} / $limit selected',
+                    _selectionText,
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: AppTokens.textSecondary,
@@ -92,10 +94,8 @@ class MultiSelectBottomSheetField extends StatelessWidget {
   }
 
   Widget _buildSelectedChips() {
-    final selectedOptions = options
-        .where((opt) => selectedIds.contains(opt.id))
-        .take(limit)
-        .toList();
+    final selectedOptions =
+        options.where((opt) => selectedIds.contains(opt.id)).toList();
 
     const int maxVisibleChips = 3;
     final visibleOptions = selectedOptions.take(maxVisibleChips).toList();
@@ -112,12 +112,14 @@ class MultiSelectBottomSheetField extends StatelessWidget {
   }
 
   void _showBottomSheet(BuildContext context) {
+    FocusScope.of(context).unfocus();
     Get.bottomSheet(
       _BottomSheetContent(
         title: title,
         options: options,
         initialSelectedIds: selectedIds,
-        limit: limit,
+        selectionLimit: selectionLimit,
+        showSelectionCount: showSelectionCount,
         onDone: onSelectionChanged,
       ),
       isScrollControlled: true,
@@ -127,6 +129,16 @@ class MultiSelectBottomSheetField extends StatelessWidget {
       ),
     );
   }
+
+  String get _selectionText {
+    if (!showSelectionCount) {
+      return hint;
+    }
+    if (selectionLimit == null) {
+      return '${selectedIds.length} selected';
+    }
+    return '${selectedIds.length} / $selectionLimit selected';
+  }
 }
 
 class _BottomSheetContent extends StatefulWidget {
@@ -134,14 +146,16 @@ class _BottomSheetContent extends StatefulWidget {
     required this.title,
     required this.options,
     required this.initialSelectedIds,
-    required this.limit,
+    required this.selectionLimit,
+    required this.showSelectionCount,
     required this.onDone,
   });
 
   final String title;
   final List<MultiSelectOption> options;
   final Set<int> initialSelectedIds;
-  final int limit;
+  final int? selectionLimit;
+  final bool showSelectionCount;
   final ValueChanged<Set<int>> onDone;
 
   @override
@@ -175,10 +189,12 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
   }
 
   void _toggleOption(int id) {
+    final limit = widget.selectionLimit;
+    final canSelectMore = limit == null || _tempSelectedIds.length < limit;
     setState(() {
       if (_tempSelectedIds.contains(id)) {
         _tempSelectedIds.remove(id);
-      } else if (_tempSelectedIds.length < widget.limit) {
+      } else if (canSelectMore) {
         _tempSelectedIds.add(id);
       }
     });
@@ -211,7 +227,9 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
               itemBuilder: (context, index) {
                 final opt = _filteredOptions[index];
                 final isSelected = _tempSelectedIds.contains(opt.id);
-                final isLimitReached = _tempSelectedIds.length >= widget.limit && !isSelected;
+                final limit = widget.selectionLimit;
+                final isLimitReached =
+                    limit != null && _tempSelectedIds.length >= limit && !isSelected;
 
                 return _OptionTile(
                   label: opt.label,
@@ -255,19 +273,20 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                   color: AppTokens.textPrimary,
                 ),
               ),
-              Text(
-                '${_tempSelectedIds.length} / ${widget.limit} selected',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppTokens.textSecondary,
+              if (widget.showSelectionCount)
+                Text(
+                  _headerSelectionText,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppTokens.textSecondary,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
         TextButton(
           onPressed: () {
-            widget.onDone(_tempSelectedIds);
+            widget.onDone(Set<int>.from(_tempSelectedIds));
             Get.back();
           },
           child: Text(
@@ -281,6 +300,16 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
         ),
       ],
     );
+  }
+
+  String get _headerSelectionText {
+    if (!widget.showSelectionCount) {
+      return '';
+    }
+    if (widget.selectionLimit == null) {
+      return '${_tempSelectedIds.length} selected';
+    }
+    return '${_tempSelectedIds.length} / ${widget.selectionLimit} selected';
   }
 }
 

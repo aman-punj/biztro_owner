@@ -1,12 +1,11 @@
 import 'package:bizrato_owner/core/constants/app_assets.dart';
 import 'package:bizrato_owner/core/theme/theme.dart';
+import 'package:bizrato_owner/core/widgets/multi_select_bottom_sheet_field.dart';
 import 'package:bizrato_owner/core/widgets/widgets.dart';
 import 'package:bizrato_owner/core/widgets/year_picker_dialog.dart';
 import 'package:bizrato_owner/features/business_edit/controllers/edit_business_services_controller.dart';
 import 'package:bizrato_owner/features/business_edit/widgets/widgets.dart';
-import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -217,13 +216,46 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                   title: 'SERVICES OFFERED',
                   titleIcon: AppImage(path: AppAssets.sparkleIcon),
                   child: Obx(
-                    () => _buildServiceFacilityContent(
-                      items: controller.servicesOfferedList,
-                      isLoading: controller.isLoadingFacilities.value,
-                      selectedIds: controller.selectedServiceIds,
-                      onTap: controller.toggleService,
-                      emptyMessage: 'Services list will be available soon.',
-                    ),
+                    () {
+                      if (controller.isLoadingFacilities.value) {
+                        return SizedBox(
+                          height: 96.h,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppTokens.brandPrimary,
+                              strokeWidth: 2.w,
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (controller.servicesOfferedList.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.h),
+                          child: Text(
+                            'Services list will be available soon.',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: AppTokens.textSecondary,
+                            ),
+                          ),
+                        );
+                      }
+
+                      return MultiSelectBottomSheetField(
+                        title: 'Select services offered',
+                        options: controller.servicesOfferedList
+                            .map((item) => MultiSelectOption(
+                                  id: item.id,
+                                  label: item.name,
+                                ))
+                            .toList(),
+                        selectedIds: controller.selectedServiceIds,
+                        onSelectionChanged: (ids) =>
+                            controller.setSelectedServices(ids),
+                        selectionLimit: null,
+                      );
+                    },
                   ),
                 ),
                 // SizedBox(height: 16.h),
@@ -231,13 +263,46 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
                   title: 'FACILITIES',
                   titleIcon: AppImage(path: AppAssets.flashIcon),
                   child: Obx(
-                    () => _buildServiceFacilityContent(
-                      items: controller.facilitiesList,
-                      isLoading: controller.isLoadingFacilities.value,
-                      selectedIds: controller.selectedFacilityIds,
-                      onTap: controller.toggleFacility,
-                      emptyMessage: 'Facilities list will be available soon.',
-                    ),
+                    () {
+                      if (controller.isLoadingFacilities.value) {
+                        return SizedBox(
+                          height: 96.h,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppTokens.brandPrimary,
+                              strokeWidth: 2.w,
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (controller.facilitiesList.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.h),
+                          child: Text(
+                            'Facilities list will be available soon.',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: AppTokens.textSecondary,
+                            ),
+                          ),
+                        );
+                      }
+
+                      return MultiSelectBottomSheetField(
+                        title: 'Select facilities',
+                        options: controller.facilitiesList
+                            .map((item) => MultiSelectOption(
+                                  id: item.id,
+                                  label: item.name,
+                                ))
+                            .toList(),
+                        selectedIds: controller.selectedFacilityIds,
+                        onSelectionChanged: (ids) =>
+                            controller.setSelectedFacilities(ids),
+                        selectionLimit: null,
+                      );
+                    },
                   ),
                 ),
                 SafeArea(
@@ -253,51 +318,6 @@ class _EditBusinessServicesViewState extends State<EditBusinessServicesView> {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildServiceFacilityContent({
-    required List<ServiceFacilityItemModel> items,
-    required bool isLoading,
-    required Set<int> selectedIds,
-    required ValueChanged<int> onTap,
-    required String emptyMessage,
-  }) {
-    if (isLoading) {
-      return SizedBox(
-        height: 96.h,
-        child: Center(
-          child: CircularProgressIndicator(
-            color: AppTokens.brandPrimary,
-            strokeWidth: 2.w,
-          ),
-        ),
-      );
-    }
-
-    if (items.isEmpty) {
-      return Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.h),
-        child: Text(
-          emptyMessage,
-          style: TextStyle(
-            fontSize: 12.sp,
-            color: AppTokens.textSecondary,
-          ),
-        ),
-      );
-    }
-
-    return ScrollableOptionList(
-      maxHeight: 220.h,
-      title: emptyMessage == 'Services list will be available soon.'
-          ? 'SERVICES OFFERED'
-          : 'FACILITIES',
-      items: items
-          .map((item) => ScrollableOptionItem(id: item.id, label: item.name))
-          .toList(),
-      selectedIds: selectedIds.toSet(),
-      onTap: (item) => onTap(item.id),
     );
   }
 

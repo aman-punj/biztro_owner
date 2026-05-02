@@ -16,6 +16,7 @@ class KeywordInputRow extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final ValueChanged<String>? onChanged;
   final int maxLines;
+  final FocusNode? focusNode;
 
   const KeywordInputRow({
     super.key,
@@ -30,6 +31,7 @@ class KeywordInputRow extends StatelessWidget {
     this.onSubmitted,
     this.onChanged,
     this.maxLines = 1,
+    this.focusNode,
   });
 
   @override
@@ -43,6 +45,7 @@ class KeywordInputRow extends StatelessWidget {
               constraints: BoxConstraints(minHeight: 44.h),
               child: TextFormField(
                 controller: controller,
+                focusNode: focusNode,
                 initialValue: controller == null ? initialValue : null,
                 readOnly: isReadOnly,
                 onFieldSubmitted: onSubmitted,

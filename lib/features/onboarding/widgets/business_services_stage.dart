@@ -3,13 +3,10 @@ import 'package:bizrato_owner/core/widgets/app_text_field.dart';
 import 'package:bizrato_owner/core/widgets/multi_select_bottom_sheet_field.dart';
 import 'package:bizrato_owner/core/widgets/onboarding_section_card.dart';
 import 'package:bizrato_owner/core/widgets/primary_button.dart';
-import 'package:bizrato_owner/core/widgets/scrollable_option_item.dart';
 import 'package:bizrato_owner/core/widgets/year_picker_dialog.dart';
 import 'package:bizrato_owner/features/auth/widgets/auth_footer_text.dart';
 import 'package:bizrato_owner/features/onboarding/controllers/onboarding_controller.dart';
-import 'package:bizrato_owner/features/onboarding/data/models/service_facility_item_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -198,7 +195,7 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                 SizedBox(height: 12.h),
                 AppTextField(
                   controller: _websiteController,
-                  title: 'Website/Optional',
+                  title: 'Website (Optional)',
                   onChanged: (value) => controller.page2Website.value = value,
                 ),
                 SizedBox(height: 12.h),
@@ -216,8 +213,8 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                     final int currentYear = DateTime.now().year;
                     final int? pickedYear = await showAppYearPicker(
                       context: context,
-                      initialYear: int.tryParse(_estbYearController.text) ??
-                          currentYear,
+                      initialYear:
+                          int.tryParse(_estbYearController.text) ?? currentYear,
                       firstYear: 1900,
                       lastYear: currentYear + 1,
                     );
@@ -265,9 +262,12 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                 options: controller.servicesOfferedList
                     .map((e) => MultiSelectOption(id: e.id, label: e.name))
                     .toList(),
-                selectedIds: controller.selectedServiceIds,
-                onSelectionChanged: (ids) => controller.setSelectedServices(ids),
-                limit: 5,
+                selectedIds: controller.selectedServiceIds.toSet(),
+                onSelectionChanged: (ids) =>
+                    controller.setSelectedServices(ids),
+                selectionLimit: null,
+                showSelectionCount: false,
+                hint: 'Tap to choose services',
               );
             }),
           ),
@@ -283,9 +283,12 @@ class _BusinessServicesStageState extends State<BusinessServicesStage> {
                 options: controller.facilitiesList
                     .map((e) => MultiSelectOption(id: e.id, label: e.name))
                     .toList(),
-                selectedIds: controller.selectedFacilityIds,
-                onSelectionChanged: (ids) => controller.setSelectedFacilities(ids),
-                limit: 5,
+                selectedIds: controller.selectedFacilityIds.toSet(),
+                onSelectionChanged: (ids) =>
+                    controller.setSelectedFacilities(ids),
+                selectionLimit: null,
+                showSelectionCount: false,
+                hint: 'Tap to choose facilities',
               );
             }),
           ),

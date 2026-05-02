@@ -17,7 +17,7 @@ class AppToastService {
 
   void show(AppToast notification) {
     if (Get.isSnackbarOpen) {
-      Get.closeCurrentSnackbar();
+      Get.closeAllSnackbars();
     }
     _showGetSnackbar(notification);
   }

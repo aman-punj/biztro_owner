@@ -24,6 +24,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
   late final TextEditingController _stateController;
   late final TextEditingController _cityController;
   late final TextEditingController _areaController;
+  late final TextEditingController _otherAreaController;
 
   final List<Worker> _workers = <Worker>[];
 
@@ -40,6 +41,8 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
     _areaController = TextEditingController(
       text: controller.selectedArea.value?.areaName ?? '',
     );
+    _otherAreaController =
+        TextEditingController(text: controller.otherAreaName.value);
 
     _workers.addAll([
       ever<String>(controller.address,
@@ -56,6 +59,8 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
           (value) => _syncController(_cityController, value)),
       ever<AreaItemModel?>(controller.selectedArea,
           (area) => _syncController(_areaController, area?.areaName ?? '')),
+      ever<String>(controller.otherAreaName,
+          (value) => _syncController(_otherAreaController, value)),
     ]);
   }
 
@@ -71,6 +76,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
     _stateController.dispose();
     _cityController.dispose();
     _areaController.dispose();
+    _otherAreaController.dispose();
     super.dispose();
   }
 
@@ -84,11 +90,13 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 OnboardingSectionCard(
                   title: 'Location Information',
                   titleIcon: Icon(
@@ -123,16 +131,6 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                         title: 'Pincode',
                         keyboardType: TextInputType.number,
                         onChanged: controller.onPincodeChanged,
-                        suffixIcon: Obx(
-                          () => controller.isLoadingLocationDetails.value
-                              ? SizedBox(
-                                  width: 18.w,
-                                  height: 18.w,
-                                  child: const CircularProgressIndicator(
-                                      strokeWidth: 2),
-                                )
-                              : const SizedBox.shrink(),
-                        ),
                       ),
                       SizedBox(height: 12.h),
                       Row(
@@ -165,21 +163,27 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                                   ? 'Enter pincode first'
                                   : 'Select Area',
                               readOnly: true,
-                              suffixIcon: controller.isLoadingAreas.value
-                                  ? SizedBox(
-                                      width: 18.w,
-                                      height: 18.w,
-                                      child: const CircularProgressIndicator(
-                                          strokeWidth: 2),
-                                    )
-                                  : Icon(
-                                      Icons.keyboard_arrow_down,
-                                      size: 20.sp,
-                                      color: AppTokens.textSecondary,
-                                    ),
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 20.sp,
+                                color: AppTokens.textSecondary,
+                              ),
                             ),
                           ),
                         ),
+                      ),
+                      Obx(
+                        () => controller.isOtherAreaSelected
+                            ? Padding(
+                                padding: EdgeInsets.only(top: 12.h),
+                                child: AppTextField(
+                                  controller: _otherAreaController,
+                                  title: 'Enter Area Name',
+                                  onChanged: (value) =>
+                                      controller.otherAreaName.value = value,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                       ),
                     ],
                   ),
@@ -192,8 +196,29 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                     onPressed: controller.saveAndUpdate,
                   ),
                 ),
-              ],
-            ),
+                  ],
+                ),
+              ),
+              Obx(
+                () {
+                  final isLoading = controller.isLoadingLocationDetails.value ||
+                      controller.isLoadingAreas.value;
+                  if (!isLoading) {
+                    return const SizedBox.shrink();
+                  }
+                  return Positioned.fill(
+                    child: Container(
+                      color: AppTokens.white.withValues(alpha: 0.75),
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.w,
+                        color: AppTokens.brandPrimary,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
           );
         },
       ),
@@ -201,6 +226,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
   }
 
   void _showAreaPicker() {
+    FocusScope.of(context).unfocus();
     if (controller.areaList.isEmpty) {
       return;
     }
@@ -232,7 +258,7 @@ class _EditLocationInfoViewState extends State<EditLocationInfoView> {
                   subtitle: Text(area.pinCode),
                   onTap: () {
                     controller.selectArea(area);
-                    Navigator.pop(context);
+                    Get.back();
                   },
                 ),
               ),

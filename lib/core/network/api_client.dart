@@ -21,12 +21,12 @@ class ApiClient extends GetxService {
               receiveTimeout: receiveTimeout,
               responseType: ResponseType.json,
             )) {
-    // _dio.interceptors.add(LogInterceptor(
-    //   responseBody: false,
-    //   responseHeader: false,
-    //   requestBody: false,
-    //   requestHeader: false,
-    // ));
+    _dio.interceptors.add(LogInterceptor(
+      responseBody: false,
+      responseHeader: false,
+      requestBody: false,
+      requestHeader: false,
+    ));
     _dio.interceptors.add(QueuedInterceptorsWrapper(
       onRequest: (options, handler) {
         final authStorage = Get.find<AuthStorage>();

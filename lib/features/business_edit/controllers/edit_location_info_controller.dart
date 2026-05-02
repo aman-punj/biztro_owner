@@ -2,6 +2,7 @@ import 'package:bizrato_owner/core/network/app_response.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service.dart';
 import 'package:bizrato_owner/core/app_toast/app_toast_service_extension.dart';
 import 'package:bizrato_owner/core/storage/auth_storage.dart';
+import 'package:bizrato_owner/core/utils/onboarding_validators.dart';
 import 'package:bizrato_owner/core/utils/debouncer.dart';
 import 'package:bizrato_owner/core/widgets/app_status_dialog.dart';
 import 'package:bizrato_owner/features/onboarding/data/models/area_item_model.dart';
@@ -10,6 +11,7 @@ import 'package:bizrato_owner/features/onboarding/data/models/location_details_m
 import 'package:bizrato_owner/features/onboarding/data/models/save_contact_request.dart';
 import 'package:bizrato_owner/features/onboarding/data/repositories/onboarding_repository.dart';
 import 'package:bizrato_owner/routes/app_routes.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class EditLocationInfoController extends GetxController {
@@ -145,6 +147,7 @@ class EditLocationInfoController extends GetxController {
     }
 
     if (value.length == 6) {
+      FocusManager.instance.primaryFocus?.unfocus();
       _debouncer(
         () async {
           await _loadLocationByPincode(value);
@@ -199,32 +202,22 @@ class EditLocationInfoController extends GetxController {
 
   void selectArea(AreaItemModel area) {
     selectedArea.value = area;
-    otherAreaName.value = '';
+    if (!_isOtherArea(area)) {
+      otherAreaName.value = '';
+    }
   }
 
   String? _validateForm() {
-    if (address.value.trim().isEmpty) {
-      return 'Building / Shop No. is required.';
-    }
-    if (streetNo.value.trim().isEmpty) {
-      return 'Street Name is required.';
-    }
-    if (landmark.value.trim().isEmpty) {
-      return 'Landmark is required.';
-    }
-    if (pincode.value.trim().isEmpty) {
-      return 'Pincode is required.';
-    }
-    if (pincode.value.trim().length != 6) {
-      return 'Pincode must be 6 digits.';
-    }
-    if (stateName.value.trim().isEmpty || cityName.value.trim().isEmpty) {
-      return 'Please enter a valid pincode to fetch City and State.';
-    }
-    if (selectedArea.value == null) {
-      return 'Please select an area.';
-    }
-    return null;
+    return OnboardingValidators.validateLocationAndContact(
+      fullName: fullName.value,
+      address: address.value,
+      streetNo: streetNo.value,
+      landmark: landmark.value,
+      pincode: pincode.value,
+      stateName: stateName.value,
+      cityName: cityName.value,
+      hasSelectedArea: selectedArea.value != null,
+    );
   }
 
   Future<void> saveAndUpdate() async {
@@ -234,11 +227,22 @@ class EditLocationInfoController extends GetxController {
       return;
     }
 
+    final isOtherAreaSelected = _isOtherArea(selectedArea.value);
+    if (isOtherAreaSelected && otherAreaName.value.trim().isEmpty) {
+      _toastService.error('Please enter area name.');
+      return;
+    }
+
     final merchantId = _authStorage.merchantId;
     if (merchantId == null || merchantId == 0) {
       _toastService.error('Merchant ID is unavailable.');
       return;
     }
+
+    final areaId = isOtherAreaSelected ? 0 : selectedArea.value?.areaId ?? 0;
+    final areaName = isOtherAreaSelected
+        ? otherAreaName.value.trim()
+        : selectedArea.value?.areaName ?? '';
 
     final request = SaveContactRequest(
       fullName: fullName.value.trim(),
@@ -260,8 +264,8 @@ class EditLocationInfoController extends GetxController {
       pincode: pincode.value.trim(),
       stateId: stateId.value,
       cityId: cityId.value,
-      areaId: selectedArea.value?.areaId ?? 0,
-      areaName: selectedArea.value?.areaName ?? otherAreaName.value.trim(),
+      areaId: areaId,
+      areaName: areaName,
       otherAreaName: otherAreaName.value.trim(),
       merchantId: merchantId,
       businessId: businessId.value.trim(),
@@ -291,5 +295,11 @@ class EditLocationInfoController extends GetxController {
     } finally {
       isSaving.value = false;
     }
+  }
+
+  bool get isOtherAreaSelected => _isOtherArea(selectedArea.value);
+
+  bool _isOtherArea(AreaItemModel? area) {
+    return area?.areaName.trim().toLowerCase() == 'other';
   }
 }
